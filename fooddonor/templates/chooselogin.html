@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            text-align: center;
+            width: 90%;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: green;
+            margin-bottom: 30px;
+        }
+
+        .login-options {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .login-card {
+            background: #155724;
+            padding: 20px;
+            width: calc(33% - 20px);
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: none;
+            outline: none;
+            min-width: 200px;
+            flex-grow: 1;
+        }
+
+        .login-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            background: lightseagreen;
+        }
+
+        .login-card i {
+            font-size: 40px;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .login-card h2 {
+            font-size: 18px;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .login-card p {
+            font-size: 14px;
+            color: whitesmoke;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fde8e6;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .social-info {
+            font-size: 14px;
+            color: #666;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        button {
+            all: unset;
+        }
+
+        /* Different icons and colors for each user type */
+        .donor-icon {
+            color: #2ecc71;
+        }
+
+        .recipient-icon {
+            color: #3498db;
+        }
+
+        .admin-icon {
+            color: #e67e22;
+        }
+
+        /* Media query for responsive design */
+        @media (max-width: 768px) {
+            .login-options {
+                flex-direction: column;
+            }
+            
+            .login-card {
+                width: 100%;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Select Login Type</h1>
+
+        <form method="post" action="">
+            {% csrf_token %}
+            <div class="login-options">
+                <!-- Food Donor Login Option -->
+                <button type="submit" name="user_type" value="fooddonor" class="login-card">
+                    <i class="fas fa-hand-holding-heart donor-icon"></i>
+                    <h2>Food Donor Login</h2>
+                    <p>Share and manage your food donations</p>
+                </button>
+
+                <!-- Food Recipient Login Option -->
+                <button type="submit" name="user_type" value="foodrecipient" class="login-card">
+                    <i class="fas fa-users recipient-icon"></i>
+                    <h2>Food Recipient Login</h2>
+                    <p>Browse and request available donations</p>
+                </button>
+
+                <!-- Admin Login Option -->
+                <button type="submit" name="user_type" value="foodadmin" class="login-card">
+                    <i class="fas fa-user-shield admin-icon"></i>
+                    <h2>Admin Login</h2>
+                    <p>Oversee and manage the donation system</p>
+                </button>
+            </div>
+        </form>
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <div class="social-info">
+            Need help? <a href="#">Contact our support team</a>
+        </div>
+    </div>
+</body>
+</html>

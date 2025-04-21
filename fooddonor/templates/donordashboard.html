@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Dashboard - FoodShare Network</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #046307;
+            --primary-light: #4CAF50;
+            --primary-dark: #1B5E20;
+            --secondary: #FF8F00;
+            --secondary-light: #FFB74D;
+            --accent: #03A9F4;
+            --light: #F9FAFB;
+            --dark: #1F2937;
+            --gray: #6B7280;
+            --gray-light: #E5E7EB;
+            --success: #10B981;
+            --warning: #FBBF24;
+            --danger: #EF4444;
+            --white: #FFFFFF;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'DM Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #F5F7FA;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        header {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo i {
+            color: var(--primary);
+            font-size: 28px;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 32px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--gray);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 8px 0;
+        }
+        
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary);
+        }
+        
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary);
+            border-radius: 2px;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 50px;
+            background-color: var(--light);
+            transition: all 0.3s ease;
+        }
+        
+        .user-profile:hover {
+            background-color: var(--gray-light);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .user-name {
+            font-weight: 500;
+        }
+        
+        .user-profile i {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        main {
+            padding: 32px 0;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+        
+        .welcome-msg h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+        
+        .welcome-msg p {
+            color: var(--gray);
+            font-size: 16px;
+        }
+        
+        .action-btns {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            color: var(--white);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.25);
+        }
+        
+        .btn-primary:hover {
+            box-shadow: 0 6px 16px rgba(46, 125, 50, 0.35);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: var(--white);
+            color: var(--primary);
+            border: 2px solid var(--primary-light);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--primary-light);
+            color: var(--white);
+        }
+        
+        .stat-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .stat-card {
+            background-color: var(--white);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+            border-top: 4px solid transparent;
+        }
+        
+        .stat-card:nth-child(1) {
+            border-top-color: var(--primary);
+        }
+        
+        .stat-card:nth-child(2) {
+            border-top-color: var(--secondary);
+        }
+        
+        .stat-card:nth-child(3) {
+            border-top-color: var(--accent);
+        }
+        
+        .stat-card:nth-child(4) {
+            border-top-color: var(--success);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .stat-card .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .stat-card .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .stat-card:nth-child(1) .stat-icon {
+            background-color: rgba(46, 125, 50, 0.1);
+            color: var(--primary);
+        }
+        
+        .stat-card:nth-child(2) .stat-icon {
+            background-color: rgba(255, 143, 0, 0.1);
+            color: var(--secondary);
+        }
+        
+        .stat-card:nth-child(3) .stat-icon {
+            background-color: rgba(3, 169, 244, 0.1);
+            color: var(--accent);
+        }
+        
+        .stat-card:nth-child(4) .stat-icon {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        
+        .stat-card h3 {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .stat-card .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .stat-card .stat-change {
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .stat-card:nth-child(1) .stat-change {
+            color: var(--primary);
+        }
+        
+        .stat-card:nth-child(2) .stat-change {
+            color: var(--secondary);
+        }
+        
+        .stat-card:nth-child(3) .stat-change {
+            color: var(--accent);
+        }
+        
+        .stat-card:nth-child(4) .stat-change {
+            color: var(--success);
+        }
+        
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+        
+        .dashboard-section {
+            background-color: var(--white);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .dashboard-section:hover {
+            box-shadow: var(--shadow);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .section-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .section-header a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .section-header a:hover {
+            color: var(--primary-dark);
+        }
+        
+        .donation-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .donation-table th, 
+        .donation-table td {
+            padding: 16px;
+            text-align: left;
+        }
+        
+        .donation-table th {
+            font-weight: 600;
+            color: var(--gray);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .donation-table tbody tr {
+            border-bottom: 1px solid var(--gray-light);
+            transition: all 0.3s ease;
+        }
+        
+        .donation-table tbody tr:last-child {
+            border-bottom: none;
+        }
+        
+        .donation-table tbody tr:hover {
+            background-color: rgba(76, 175, 80, 0.05);
+        }
+        
+        .status {
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .status.completed {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        
+        .status.scheduled {
+            background-color: rgba(3, 169, 244, 0.1);
+            color: var(--accent);
+        }
+        
+        .status.pending {
+            background-color: rgba(251, 191, 36, 0.1);
+            color: var(--warning);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 16px;
+        }
+        
+        .upcoming-donations {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .upcoming-donation {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border-radius: 12px;
+            background-color: var(--light);
+            transition: all 0.3s ease;
+        }
+        
+        .upcoming-donation:hover {
+            background-color: rgba(76, 175, 80, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .donation-date {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--secondary-light), var(--secondary));
+            color: var(--white);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            box-shadow: 0 4px 12px rgba(255, 143, 0, 0.2);
+        }
+        
+        .donation-date .month {
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        
+        .donation-date .day {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .donation-info {
+            flex: 1;
+        }
+        
+        .donation-info h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--dark);
+        }
+        
+        .donation-info p {
+            color: var(--gray);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .donation-actions {
+            margin-left: auto;
+        }
+        
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid var(--gray-light);
+            color: var(--gray);
+        }
+        
+        .btn-icon:hover {
+            background-color: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        
+        .impact-metrics {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .impact-metric {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border-radius: 12px;
+            background-color: var(--light);
+            transition: all 0.3s ease;
+        }
+        
+        .impact-metric:hover {
+            background-color: rgba(76, 175, 80, 0.1);
+        }
+        
+        .impact-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            font-size: 20px;
+        }
+        
+        .impact-metric:nth-child(1) .impact-icon {
+            background-color: rgba(46, 125, 50, 0.1);
+            color: var(--primary);
+        }
+        
+        .impact-metric:nth-child(2) .impact-icon {
+            background-color: rgba(3, 169, 244, 0.1);
+            color: var(--accent);
+        }
+        
+        .impact-metric:nth-child(3) .impact-icon {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        
+        .impact-data {
+            flex: 1;
+        }
+        
+        .impact-data h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--dark);
+        }
+        
+        .impact-data p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .needs-list {
+            padding: 16px;
+            border-radius: 12px;
+            background-color: var(--light);
+        }
+        
+        .needs-list p {
+            margin-bottom: 12px;
+            color: var(--dark);
+        }
+        
+        .needs-list ul {
+            padding-left: 24px;
+            margin-bottom: 16px;
+        }
+        
+        .needs-list li {
+            margin-bottom: 8px;
+            color: var(--gray);
+        }
+        
+        .needs-list a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-block;
+            margin-top: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .needs-list a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+        
+        footer {
+            background-color: var(--white);
+            padding: 32px 0;
+            box-shadow: var(--shadow-sm);
+            margin-top: 48px;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            list-style: none;
+            gap: 24px;
+        }
+        
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        .copyright {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        /* Fade-in animation for page elements */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .stat-cards, .dashboard-content {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        
+        .stat-cards {
+            animation-delay: 0.2s;
+        }
+        
+        .dashboard-content {
+            animation-delay: 0.4s;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 1024px) {
+            .stat-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            header {
+                padding: 16px 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                background: none;
+                border: none;
+                font-size: 24px;
+                color: var(--dark);
+                cursor: pointer;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .stat-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            
+            .action-btns {
+                width: 100%;
+            }
+            
+            .btn {
+                flex: 1;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+        }
+        
+        /* Additional fancy styles */
+        .badge {
+            padding: 4px 8px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 500;
+            background-color: rgba(46, 125, 50, 0.1);
+            color: var(--primary);
+            margin-left: 8px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: var(--gray-light);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-light), var(--primary));
+            border-radius: 4px;
+            width: 75%;
+        }
+        
+        .tooltip {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .tooltip:hover:after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 130%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--dark);
+            color: var(--white);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 10;
+        }
+        
+        .tooltip:hover:before {
+            content: '';
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px;
+            border-style: solid;
+            border-color: var(--dark) transparent transparent transparent;
+            z-index: 10;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--light);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--gray-light);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gray);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <i class="fas fa-seedling"></i>
+                    <span>FoodShare</span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#" class="active">Dashboard</a></li>
+                    <li><a href="#">Donations</a></li>
+                    <li><a href="#">Impact Report</a></li>
+                    <li><a href="#">Resources</a></li>
+                    <li><a href="#">Community</a></li>
+                    <li><a href="#">Settings</a></li>
+                    <li><a href="{% url 'fooddonor:logout' %}">Logout</a></li>
+                </ul>
+                <div class="user-profile">
+                    <div class="user-avatar">FC</div>
+                    <span class="user-name">Fresh Cafe</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <button class="mobile-menu-btn" style="display: none;">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="dashboard-header">
+            <div class="welcome-msg">
+                <h1>Welcome back, Fresh Cafe! <span class="badge">Pro Donor</span></h1>
+                <p>Your contributions are making a real difference in our community.</p>
+            </div>
+            <div class="action-btns">
+                <button class="btn btn-primary">
+                    <i class="fas fa-plus"></i>
+                    New Donation
+                </button>
+                <button class="btn btn-secondary">
+                    <i class="fas fa-calendar-alt"></i>
+                    Schedule Pickup
+                </button>
+            </div>
+        </div>
+
+        <div class="stat-cards">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <h3>Total Donations</h3>
+                    <div class="stat-icon">
+                        <i class="fas fa-box-open"></i>
+                    </div>
+                </div>
+                <div class="stat-value">48</div>
+                <div class="stat-change">
+                    <i class="fas fa-arrow-up"></i>
+                    12% from last month
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <h3>Food Donated</h3>
+                    <div class="stat-icon">
+                        <i class="fas fa-drumstick-bite"></i>
+                    </div>
+                </div>
+                <div class="stat-value">1,250 lbs</div>
+                <div class="stat-change">
+                    <i class="fas fa-arrow-up"></i>
+                    8% from last month
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <h3>People Fed</h3>
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <div class="stat-value">835</div>
+                <div class="stat-change">
+                    <i class="fas fa-arrow-up"></i>
+                    10% from last month
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <h3>CO₂ Emissions Saved</h3>
+                    <div class="stat-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                </div>
+                <div class="stat-value">750kg</div>
+                <div class="stat-change">
+                    <i class="fas fa-arrow-up"></i>
+                    5% from last month
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-content">
+            <div class="left-column">
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h2>Recent Donations</h2>
+                        <a href="#">
+                            View All
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    <table class="donation-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Food Type</th>
+                                <th>Quantity</th>
+                                <th>Recipient</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Apr 12, 2025</td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-carrot" style="color: #FF8F00;"></i>
+                                        Fresh Produce
+                                    </div>
+                                </td>
+                                <td>25 lbs</td>
+                                <td>Community Kitchen</td>
+                                <td><span class="status completed">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>Apr 10, 2025</td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-bread-slice" style="color: #FF8F00;"></i>
+                                        Baked Goods
+                                    </div>
+                                </td>
+                                <td>15 lbs</td>
+                                <td>Hope Shelter</td>
+                                <td><span class="status completed">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>Apr 8, 2025</td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-utensils" style="color: #FF8F00;"></i>
+                                        Prepared Meals
+                                    </div>
+                                </td>
+                                <td>20 meals</td>
+                                <td>Senior Center</td>
+                                <td><span class="status completed">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>Apr 5, 2025</td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-cheese" style="color: #FF8F00;"></i>
+                                        Dairy Products
+                                    </div>
+                                </td>
+                                <td>18 lbs</td>
+                                <td>Food Pantry</td>
+                                <td><span class="status completed">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>Apr 1, 2025</td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-shopping-basket" style="color: #FF8F00;"></i>
+                                        Mixed Items
+                                    </div>
+                                </td>
+                                <td>35 lbs</td>
+                                <td>Family Shelter</td>

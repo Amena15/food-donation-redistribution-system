@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --dark-gray: #374151;
+            --medium-gray: #6b7280;
+            --light-gray: #d1d5db;
+            --very-light-gray: #f9fafb;
+        }
+
+        body {
+            background-color: var(--very-light-gray);
+            padding-top: 20px;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            border-top: 5px solid var(--dark-gray);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--dark-gray);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            color: var(--dark-gray);
+            font-weight: 500;
+        }
+
+        .btn-login {
+            width: 100%;
+            background-color: var(--dark-gray);
+            border: none;
+            color: white;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-login:hover {
+            background-color: var(--medium-gray);
+        }
+
+        .form-control:focus {
+            border-color: var(--medium-gray);
+            box-shadow: 0 0 0 0.25rem rgba(107, 114, 128, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-container">
+            <div class="logo">
+                <h2>Admin Login</h2>
+                <p>System Access</p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                {% if error %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" class="form-control" required>
+                </div>
+
+                <button type="submit" class="btn-login mt-3">Log In</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

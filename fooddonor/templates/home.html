@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Share Food, Share Hope Donation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            color: #333;
+        }
+        
+        .hero {
+            position: relative;
+            background-image: url('https://images.unsplash.com/photo-1599059813005-11265ba4b4ce?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 40px;
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+            text-decoration: none;
+            font-size: 16px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background-color: white;
+            color: #333;
+        }
+        
+        .why-choose {
+            padding: 60px 20px;
+            text-align: center;
+        }
+        
+        .why-choose h2 {
+            font-size: 36px;
+            color: #0a6e31;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+        }
+        
+        .feature-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .feature {
+            width: 30%;
+            margin-bottom: 30px;
+        }
+        
+        .feature-img {
+            width: 200px;
+            height: 120px;
+            border-radius: 100px 100px 0 0;
+            overflow: hidden;
+            margin: 0 auto 20px;
+        }
+        
+        .feature-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .feature h3 {
+            color: #0a6e31;
+            margin-bottom: 10px;
+        }
+        
+        .feature p {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .benefits {
+            background-color: #0a6e31;
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        
+        .benefits h2 {
+            font-size: 36px;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+        }
+        
+        .benefits-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto 40px;
+        }
+        
+        .benefit {
+            width: 30%;
+            margin-bottom: 30px;
+        }
+        
+        .benefit h3 {
+            margin-bottom: 15px;
+        }
+        
+        .benefit p {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .images-row {
+            display: flex;
+            justify-content: space-around;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .images-row img {
+            width: 30%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        
+        .make-difference {
+            position: relative;
+            background-image: url('https://images.unsplash.com/photo-1486887396153-fa416526c108?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+        
+        .make-difference::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+        
+        .difference-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .make-difference h2 {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+        }
+        
+        footer {
+            background-color: #f5f5f5;
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            .feature, .benefit {
+                width: 100%;
+                margin-bottom: 40px;
+            }
+            
+            .hero h1, .make-difference h2 {
+                font-size: 36px;
+            }
+            
+            .images-row {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .images-row img {
+                width: 80%;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="hero-content">
+            <h1>BE THE CHANGE:<br>DONATE FOOD AND<br>END HUNGER</h1>
+            <p>Share Food, Share Hope Donation</p>
+            <a href="{% url 'fooddonor:chooselogin' %}" class="btn">GET INVOLVED</a>
+        </div>
+    </section>
+    
+    <section class="why-choose">
+        <h2>WHY CHOOSE US?</h2>
+        <div class="feature-container">
+            <div class="feature">
+                <div class="feature-img">
+                    <img src="https://images.unsplash.com/photo-1574676039880-73da8368f0eb?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Fight Food Waste">
+                </div>
+                <h3>Fight Food Waste</h3>
+                <p>Help reduce the millions of tons of food wasted annually by donating surplus food.</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-img">
+                    <img src="https://images.unsplash.com/photo-1649090909560-6c71b1aeaa7d?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Local Impact">
+                </div>
+                <h3>Local Impact</h3>
+                <p>Connect with recipients in your area and make a direct difference in your community.</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-img">
+                    <img src="https://images.unsplash.com/photo-1634979149798-e9a118734e93?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Safe and Secure">
+                </div>
+                <h3>Safe and Secure</h3>
+                <p>Our platform ensures the safety and quality of all food donations with proper verification.</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="benefits">
+        <h2>BENEFITS OF<br>DONATING FOOD</h2>
+        <div class="benefits-container">
+            <div class="benefit">
+                <h3>Addressing Hunger and Nutrition</h3>
+                <p>Food donations directly address hunger, providing food to those in need and ensuring they receive the nourishment they require to thrive.</p>
+            </div>
+            
+            <div class="benefit">
+                <h3>Social Responsibility</h3>
+                <p>Donating food demonstrates a commitment of social responsibility, helping to build community support and create a more equitable society.</p>
+            </div>
+            
+            <div class="benefit">
+                <h3>Waste Reduction</h3>
+                <p>Food donation also helps reduce food waste, which is a significant environmental concern, by channeling surplus food to those who need it.</p>
+            </div>
+        </div>
+        
+        <div class="images-row">
+            <img src="https://images.unsplash.com/photo-1609139003551-ee40f5f73ec0?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Community garden">
+            <img src="https://images.unsplash.com/photo-1710092784814-4a6f158913b8?q=80&w=2012&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Family volunteers">
+            <img src="https://images.unsplash.com/photo-1593113616828-6f22bca04804?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Food waste">
+        </div>
+    </section>
+    
+    <section class="make-difference">
+        <div class="difference-content">
+            <h2>MAKE A<br>DIFFERENCE</h2>
+            <a href="{% url 'fooddonor:register' %}" class="btn">REGISTER AS A DONOR TODAY</a>
+        </div>
+    </section>
+    
+    <footer>
+        <p>Share Food, Share Hope Donation</p>
+    </footer>
+</body>
+</html>
