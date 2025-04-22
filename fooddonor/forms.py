@@ -1,4 +1,3 @@
-# forms.py
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -21,14 +20,20 @@ class SignUpForm(UserCreationForm):
     
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        fields = ['username', 'email', 'phone_number', 'role', 'location', 'needs_description', 'password1', 'password2']
 
     def __init__(self, *args, **kwargs):
         super(SignUpForm, self).__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'form-control'})
 
-    
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        # Custom validation to ensure the username is not too short
+        if len(username) < 6:
+            raise forms.ValidationError("Username must be at least 6 characters long.")
+        return username
+
     def clean(self):
         cleaned_data = super().clean()
         role = cleaned_data.get('role')

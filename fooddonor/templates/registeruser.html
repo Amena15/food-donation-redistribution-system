@@ -4,21 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - Food Donation System</title>
+    <title>Register - Food Donation System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* Styles remain unchanged */
         :root {
             --dark-green: #1a5e1a;
             --medium-green: #2e7d32;
             --light-green: #4caf50;
             --very-light-green: #e8f5e9;
         }
+
         body {
             background-color: var(--very-light-green);
             padding-top: 20px;
         }
-        .signup-container {
+
+        .register-container {
             max-width: 500px;
             margin: 0 auto;
             background-color: white;
@@ -27,23 +28,28 @@
             box-shadow: 0 0 15px rgba(0,0,0,0.1);
             border-top: 5px solid var(--dark-green);
         }
+
         .logo {
             text-align: center;
             margin-bottom: 25px;
             color: var(--dark-green);
         }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-control:focus {
-            border-color: var(--medium-green);
-            box-shadow: 0 0 0 0.25rem rgba(46, 125, 50, 0.25);
-        }
+
         label {
             color: var(--dark-green);
             font-weight: 500;
         }
-        .btn-signup {
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-control:focus {
+            border-color: var(--medium-green);
+            box-shadow: 0 0 0 0.25rem rgba(46, 125, 50, 0.25);
+        }
+
+        .btn-register {
             width: 100%;
             background-color: var(--dark-green);
             border: none;
@@ -54,127 +60,53 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        .btn-signup:hover {
+
+        .btn-register:hover {
             background-color: var(--medium-green);
         }
+
         .login-link {
             text-align: center;
             margin-top: 20px;
         }
+
         .login-link a {
             color: var(--medium-green);
             text-decoration: none;
         }
+
         .login-link a:hover {
             text-decoration: underline;
-        }
-        .form-control, .form-select {
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            padding: 10px;
-            width: 100%;
-            margin-bottom: 5px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="signup-container">
+        <div class="register-container">
             <div class="logo">
                 <h2>Food Donor Registration</h2>
-                <p>Join our community to share food with those in need</p>
+                <p>Create your account</p>
             </div>
-            
+
             <form method="post">
                 {% csrf_token %}
-                
-                {% if form.errors %}
-                <div class="alert alert-danger" role="alert">
-                    Please correct the errors below.
-                </div>
-                {% endif %}
-                
-                <div class="form-group">
-                    <label for="{{ form.username.id_for_label }}">Username</label>
-                    {{ form.username }}
-                    {% if form.username.errors %}
-                    <small class="text-danger">{{ form.username.errors }}</small>
-                    {% endif %}
-                </div>
-                
-                <div class="form-group">
-                    <label for="{{ form.email.id_for_label }}">Email</label>
-                    {{ form.email }}
-                    {% if form.email.errors %}
-                    <small class="text-danger">{{ form.email.errors }}</small>
-                    {% endif %}
-                </div>
-                
-                <div class="form-group">
-                    <label for="{{ form.phone_number.id_for_label }}">Phone Number</label>
-                    {{ form.phone_number }}
-                    {% if form.phone_number.errors %}
-                    <small class="text-danger">{{ form.phone_number.errors }}</small>
-                    {% endif %}
-                </div>
-                
-                <div class="form-group location-field">
-                    <label for="{{ form.location.id_for_label }}">Location</label>
-                    {{ form.location }}
-                    {% if form.location.errors %}
-                    <small class="text-danger">{{ form.location.errors }}</small>
-                    {% endif %}
-                    <small class="text-muted">Required for food donors</small>
-                </div>
-                
-                <div class="form-group">
-                    <label for="{{ form.password1.id_for_label }}">Password</label>
-                    {{ form.password1 }}
-                    {% if form.password1.errors %}
-                    <small class="text-danger">{{ form.password1.errors }}</small>
-                    {% endif %}
-                </div>
-                
-                <div class="form-group">
-                    <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
-                    {{ form.password2 }}
-                    {% if form.password2.errors %}
-                    <small class="text-danger">{{ form.password2.errors }}</small>
-                    {% endif %}
-                </div>
-                
-                <button type="submit" class="btn-signup mt-3">Sign Up</button>
+                {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="text-danger small">{{ field.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <button type="submit" class="btn-register mt-3">Register</button>
             </form>
-            
+
             <div class="login-link">
                 Already have an account? <a href="{% url 'fooddonor:donorlogin' %}">Log In</a>
             </div>
         </div>
     </div>
-
-    <script>
-        // Show/hide relevant fields based on role selection
-        document.addEventListener('DOMContentLoaded', function() {
-            const roleSelect = document.querySelector('#{{ form.role.id_for_label }}');
-            const locationField = document.querySelector('.location-field');
-            const needsField = document.querySelector('.needs-field');
-            
-            function updateFields() {
-                if (roleSelect.value === 'donor') {
-                    locationField.style.display = 'block';
-                    needsField.style.display = 'none';
-                } else if (roleSelect.value === 'recipient') {
-                    locationField.style.display = 'block';
-                    needsField.style.display = 'block';
-                } else {
-                    locationField.style.display = 'block';
-                    needsField.style.display = 'block';
-                }
-            }
-            
-            updateFields();
-            roleSelect.addEventListener('change', updateFields);
-        });
-    </script>
 </body>
 </html>

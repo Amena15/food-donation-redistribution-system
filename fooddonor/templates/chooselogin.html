@@ -53,6 +53,8 @@
             outline: none;
             min-width: 200px;
             flex-grow: 1;
+            position: relative;
+            overflow: hidden;
         }
 
         .login-card:hover {
@@ -61,10 +63,20 @@
             background: lightseagreen;
         }
 
+        .icon-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 15px;
+        }
+
         .login-card i {
             font-size: 40px;
-            color: white;
-            margin-bottom: 15px;
+            margin-bottom: 0;
         }
 
         .login-card h2 {
@@ -135,21 +147,27 @@
             <div class="login-options">
                 <!-- Food Donor Login Option -->
                 <button type="submit" name="user_type" value="fooddonor" class="login-card">
-                    <i class="fas fa-hand-holding-heart donor-icon"></i>
+                    <div class="icon-container">
+                        <i class="fas fa-hand-holding-heart donor-icon"></i>
+                    </div>
                     <h2>Food Donor Login</h2>
                     <p>Share and manage your food donations</p>
                 </button>
 
                 <!-- Food Recipient Login Option -->
                 <button type="submit" name="user_type" value="foodrecipient" class="login-card">
-                    <i class="fas fa-users recipient-icon"></i>
+                    <div class="icon-container">
+                        <i class="fas fa-users recipient-icon"></i>
+                    </div>
                     <h2>Food Recipient Login</h2>
                     <p>Browse and request available donations</p>
                 </button>
 
                 <!-- Admin Login Option -->
                 <button type="submit" name="user_type" value="foodadmin" class="login-card">
-                    <i class="fas fa-user-shield admin-icon"></i>
+                    <div class="icon-container">
+                        <i class="fas fa-user-shield admin-icon"></i>
+                    </div>
                     <h2>Admin Login</h2>
                     <p>Oversee and manage the donation system</p>
                 </button>

@@ -98,6 +98,14 @@ def admin_login(request):
     
     return render(request, 'adminlogin.html', {'title': 'Admin Login'})
 
+def clean_username(self):
+    username = self.cleaned_data.get('username')
+    # Custom validation to ensure the username is not too short
+    if len(username) < 6:
+        raise forms.ValidationError("Username must be at least 6 characters long.")
+    return username
+
+
 
 def logout(request):
     django_logout(request)
