@@ -3,988 +3,911 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Donor Dashboard - FoodShare Network</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Recipient Dashboard | Share Food, Share Hope</title>
     <style>
         :root {
-            --primary: #046307;
-            --primary-light: #4CAF50;
-            --primary-dark: #1B5E20;
-            --secondary: #FF8F00;
-            --secondary-light: #FFB74D;
-            --accent: #03A9F4;
-            --light: #F9FAFB;
-            --dark: #1F2937;
-            --gray: #6B7280;
-            --gray-light: #E5E7EB;
-            --success: #10B981;
-            --warning: #FBBF24;
-            --danger: #EF4444;
-            --white: #FFFFFF;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --primary: #0a6e31;
+            --primary-light: #128a3e;
+            --secondary: #f8b042;
+            --light: #f5f5f5;
+            --dark: #333333;
+            --danger: #dc3545;
+            --success: #28a745;
+            --info: #17a2b8;
+            --gray: #6c757d;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'DM Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            background-color: #F5F7FA;
+            background-color: #f0f2f5;
             color: var(--dark);
-            line-height: 1.6;
         }
         
-        .container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-        
-        header {
-            background-color: var(--white);
-            box-shadow: var(--shadow);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 0;
-        }
-        
-        .logo {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .logo i {
-            color: var(--primary);
-            font-size: 28px;
-        }
-        
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 32px;
-        }
-        
-        .nav-links a {
+        a {
             text-decoration: none;
-            color: var(--gray);
-            font-weight: 500;
-            transition: all 0.3s ease;
-            position: relative;
-            padding: 8px 0;
+            color: inherit;
         }
         
-        .nav-links a:hover,
-        .nav-links a.active {
-            color: var(--primary);
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
         }
         
-        .nav-links a.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
             background-color: var(--primary);
-            border-radius: 2px;
+            color: var(--white);
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
         }
         
-        .user-profile {
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-header h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .sidebar-header p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .user-info {
             display: flex;
             align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            padding: 8px 16px;
-            border-radius: 50px;
-            background-color: var(--light);
-            transition: all 0.3s ease;
-        }
-        
-        .user-profile:hover {
-            background-color: var(--gray-light);
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
         }
         
         .user-avatar {
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-light), var(--primary));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--white);
-            font-weight: 600;
-            font-size: 16px;
-        }
-        
-        .user-name {
-            font-weight: 500;
-        }
-        
-        .user-profile i {
-            color: var(--gray);
-            font-size: 14px;
-        }
-        
-        main {
-            padding: 32px 0;
-        }
-        
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 32px;
-        }
-        
-        .welcome-msg h1 {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--dark);
-        }
-        
-        .welcome-msg p {
-            color: var(--gray);
-            font-size: 16px;
-        }
-        
-        .action-btns {
-            display: flex;
-            gap: 16px;
-        }
-        
-        .btn {
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            border: none;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary-light), var(--primary));
-            color: var(--white);
-            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.25);
-        }
-        
-        .btn-primary:hover {
-            box-shadow: 0 6px 16px rgba(46, 125, 50, 0.35);
-            transform: translateY(-2px);
-        }
-        
-        .btn-secondary {
             background-color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
             color: var(--primary);
-            border: 2px solid var(--primary-light);
-        }
-        
-        .btn-secondary:hover {
-            background-color: var(--primary-light);
-            color: var(--white);
-        }
-        
-        .stat-cards {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 24px;
-            margin-bottom: 32px;
-        }
-        
-        .stat-card {
-            background-color: var(--white);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.3s ease;
-            border-top: 4px solid transparent;
-        }
-        
-        .stat-card:nth-child(1) {
-            border-top-color: var(--primary);
-        }
-        
-        .stat-card:nth-child(2) {
-            border-top-color: var(--secondary);
-        }
-        
-        .stat-card:nth-child(3) {
-            border-top-color: var(--accent);
-        }
-        
-        .stat-card:nth-child(4) {
-            border-top-color: var(--success);
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-md);
-        }
-        
-        .stat-card .stat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-        
-        .stat-card .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-weight: bold;
             font-size: 20px;
         }
         
-        .stat-card:nth-child(1) .stat-icon {
-            background-color: rgba(46, 125, 50, 0.1);
-            color: var(--primary);
+        .user-details h3 {
+            font-size: 16px;
+            margin-bottom: 4px;
         }
         
-        .stat-card:nth-child(2) .stat-icon {
-            background-color: rgba(255, 143, 0, 0.1);
-            color: var(--secondary);
+        .user-details p {
+            font-size: 12px;
+            opacity: 0.8;
         }
         
-        .stat-card:nth-child(3) .stat-icon {
-            background-color: rgba(3, 169, 244, 0.1);
-            color: var(--accent);
+        .menu {
+            flex-grow: 1;
         }
         
-        .stat-card:nth-child(4) .stat-icon {
-            background-color: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-        }
-        
-        .stat-card h3 {
-            font-size: 14px;
-            color: var(--gray);
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-        
-        .stat-card .stat-value {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-        
-        .stat-card .stat-change {
-            font-size: 14px;
-            font-weight: 500;
+        .menu-item {
+            padding: 15px 20px;
             display: flex;
             align-items: center;
-            gap: 4px;
+            transition: all 0.2s ease;
+            cursor: pointer;
         }
         
-        .stat-card:nth-child(1) .stat-change {
-            color: var(--primary);
+        .menu-item.active {
+            background-color: var(--primary-light);
+            border-left: 4px solid var(--secondary);
         }
         
-        .stat-card:nth-child(2) .stat-change {
-            color: var(--secondary);
+        .menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
         }
         
-        .stat-card:nth-child(3) .stat-change {
-            color: var(--accent);
+        .menu-icon {
+            margin-right: 15px;
+            width: 20px;
+            text-align: center;
         }
         
-        .stat-card:nth-child(4) .stat-change {
-            color: var(--success);
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 12px;
+            text-align: center;
         }
         
-        .dashboard-content {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 24px;
+        /* Main Content */
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+            overflow-y: auto;
         }
         
-        .dashboard-section {
-            background-color: var(--white);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: var(--shadow-sm);
-            margin-bottom: 24px;
-            transition: all 0.3s ease;
-        }
-        
-        .dashboard-section:hover {
-            box-shadow: var(--shadow);
-        }
-        
-        .section-header {
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--gray-light);
+            margin-bottom: 30px;
         }
         
-        .section-header h2 {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--dark);
-        }
-        
-        .section-header a {
+        .header-title h1 {
+            font-size: 28px;
             color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .header-title p {
+            color: var(--gray);
             font-size: 14px;
+        }
+        
+        .notifications {
+            position: relative;
+            margin-right: 20px;
+        }
+        
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: var(--white);
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            gap: 4px;
+            justify-content: center;
+            font-size: 10px;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
             transition: all 0.3s ease;
         }
         
-        .section-header a:hover {
-            color: var(--primary-dark);
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
         }
         
-        .donation-table {
+        .btn-primary:hover {
+            background-color: var(--primary-light);
+        }
+        
+        .btn-icon {
+            margin-right: 10px;
+        }
+        
+        /* Cards */
+        .cards-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .stat-card {
+            display: flex;
+            align-items: center;
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 24px;
+        }
+        
+        .primary-icon {
+            background-color: rgba(10, 110, 49, 0.1);
+            color: var(--primary);
+        }
+        
+        .secondary-icon {
+            background-color: rgba(248, 176, 66, 0.1);
+            color: var(--secondary);
+        }
+        
+        .info-icon {
+            background-color: rgba(23, 162, 184, 0.1);
+            color: var(--info);
+        }
+        
+        .success-icon {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--success);
+        }
+        
+        .stat-info h3 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .stat-info p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            color: var(--dark);
+        }
+        
+        .card-action {
+            color: var(--primary);
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .card-action:hover {
+            text-decoration: underline;
+        }
+        
+        /* Tables */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+        
+        table {
             width: 100%;
             border-collapse: collapse;
         }
         
-        .donation-table th, 
-        .donation-table td {
-            padding: 16px;
+        thead th {
+            background-color: #f1f1f1;
             text-align: left;
-        }
-        
-        .donation-table th {
-            font-weight: 600;
-            color: var(--gray);
+            padding: 12px 15px;
             font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            color: var(--gray);
+            border-bottom: 1px solid #ddd;
         }
         
-        .donation-table tbody tr {
-            border-bottom: 1px solid var(--gray-light);
-            transition: all 0.3s ease;
+        tbody td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
         }
         
-        .donation-table tbody tr:last-child {
-            border-bottom: none;
-        }
-        
-        .donation-table tbody tr:hover {
-            background-color: rgba(76, 175, 80, 0.05);
+        tbody tr:hover {
+            background-color: rgba(10, 110, 49, 0.03);
         }
         
         .status {
-            padding: 6px 12px;
-            border-radius: 50px;
+            padding: 5px 12px;
+            border-radius: 20px;
             font-size: 12px;
             font-weight: 500;
-            display: inline-block;
         }
         
-        .status.completed {
-            background-color: rgba(16, 185, 129, 0.1);
+        .status-pending {
+            background-color: rgba(248, 176, 66, 0.1);
+            color: var(--secondary);
+        }
+        
+        .status-delivered {
+            background-color: rgba(40, 167, 69, 0.1);
             color: var(--success);
         }
         
-        .status.scheduled {
-            background-color: rgba(3, 169, 244, 0.1);
-            color: var(--accent);
+        .status-ready {
+            background-color: rgba(23, 162, 184, 0.1);
+            color: var(--info);
         }
         
-        .status.pending {
-            background-color: rgba(251, 191, 36, 0.1);
-            color: var(--warning);
-        }
-        
-        .chart-container {
-            position: relative;
-            height: 300px;
-            margin-top: 16px;
-        }
-        
-        .upcoming-donations {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        
-        .upcoming-donation {
-            display: flex;
-            align-items: center;
-            padding: 16px;
-            border-radius: 12px;
-            background-color: var(--light);
-            transition: all 0.3s ease;
-        }
-        
-        .upcoming-donation:hover {
-            background-color: rgba(76, 175, 80, 0.1);
-            transform: translateX(5px);
-        }
-        
-        .donation-date {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(135deg, var(--secondary-light), var(--secondary));
-            color: var(--white);
-            border-radius: 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-right: 16px;
-            box-shadow: 0 4px 12px rgba(255, 143, 0, 0.2);
-        }
-        
-        .donation-date .month {
-            font-size: 12px;
-            font-weight: 500;
-            text-transform: uppercase;
-        }
-        
-        .donation-date .day {
-            font-size: 24px;
-            font-weight: 700;
-        }
-        
-        .donation-info {
-            flex: 1;
-        }
-        
-        .donation-info h4 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 4px;
-            color: var(--dark);
-        }
-        
-        .donation-info p {
-            color: var(--gray);
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .donation-actions {
-            margin-left: auto;
-        }
-        
-        .btn-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background-color: var(--white);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .action-btn {
+            padding: 5px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid var(--gray-light);
-            color: var(--gray);
-        }
-        
-        .btn-icon:hover {
-            background-color: var(--primary);
-            color: var(--white);
-            border-color: var(--primary);
-        }
-        
-        .impact-metrics {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        
-        .impact-metric {
-            display: flex;
-            align-items: center;
-            padding: 16px;
-            border-radius: 12px;
-            background-color: var(--light);
-            transition: all 0.3s ease;
-        }
-        
-        .impact-metric:hover {
-            background-color: rgba(76, 175, 80, 0.1);
-        }
-        
-        .impact-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 16px;
-            font-size: 20px;
-        }
-        
-        .impact-metric:nth-child(1) .impact-icon {
-            background-color: rgba(46, 125, 50, 0.1);
+            margin-right: 5px;
             color: var(--primary);
         }
         
-        .impact-metric:nth-child(2) .impact-icon {
-            background-color: rgba(3, 169, 244, 0.1);
-            color: var(--accent);
+        /* Two-column layout */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
         }
         
-        .impact-metric:nth-child(3) .impact-icon {
-            background-color: rgba(16, 185, 129, 0.1);
-            color: var(--success);
+        /* Calendar */
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
         }
         
-        .impact-data {
-            flex: 1;
-        }
-        
-        .impact-data h4 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 4px;
-            color: var(--dark);
-        }
-        
-        .impact-data p {
-            color: var(--gray);
-            font-size: 14px;
-        }
-        
-        .needs-list {
-            padding: 16px;
-            border-radius: 12px;
-            background-color: var(--light);
-        }
-        
-        .needs-list p {
-            margin-bottom: 12px;
-            color: var(--dark);
-        }
-        
-        .needs-list ul {
-            padding-left: 24px;
-            margin-bottom: 16px;
-        }
-        
-        .needs-list li {
-            margin-bottom: 8px;
-            color: var(--gray);
-        }
-        
-        .needs-list a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
-            display: inline-block;
-            margin-top: 8px;
-            transition: all 0.3s ease;
-        }
-        
-        .needs-list a:hover {
-            color: var(--primary-dark);
-            text-decoration: underline;
-        }
-        
-        footer {
-            background-color: var(--white);
-            padding: 32px 0;
-            box-shadow: var(--shadow-sm);
-            margin-top: 48px;
-        }
-        
-        .footer-content {
+        .calendar-header {
             display: flex;
-            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            gap: 24px;
+            margin-bottom: 15px;
         }
         
-        .footer-links {
+        .calendar-navigation {
             display: flex;
-            flex-wrap: wrap;
-            list-style: none;
-            gap: 24px;
+            align-items: center;
         }
         
-        .footer-links a {
-            color: var(--gray);
-            text-decoration: none;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-        
-        .footer-links a:hover {
+        .calendar-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
             color: var(--primary);
+            padding: 5px;
         }
         
-        .copyright {
+        .calendar-day {
+            text-align: center;
+            background-color: #f9f9f9;
+            padding: 10px 5px;
+            font-size: 13px;
+        }
+        
+        .calendar-day.header {
+            font-weight: bold;
+            background-color: transparent;
+        }
+        
+        .calendar-day.today {
+            background-color: var(--primary);
+            color: white;
+            border-radius: 5px;
+        }
+        
+        .calendar-day.has-event {
+            border-bottom: 3px solid var(--secondary);
+        }
+        
+        /* Activity Feed */
+        .activity-item {
+            display: flex;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(10, 110, 49, 0.1);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+        
+        .activity-content h4 {
+            font-size: 15px;
+            margin-bottom: 5px;
+        }
+        
+        .activity-content p {
+            font-size: 13px;
             color: var(--gray);
-            font-size: 14px;
+            margin-bottom: 5px;
         }
         
-        /* Fade-in animation for page elements */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .activity-time {
+            font-size: 12px;
+            color: var(--gray);
         }
         
-        .stat-cards, .dashboard-content {
-            animation: fadeIn 0.6s ease-out forwards;
+        .activity-line {
+            position: absolute;
+            top: 40px;
+            left: 20px;
+            bottom: -20px;
+            width: 1px;
+            background-color: #ddd;
+            z-index: 0;
         }
         
-        .stat-cards {
-            animation-delay: 0.2s;
+        .activity-item:last-child .activity-line {
+            display: none;
         }
         
-        .dashboard-content {
-            animation-delay: 0.4s;
-        }
-        
-        /* Responsive styles */
+        /* Responsive */
         @media (max-width: 1024px) {
-            .stat-cards {
+            .cards-row {
                 grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .grid-2 {
+                grid-template-columns: 1fr;
             }
         }
         
         @media (max-width: 768px) {
-            .dashboard-content {
-                grid-template-columns: 1fr;
+            .dashboard {
+                flex-direction: column;
             }
             
-            .nav-links {
-                display: none;
+            .sidebar {
+                width: 100%;
+                padding: 10px 0;
             }
             
-            header {
-                padding: 16px 0;
+            .sidebar-header {
+                padding: 10px 20px;
             }
             
-            .mobile-menu-btn {
-                display: block;
-                background: none;
-                border: none;
-                font-size: 24px;
-                color: var(--dark);
-                cursor: pointer;
-            }
-        }
-        
-        @media (max-width: 576px) {
-            .stat-cards {
-                grid-template-columns: 1fr;
+            .main-content {
+                padding: 20px;
             }
             
-            .dashboard-header {
+            .header {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 16px;
             }
             
-            .action-btns {
-                width: 100%;
+            .header-actions {
+                margin-top: 15px;
             }
             
-            .btn {
-                flex: 1;
+            .cards-row {
+                grid-template-columns: 1fr;
             }
-            
-            .footer-content {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-            }
-        }
-        
-        /* Additional fancy styles */
-        .badge {
-            padding: 4px 8px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 500;
-            background-color: rgba(46, 125, 50, 0.1);
-            color: var(--primary);
-            margin-left: 8px;
-        }
-        
-        .progress-bar {
-            height: 8px;
-            background-color: var(--gray-light);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 8px;
-        }
-        
-        .progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-light), var(--primary));
-            border-radius: 4px;
-            width: 75%;
-        }
-        
-        .tooltip {
-            position: relative;
-            cursor: pointer;
-        }
-        
-        .tooltip:hover:after {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 130%;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: var(--dark);
-            color: var(--white);
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            white-space: nowrap;
-            z-index: 10;
-        }
-        
-        .tooltip:hover:before {
-            content: '';
-            position: absolute;
-            bottom: 120%;
-            left: 50%;
-            transform: translateX(-50%);
-            border-width: 6px;
-            border-style: solid;
-            border-color: var(--dark) transparent transparent transparent;
-            z-index: 10;
-        }
-        
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: var(--light);
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: var(--gray-light);
-            border-radius: 5px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--gray);
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <nav>
-                <div class="logo">
-                    <i class="fas fa-seedling"></i>
-                    <span>FoodShare</span>
-                </div>
-                <ul class="nav-links">
-                    <li><a href="#" class="active">Dashboard</a></li>
-                    <li><a href="#">Donations</a></li>
-                    <li><a href="#">Impact Report</a></li>
-                    <li><a href="#">Resources</a></li>
-                    <li><a href="#">Community</a></li>
-                    <li><a href="#">Settings</a></li>
-                    <li><a href="{% url 'fooddonor:logout' %}">Logout</a></li>
-                </ul>
-                <div class="user-profile">
-                    <div class="user-avatar">FC</div>
-                    <span class="user-name">Fresh Cafe</span>
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <button class="mobile-menu-btn" style="display: none;">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </nav>
-        </div>
-    </header>
-
-    <main class="container">
-        <div class="dashboard-header">
-            <div class="welcome-msg">
-                <h1>Welcome back, Fresh Cafe! <span class="badge">Pro Donor</span></h1>
-                <p>Your contributions are making a real difference in our community.</p>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>FoodShare</h2>
+                <p>Recipient Dashboard</p>
             </div>
-            <div class="action-btns">
-                <button class="btn btn-primary">
-                    <i class="fas fa-plus"></i>
-                    New Donation
-                </button>
-                <button class="btn btn-secondary">
-                    <i class="fas fa-calendar-alt"></i>
-                    Schedule Pickup
-                </button>
-            </div>
-        </div>
-
-        <div class="stat-cards">
-            <div class="stat-card">
-                <div class="stat-header">
-                    <h3>Total Donations</h3>
-                    <div class="stat-icon">
-                        <i class="fas fa-box-open"></i>
-                    </div>
-                </div>
-                <div class="stat-value">48</div>
-                <div class="stat-change">
-                    <i class="fas fa-arrow-up"></i>
-                    12% from last month
+            
+            <div class="user-info">
+                <div class="user-avatar">JD</div>
+                <div class="user-details">
+                    <h3>Jane Doe</h3>
+                    <p>Community Kitchen</p>
                 </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-header">
-                    <h3>Food Donated</h3>
-                    <div class="stat-icon">
-                        <i class="fas fa-drumstick-bite"></i>
-                    </div>
+            
+            <div class="menu">
+                <div class="menu-item active">
+                    <div class="menu-icon">📊</div>
+                    <div class="menu-text">Dashboard</div>
                 </div>
-                <div class="stat-value">1,250 lbs</div>
-                <div class="stat-change">
-                    <i class="fas fa-arrow-up"></i>
-                    8% from last month
+                <div class="menu-item">
+                    <div class="menu-icon">📦</div>
+                    <div class="menu-text">Donations</div>
                 </div>
+                <div class="menu-item">
+                    <div class="menu-icon">📅</div>
+                    <div class="menu-text">Schedule</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-icon">📝</div>
+                    <div class="menu-text">Requests</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-icon">🏢</div>
+                    <div class="menu-text">Donors</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-icon">📈</div>
+                    <div class="menu-text">Reports</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-icon">⚙️</div>
+                    <div class="menu-text">Settings</div>
+                </div>
+                <div class="menu-item">
+                    <a href="{% url 'foodrecipient:recipient_logout' %}">Logout</a>
+                        <div class="menu-icon">🚪</div>
+                    </a>
+                </div>                
             </div>
-            <div class="stat-card">
-                <div class="stat-header">
-                    <h3>People Fed</h3>
-                    <div class="stat-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                </div>
-                <div class="stat-value">835</div>
-                <div class="stat-change">
-                    <i class="fas fa-arrow-up"></i>
-                    10% from last month
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-header">
-                    <h3>CO₂ Emissions Saved</h3>
-                    <div class="stat-icon">
-                        <i class="fas fa-leaf"></i>
-                    </div>
-                </div>
-                <div class="stat-value">750kg</div>
-                <div class="stat-change">
-                    <i class="fas fa-arrow-up"></i>
-                    5% from last month
-                </div>
+            
+            <div class="sidebar-footer">
+                <p>© 2025 Share Food, Share Hope</p>
             </div>
         </div>
-
-        <div class="dashboard-content">
-            <div class="left-column">
-                <div class="dashboard-section">
-                    <div class="section-header">
-                        <h2>Recent Donations</h2>
-                        <a href="#">
-                            View All
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <div class="header-title">
+                    <h1>Welcome back, Jane!</h1>
+                    <p>Here's what's happening with your food donations today.</p>
+                </div>
+                
+                <div class="header-actions">
+                    <div class="notifications">
+                        <span>🔔</span>
+                        <span class="badge">3</span>
                     </div>
-                    <table class="donation-table">
+                    <button class="btn btn-primary">
+                        <span class="btn-icon">➕</span>
+                        New Request
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Stats Cards -->
+            <div class="cards-row">
+                <div class="card stat-card">
+                    <div class="stat-icon primary-icon">📦</div>
+                    <div class="stat-info">
+                        <h3>42</h3>
+                        <p>Pending Donations</p>
+                    </div>
+                </div>
+                
+                <div class="card stat-card">
+                    <div class="stat-icon secondary-icon">🛒</div>
+                    <div class="stat-info">
+                        <h3>156</h3>
+                        <p>Items Received</p>
+                    </div>
+                </div>
+                
+                <div class="card stat-card">
+                    <div class="stat-icon info-icon">🏢</div>
+                    <div class="stat-info">
+                        <h3>18</h3>
+                        <p>Active Donors</p>
+                    </div>
+                </div>
+                
+                <div class="card stat-card">
+                    <div class="stat-icon success-icon">👨‍👩‍👧‍👦</div>
+                    <div class="stat-info">
+                        <h3>237</h3>
+                        <p>People Served</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Upcoming Donations -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Upcoming Donations</h3>
+                    <span class="card-action">View All</span>
+                </div>
+                
+                <div class="table-container">
+                    <table>
                         <thead>
                             <tr>
+                                <th>Donor</th>
+                                <th>Items</th>
                                 <th>Date</th>
-                                <th>Food Type</th>
-                                <th>Quantity</th>
-                                <th>Recipient</th>
+                                <th>Time</th>
                                 <th>Status</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Apr 12, 2025</td>
+                                <td>Fresh Harvest Market</td>
+                                <td>Fresh Produce (20kg)</td>
+                                <td>Apr 22, 2025</td>
+                                <td>9:30 AM</td>
+                                <td><span class="status status-pending">Pending</span></td>
                                 <td>
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <i class="fas fa-carrot" style="color: #FF8F00;"></i>
-                                        Fresh Produce
-                                    </div>
+                                    <span class="action-btn">✓</span>
+                                    <span class="action-btn">✕</span>
+                                    <span class="action-btn">📅</span>
                                 </td>
-                                <td>25 lbs</td>
-                                <td>Community Kitchen</td>
-                                <td><span class="status completed">Completed</span></td>
                             </tr>
                             <tr>
-                                <td>Apr 10, 2025</td>
+                                <td>Baker's Delight</td>
+                                <td>Bread & Pastries (15 units)</td>
+                                <td>Apr 21, 2025</td>
+                                <td>4:00 PM</td>
+                                <td><span class="status status-ready">Ready for Pickup</span></td>
                                 <td>
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <i class="fas fa-bread-slice" style="color: #FF8F00;"></i>
-                                        Baked Goods
-                                    </div>
+                                    <span class="action-btn">✓</span>
+                                    <span class="action-btn">✕</span>
+                                    <span class="action-btn">📅</span>
                                 </td>
-                                <td>15 lbs</td>
-                                <td>Hope Shelter</td>
-                                <td><span class="status completed">Completed</span></td>
                             </tr>
                             <tr>
-                                <td>Apr 8, 2025</td>
+                                <td>Green Earth Farm</td>
+                                <td>Mixed Vegetables (30kg)</td>
+                                <td>Apr 23, 2025</td>
+                                <td>10:00 AM</td>
+                                <td><span class="status status-pending">Pending</span></td>
                                 <td>
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <i class="fas fa-utensils" style="color: #FF8F00;"></i>
-                                        Prepared Meals
-                                    </div>
+                                    <span class="action-btn">✓</span>
+                                    <span class="action-btn">✕</span>
+                                    <span class="action-btn">📅</span>
                                 </td>
-                                <td>20 meals</td>
-                                <td>Senior Center</td>
-                                <td><span class="status completed">Completed</span></td>
                             </tr>
                             <tr>
-                                <td>Apr 5, 2025</td>
+                                <td>City Supermarket</td>
+                                <td>Canned Goods (40 units)</td>
+                                <td>Apr 21, 2025</td>
+                                <td>2:15 PM</td>
+                                <td><span class="status status-delivered">Delivered</span></td>
                                 <td>
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <i class="fas fa-cheese" style="color: #FF8F00;"></i>
-                                        Dairy Products
-                                    </div>
+                                    <span class="action-btn">✓</span>
+                                    <span class="action-btn">✕</span>
+                                    <span class="action-btn">📅</span>
                                 </td>
-                                <td>18 lbs</td>
-                                <td>Food Pantry</td>
-                                <td><span class="status completed">Completed</span></td>
                             </tr>
                             <tr>
-                                <td>Apr 1, 2025</td>
+                                <td>Organic Delights</td>
+                                <td>Fruits & Dairy (15kg)</td>
+                                <td>Apr 24, 2025</td>
+                                <td>11:00 AM</td>
+                                <td><span class="status status-pending">Pending</span></td>
                                 <td>
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <i class="fas fa-shopping-basket" style="color: #FF8F00;"></i>
-                                        Mixed Items
-                                    </div>
+                                    <span class="action-btn">✓</span>
+                                    <span class="action-btn">✕</span>
+                                    <span class="action-btn">📅</span>
                                 </td>
-                                <td>35 lbs</td>
-                                <td>Family Shelter</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Two-column layout -->
+            <div class="grid-2">
+                <!-- Calendar -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Pickup Schedule</h3>
+                        <span class="card-action">Add Event</span>
+                    </div>
+                    
+                    <div class="calendar-header">
+                        <div class="calendar-month">April 2025</div>
+                        <div class="calendar-navigation">
+                            <button class="calendar-btn">◀</button>
+                            <button class="calendar-btn">Today</button>
+                            <button class="calendar-btn">▶</button>
+                        </div>
+                    </div>
+                    
+                    <div class="calendar">
+                        <div class="calendar-day header">Sun</div>
+                        <div class="calendar-day header">Mon</div>
+                        <div class="calendar-day header">Tue</div>
+                        <div class="calendar-day header">Wed</div>
+                        <div class="calendar-day header">Thu</div>
+                        <div class="calendar-day header">Fri</div>
+                        <div class="calendar-day header">Sat</div>
+                        
+                        <div class="calendar-day">30</div>
+                        <div class="calendar-day">31</div>
+                        <div class="calendar-day">1</div>
+                        <div class="calendar-day">2</div>
+                        <div class="calendar-day">3</div>
+                        <div class="calendar-day has-event">4</div>
+                        <div class="calendar-day">5</div>
+                        
+                        <div class="calendar-day">6</div>
+                        <div class="calendar-day has-event">7</div>
+                        <div class="calendar-day">8</div>
+                        <div class="calendar-day">9</div>
+                        <div class="calendar-day has-event">10</div>
+                        <div class="calendar-day">11</div>
+                        <div class="calendar-day">12</div>
+                        
+                        <div class="calendar-day">13</div>
+                        <div class="calendar-day">14</div>
+                        <div class="calendar-day has-event">15</div>
+                        <div class="calendar-day">16</div>
+                        <div class="calendar-day">17</div>
+                        <div class="calendar-day has-event">18</div>
+                        <div class="calendar-day">19</div>
+                        
+                        <div class="calendar-day">20</div>
+                        <div class="calendar-day today">21</div>
+                        <div class="calendar-day has-event">22</div>
+                        <div class="calendar-day has-event">23</div>
+                        <div class="calendar-day">24</div>
+                        <div class="calendar-day">25</div>
+                        <div class="calendar-day">26</div>
+                        
+                        <div class="calendar-day">27</div>
+                        <div class="calendar-day">28</div>
+                        <div class="calendar-day">29</div>
+                        <div class="calendar-day">30</div>
+                        <div class="calendar-day">1</div>
+                        <div class="calendar-day">2</div>
+                        <div class="calendar-day">3</div>
+                    </div>
+                </div>
+                
+                <!-- Activity Feed -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Recent Activity</h3>
+                        <span class="card-action">View All</span>
+                    </div>
+                    
+                    <div class="activity-feed">
+                        <div class="activity-item">
+                            <div class="activity-icon">📦</div>
+                            <div class="activity-content">
+                                <h4>Donation Received</h4>
+                                <p>City Supermarket - Canned Goods (40 units)</p>
+                                <span class="activity-time">Today, 2:15 PM</span>
+                            </div>
+                            <div class="activity-line"></div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-icon">✉️</div>
+                            <div class="activity-content">
+                                <h4>New Message</h4>
+                                <p>Baker's Delight confirmed your pickup for today</p>
+                                <span class="activity-time">Today, 10:30 AM</span>
+                            </div>
+                            <div class="activity-line"></div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-icon">📝</div>
+                            <div class="activity-content">
+                                <h4>Request Updated</h4>
+                                <p>Your request for dairy products was updated</p>
+                                <span class="activity-time">Yesterday, 4:45 PM</span>
+                            </div>
+                            <div class="activity-line"></div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-icon">🏢</div>
+                            <div class="activity-content">
+                                <h4>New Donor</h4>
+                                <p>Organic Delights has been added to your donor list</p>
+                                <span class="activity-time">Apr 19, 2025</span>
+                            </div>
+                            <div class="activity-line"></div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-icon">📦</div>
+                            <div class="activity-content">
+                                <h4>Donation Received</h4>
+                                <p>Fresh Harvest Market - Mixed Produce (25kg)</p>
+                                <span class="activity-time">Apr 18, 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Inventory Status -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Current Inventory Status</h3>
+                    <span class="card-action">Manage Inventory</span>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Items</th>
+                                <th>Quantity</th>
+                                <th>Status</th>
+                                <th>Expiry</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Fresh Produce</td>
+                                <td>Vegetables, Fruits</td>
+                                <td>45 kg</td>
+                                <td><span class="status status-delivered">Sufficient</span></td>
+                                <td>Apr 25, 2025</td>
+                                <td>
+                                    <span class="action-btn">📊</span>
+                                    <span class="action-btn">✏️</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Canned Goods</td>
+                                <td>Beans, Corn, Soup</td>
+                                <td>82 units</td>
+                                <td><span class="status status-delivered">Sufficient</span></td>
+                                <td>Dec 2025</td>
+                                <td>
+                                    <span class="action-btn">📊</span>
+                                    <span class="action-btn">✏️</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Bread & Bakery</td>
+                                <td>Bread, Rolls, Pastries</td>
+                                <td>12 units</td>
+                                <td><span class="status status-pending">Low</span></td>
+                                <td>Apr 22, 2025</td>
+                                <td>
+                                    <span class="action-btn">📊</span>
+                                    <span class="action-btn">✏️</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Dairy Products</td>
+                                <td>Milk, Cheese, Yogurt</td>
+                                <td>8 kg</td>
+                                <td><span class="status status-pending">Low</span></td>
+                                <td>Apr 24, 2025</td>
+                                <td>
+                                    <span class="action-btn">📊</span>
+                                    <span class="action-btn">✏️</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Grains</td>
+                                <td>Rice, Pasta, Cereal</td>
+                                <td>35 kg</td>
+                                <td><span class="status status-delivered">Sufficient</span></td>
+                                <td>Sep 2025</td>
+                                <td>
+                                    <span class="action-btn">📊</span>
+                                    <span class="action-btn">✏️</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

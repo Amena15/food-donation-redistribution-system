@@ -1,913 +1,163 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recipient Dashboard | Share Food, Share Hope</title>
-    <style>
-        :root {
-            --primary: #0a6e31;
-            --primary-light: #128a3e;
-            --secondary: #f8b042;
-            --light: #f5f5f5;
-            --dark: #333333;
-            --danger: #dc3545;
-            --success: #28a745;
-            --info: #17a2b8;
-            --gray: #6c757d;
-            --white: #ffffff;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background-color: #f0f2f5;
-            color: var(--dark);
-        }
-        
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-        
-        .dashboard {
-            display: flex;
-            min-height: 100vh;
-        }
-        
-        /* Sidebar */
-        .sidebar {
-            width: 250px;
-            background-color: var(--primary);
-            color: var(--white);
-            padding: 20px 0;
-            display: flex;
-            flex-direction: column;
-            transition: all 0.3s ease;
-        }
-        
-        .sidebar-header {
-            padding: 0 20px 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .sidebar-header h2 {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-        
-        .sidebar-header p {
-            font-size: 14px;
-            opacity: 0.8;
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            padding: 0 20px 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 20px;
-        }
-        
-        .user-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: var(--white);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 10px;
-            color: var(--primary);
-            font-weight: bold;
-            font-size: 20px;
-        }
-        
-        .user-details h3 {
-            font-size: 16px;
-            margin-bottom: 4px;
-        }
-        
-        .user-details p {
-            font-size: 12px;
-            opacity: 0.8;
-        }
-        
-        .menu {
-            flex-grow: 1;
-        }
-        
-        .menu-item {
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-        
-        .menu-item.active {
-            background-color: var(--primary-light);
-            border-left: 4px solid var(--secondary);
-        }
-        
-        .menu-item:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        
-        .menu-icon {
-            margin-right: 15px;
-            width: 20px;
-            text-align: center;
-        }
-        
-        .sidebar-footer {
-            padding: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 12px;
-            text-align: center;
-        }
-        
-        /* Main Content */
-        .main-content {
-            flex-grow: 1;
-            padding: 30px;
-            overflow-y: auto;
-        }
-        
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-        
-        .header-title h1 {
-            font-size: 28px;
-            color: var(--primary);
-            margin-bottom: 5px;
-        }
-        
-        .header-title p {
-            color: var(--gray);
-            font-size: 14px;
-        }
-        
-        .notifications {
-            position: relative;
-            margin-right: 20px;
-        }
-        
-        .badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background-color: var(--danger);
-            color: var(--white);
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-        }
-        
-        .header-actions {
-            display: flex;
-            align-items: center;
-        }
-        
-        .btn {
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary {
-            background-color: var(--primary);
-            color: var(--white);
-            border: none;
-        }
-        
-        .btn-primary:hover {
-            background-color: var(--primary-light);
-        }
-        
-        .btn-icon {
-            margin-right: 10px;
-        }
-        
-        /* Cards */
-        .cards-row {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .card {
-            background-color: var(--white);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: var(--shadow);
-        }
-        
-        .stat-card {
-            display: flex;
-            align-items: center;
-        }
-        
-        .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            font-size: 24px;
-        }
-        
-        .primary-icon {
-            background-color: rgba(10, 110, 49, 0.1);
-            color: var(--primary);
-        }
-        
-        .secondary-icon {
-            background-color: rgba(248, 176, 66, 0.1);
-            color: var(--secondary);
-        }
-        
-        .info-icon {
-            background-color: rgba(23, 162, 184, 0.1);
-            color: var(--info);
-        }
-        
-        .success-icon {
-            background-color: rgba(40, 167, 69, 0.1);
-            color: var(--success);
-        }
-        
-        .stat-info h3 {
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-        
-        .stat-info p {
-            color: var(--gray);
-            font-size: 14px;
-        }
-        
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .card-title {
-            font-size: 18px;
-            color: var(--dark);
-        }
-        
-        .card-action {
-            color: var(--primary);
-            font-size: 14px;
-            cursor: pointer;
-        }
-        
-        .card-action:hover {
-            text-decoration: underline;
-        }
-        
-        /* Tables */
-        .table-container {
-            width: 100%;
-            overflow-x: auto;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        thead th {
-            background-color: #f1f1f1;
-            text-align: left;
-            padding: 12px 15px;
-            font-size: 14px;
-            color: var(--gray);
-            border-bottom: 1px solid #ddd;
-        }
-        
-        tbody td {
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            font-size: 14px;
-        }
-        
-        tbody tr:hover {
-            background-color: rgba(10, 110, 49, 0.03);
-        }
-        
-        .status {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-        
-        .status-pending {
-            background-color: rgba(248, 176, 66, 0.1);
-            color: var(--secondary);
-        }
-        
-        .status-delivered {
-            background-color: rgba(40, 167, 69, 0.1);
-            color: var(--success);
-        }
-        
-        .status-ready {
-            background-color: rgba(23, 162, 184, 0.1);
-            color: var(--info);
-        }
-        
-        .action-btn {
-            padding: 5px;
-            cursor: pointer;
-            margin-right: 5px;
-            color: var(--primary);
-        }
-        
-        /* Two-column layout */
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        /* Calendar */
-        .calendar {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 2px;
-        }
-        
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        
-        .calendar-navigation {
-            display: flex;
-            align-items: center;
-        }
-        
-        .calendar-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: var(--primary);
-            padding: 5px;
-        }
-        
-        .calendar-day {
-            text-align: center;
-            background-color: #f9f9f9;
-            padding: 10px 5px;
-            font-size: 13px;
-        }
-        
-        .calendar-day.header {
-            font-weight: bold;
-            background-color: transparent;
-        }
-        
-        .calendar-day.today {
-            background-color: var(--primary);
-            color: white;
-            border-radius: 5px;
-        }
-        
-        .calendar-day.has-event {
-            border-bottom: 3px solid var(--secondary);
-        }
-        
-        /* Activity Feed */
-        .activity-item {
-            display: flex;
-            margin-bottom: 20px;
-            position: relative;
-        }
-        
-        .activity-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: rgba(10, 110, 49, 0.1);
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-        }
-        
-        .activity-content h4 {
-            font-size: 15px;
-            margin-bottom: 5px;
-        }
-        
-        .activity-content p {
-            font-size: 13px;
-            color: var(--gray);
-            margin-bottom: 5px;
-        }
-        
-        .activity-time {
-            font-size: 12px;
-            color: var(--gray);
-        }
-        
-        .activity-line {
-            position: absolute;
-            top: 40px;
-            left: 20px;
-            bottom: -20px;
-            width: 1px;
-            background-color: #ddd;
-            z-index: 0;
-        }
-        
-        .activity-item:last-child .activity-line {
-            display: none;
-        }
-        
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .cards-row {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .grid-2 {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .dashboard {
-                flex-direction: column;
-            }
-            
-            .sidebar {
-                width: 100%;
-                padding: 10px 0;
-            }
-            
-            .sidebar-header {
-                padding: 10px 20px;
-            }
-            
-            .main-content {
-                padding: 20px;
-            }
-            
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .header-actions {
-                margin-top: 15px;
-            }
-            
-            .cards-row {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Recipient Dashboard | Food Donation System</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    body {
+      background-color: #f8fafc;
+    }
+    .sidebar {
+      background-color: #1e3a8a;
+      min-height: 100vh;
+      color: white;
+    }
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      display: block;
+      padding: 10px 15px;
+    }
+    .sidebar a:hover {
+      background-color: #3746a3;
+    }
+    .card-stat {
+      background-color: white;
+      border-left: 4px solid #1e3a8a;
+    }
+    .table thead {
+      background-color: #e2e8f0;
+    }
+  </style>
 </head>
 <body>
-    <div class="dashboard">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <h2>FoodShare</h2>
-                <p>Recipient Dashboard</p>
-            </div>
-            
-            <div class="user-info">
-                <div class="user-avatar">JD</div>
-                <div class="user-details">
-                    <h3>Jane Doe</h3>
-                    <p>Community Kitchen</p>
-                </div>
-            </div>
-            
-            <div class="menu">
-                <div class="menu-item active">
-                    <div class="menu-icon">📊</div>
-                    <div class="menu-text">Dashboard</div>
-                </div>
-                <div class="menu-item">
-                    <div class="menu-icon">📦</div>
-                    <div class="menu-text">Donations</div>
-                </div>
-                <div class="menu-item">
-                    <div class="menu-icon">📅</div>
-                    <div class="menu-text">Schedule</div>
-                </div>
-                <div class="menu-item">
-                    <div class="menu-icon">📝</div>
-                    <div class="menu-text">Requests</div>
-                </div>
-                <div class="menu-item">
-                    <div class="menu-icon">🏢</div>
-                    <div class="menu-text">Donors</div>
-                </div>
-                <div class="menu-item">
-                    <div class="menu-icon">📈</div>
-                    <div class="menu-text">Reports</div>
-                </div>
-                <div class="menu-item">
-                    <div class="menu-icon">⚙️</div>
-                    <div class="menu-text">Settings</div>
-                </div>
-                <div class="menu-item">
-                    <a href="{% url 'foodrecipient:recipient_logout' %}">Logout</a>
-                        <div class="menu-icon">🚪</div>
-                    </a>
-                </div>                
-            </div>
-            
-            <div class="sidebar-footer">
-                <p>© 2025 Share Food, Share Hope</p>
-            </div>
-        </div>
-        
-        <!-- Main Content -->
-        <div class="main-content">
-            <div class="header">
-                <div class="header-title">
-                    <h1>Welcome back, Jane!</h1>
-                    <p>Here's what's happening with your food donations today.</p>
-                </div>
-                
-                <div class="header-actions">
-                    <div class="notifications">
-                        <span>🔔</span>
-                        <span class="badge">3</span>
-                    </div>
-                    <button class="btn btn-primary">
-                        <span class="btn-icon">➕</span>
-                        New Request
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Stats Cards -->
-            <div class="cards-row">
-                <div class="card stat-card">
-                    <div class="stat-icon primary-icon">📦</div>
-                    <div class="stat-info">
-                        <h3>42</h3>
-                        <p>Pending Donations</p>
-                    </div>
-                </div>
-                
-                <div class="card stat-card">
-                    <div class="stat-icon secondary-icon">🛒</div>
-                    <div class="stat-info">
-                        <h3>156</h3>
-                        <p>Items Received</p>
-                    </div>
-                </div>
-                
-                <div class="card stat-card">
-                    <div class="stat-icon info-icon">🏢</div>
-                    <div class="stat-info">
-                        <h3>18</h3>
-                        <p>Active Donors</p>
-                    </div>
-                </div>
-                
-                <div class="card stat-card">
-                    <div class="stat-icon success-icon">👨‍👩‍👧‍👦</div>
-                    <div class="stat-info">
-                        <h3>237</h3>
-                        <p>People Served</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Upcoming Donations -->
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Upcoming Donations</h3>
-                    <span class="card-action">View All</span>
-                </div>
-                
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Donor</th>
-                                <th>Items</th>
-                                <th>Date</th>
-                                <th>Time</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Fresh Harvest Market</td>
-                                <td>Fresh Produce (20kg)</td>
-                                <td>Apr 22, 2025</td>
-                                <td>9:30 AM</td>
-                                <td><span class="status status-pending">Pending</span></td>
-                                <td>
-                                    <span class="action-btn">✓</span>
-                                    <span class="action-btn">✕</span>
-                                    <span class="action-btn">📅</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Baker's Delight</td>
-                                <td>Bread & Pastries (15 units)</td>
-                                <td>Apr 21, 2025</td>
-                                <td>4:00 PM</td>
-                                <td><span class="status status-ready">Ready for Pickup</span></td>
-                                <td>
-                                    <span class="action-btn">✓</span>
-                                    <span class="action-btn">✕</span>
-                                    <span class="action-btn">📅</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Green Earth Farm</td>
-                                <td>Mixed Vegetables (30kg)</td>
-                                <td>Apr 23, 2025</td>
-                                <td>10:00 AM</td>
-                                <td><span class="status status-pending">Pending</span></td>
-                                <td>
-                                    <span class="action-btn">✓</span>
-                                    <span class="action-btn">✕</span>
-                                    <span class="action-btn">📅</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>City Supermarket</td>
-                                <td>Canned Goods (40 units)</td>
-                                <td>Apr 21, 2025</td>
-                                <td>2:15 PM</td>
-                                <td><span class="status status-delivered">Delivered</span></td>
-                                <td>
-                                    <span class="action-btn">✓</span>
-                                    <span class="action-btn">✕</span>
-                                    <span class="action-btn">📅</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Organic Delights</td>
-                                <td>Fruits & Dairy (15kg)</td>
-                                <td>Apr 24, 2025</td>
-                                <td>11:00 AM</td>
-                                <td><span class="status status-pending">Pending</span></td>
-                                <td>
-                                    <span class="action-btn">✓</span>
-                                    <span class="action-btn">✕</span>
-                                    <span class="action-btn">📅</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <!-- Two-column layout -->
-            <div class="grid-2">
-                <!-- Calendar -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Pickup Schedule</h3>
-                        <span class="card-action">Add Event</span>
-                    </div>
-                    
-                    <div class="calendar-header">
-                        <div class="calendar-month">April 2025</div>
-                        <div class="calendar-navigation">
-                            <button class="calendar-btn">◀</button>
-                            <button class="calendar-btn">Today</button>
-                            <button class="calendar-btn">▶</button>
-                        </div>
-                    </div>
-                    
-                    <div class="calendar">
-                        <div class="calendar-day header">Sun</div>
-                        <div class="calendar-day header">Mon</div>
-                        <div class="calendar-day header">Tue</div>
-                        <div class="calendar-day header">Wed</div>
-                        <div class="calendar-day header">Thu</div>
-                        <div class="calendar-day header">Fri</div>
-                        <div class="calendar-day header">Sat</div>
-                        
-                        <div class="calendar-day">30</div>
-                        <div class="calendar-day">31</div>
-                        <div class="calendar-day">1</div>
-                        <div class="calendar-day">2</div>
-                        <div class="calendar-day">3</div>
-                        <div class="calendar-day has-event">4</div>
-                        <div class="calendar-day">5</div>
-                        
-                        <div class="calendar-day">6</div>
-                        <div class="calendar-day has-event">7</div>
-                        <div class="calendar-day">8</div>
-                        <div class="calendar-day">9</div>
-                        <div class="calendar-day has-event">10</div>
-                        <div class="calendar-day">11</div>
-                        <div class="calendar-day">12</div>
-                        
-                        <div class="calendar-day">13</div>
-                        <div class="calendar-day">14</div>
-                        <div class="calendar-day has-event">15</div>
-                        <div class="calendar-day">16</div>
-                        <div class="calendar-day">17</div>
-                        <div class="calendar-day has-event">18</div>
-                        <div class="calendar-day">19</div>
-                        
-                        <div class="calendar-day">20</div>
-                        <div class="calendar-day today">21</div>
-                        <div class="calendar-day has-event">22</div>
-                        <div class="calendar-day has-event">23</div>
-                        <div class="calendar-day">24</div>
-                        <div class="calendar-day">25</div>
-                        <div class="calendar-day">26</div>
-                        
-                        <div class="calendar-day">27</div>
-                        <div class="calendar-day">28</div>
-                        <div class="calendar-day">29</div>
-                        <div class="calendar-day">30</div>
-                        <div class="calendar-day">1</div>
-                        <div class="calendar-day">2</div>
-                        <div class="calendar-day">3</div>
-                    </div>
-                </div>
-                
-                <!-- Activity Feed -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Recent Activity</h3>
-                        <span class="card-action">View All</span>
-                    </div>
-                    
-                    <div class="activity-feed">
-                        <div class="activity-item">
-                            <div class="activity-icon">📦</div>
-                            <div class="activity-content">
-                                <h4>Donation Received</h4>
-                                <p>City Supermarket - Canned Goods (40 units)</p>
-                                <span class="activity-time">Today, 2:15 PM</span>
-                            </div>
-                            <div class="activity-line"></div>
-                        </div>
-                        
-                        <div class="activity-item">
-                            <div class="activity-icon">✉️</div>
-                            <div class="activity-content">
-                                <h4>New Message</h4>
-                                <p>Baker's Delight confirmed your pickup for today</p>
-                                <span class="activity-time">Today, 10:30 AM</span>
-                            </div>
-                            <div class="activity-line"></div>
-                        </div>
-                        
-                        <div class="activity-item">
-                            <div class="activity-icon">📝</div>
-                            <div class="activity-content">
-                                <h4>Request Updated</h4>
-                                <p>Your request for dairy products was updated</p>
-                                <span class="activity-time">Yesterday, 4:45 PM</span>
-                            </div>
-                            <div class="activity-line"></div>
-                        </div>
-                        
-                        <div class="activity-item">
-                            <div class="activity-icon">🏢</div>
-                            <div class="activity-content">
-                                <h4>New Donor</h4>
-                                <p>Organic Delights has been added to your donor list</p>
-                                <span class="activity-time">Apr 19, 2025</span>
-                            </div>
-                            <div class="activity-line"></div>
-                        </div>
-                        
-                        <div class="activity-item">
-                            <div class="activity-icon">📦</div>
-                            <div class="activity-content">
-                                <h4>Donation Received</h4>
-                                <p>Fresh Harvest Market - Mixed Produce (25kg)</p>
-                                <span class="activity-time">Apr 18, 2025</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Inventory Status -->
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Current Inventory Status</h3>
-                    <span class="card-action">Manage Inventory</span>
-                </div>
-                
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Category</th>
-                                <th>Items</th>
-                                <th>Quantity</th>
-                                <th>Status</th>
-                                <th>Expiry</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Fresh Produce</td>
-                                <td>Vegetables, Fruits</td>
-                                <td>45 kg</td>
-                                <td><span class="status status-delivered">Sufficient</span></td>
-                                <td>Apr 25, 2025</td>
-                                <td>
-                                    <span class="action-btn">📊</span>
-                                    <span class="action-btn">✏️</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Canned Goods</td>
-                                <td>Beans, Corn, Soup</td>
-                                <td>82 units</td>
-                                <td><span class="status status-delivered">Sufficient</span></td>
-                                <td>Dec 2025</td>
-                                <td>
-                                    <span class="action-btn">📊</span>
-                                    <span class="action-btn">✏️</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Bread & Bakery</td>
-                                <td>Bread, Rolls, Pastries</td>
-                                <td>12 units</td>
-                                <td><span class="status status-pending">Low</span></td>
-                                <td>Apr 22, 2025</td>
-                                <td>
-                                    <span class="action-btn">📊</span>
-                                    <span class="action-btn">✏️</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Dairy Products</td>
-                                <td>Milk, Cheese, Yogurt</td>
-                                <td>8 kg</td>
-                                <td><span class="status status-pending">Low</span></td>
-                                <td>Apr 24, 2025</td>
-                                <td>
-                                    <span class="action-btn">📊</span>
-                                    <span class="action-btn">✏️</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Grains</td>
-                                <td>Rice, Pasta, Cereal</td>
-                                <td>35 kg</td>
-                                <td><span class="status status-delivered">Sufficient</span></td>
-                                <td>Sep 2025</td>
-                                <td>
-                                    <span class="action-btn">📊</span>
-                                    <span class="action-btn">✏️</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-2 sidebar py-4">
+      <h4 class="text-center mb-4">Recipient Panel</h4>
+      <a href="#">Dashboard</a>
+      <a href="#">Available Food</a>
+      <a href="#">My Requests</a>
+      <a href="#">Pickup Schedule</a>
+      <a href="#">Notifications</a>
+      <a href="#">Feedback</a>
+      <a href="{% url 'foodrecipient:recipient_logout' %}">Logout</a>
     </div>
+
+    <!-- Main Content -->
+    <div class="col-md-10 p-4">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>Welcome back, Sarah!</h3>
+        <a href="#" class="btn btn-primary">New Request</a>
+      </div>
+
+      <!-- Stats -->
+      <div class="row g-3 mb-4">
+        <div class="col-md-3">
+          <div class="card card-stat p-3 shadow-sm">
+            <h6>Pending Requests</h6>
+            <h4>3</h4>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card card-stat p-3 shadow-sm">
+            <h6>Approved Requests</h6>
+            <h4>6</h4>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card card-stat p-3 shadow-sm">
+            <h6>Completed Pickups</h6>
+            <h4>4</h4>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card card-stat p-3 shadow-sm">
+            <h6>Notifications</h6>
+            <h4>2</h4>
+          </div>
+        </div>
+      </div>
+
+      <!-- Available Food Table -->
+      <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <strong>Available Food Items</strong>
+        </div>
+        <div class="card-body p-0">
+          <table class="table mb-0">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Expiry Date</th>
+                <th>Donor</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Bread Loaves</td>
+                <td>10</td>
+                <td>2025-04-29</td>
+                <td>Donor A</td>
+                <td><button class="btn btn-sm btn-success">Request</button></td>
+              </tr>
+              <tr>
+                <td>Milk Cartons</td>
+                <td>5</td>
+                <td>2025-04-24</td>
+                <td>Donor B</td>
+                <td><button class="btn btn-sm btn-success">Request</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- My Requests -->
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <strong>My Requests</strong>
+        </div>
+        <div class="card-body p-0">
+          <table class="table mb-0">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Date Requested</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Vegetables</td>
+                <td>2025-04-20</td>
+                <td><span class="badge bg-warning text-dark">Pending</span></td>
+              </tr>
+              <tr>
+                <td>Rice Bags</td>
+                <td>2025-04-15</td>
+                <td><span class="badge bg-success">Fulfilled</span></td>
+              </tr>
+              <tr>
+                <td>Fruits</td>
+                <td>2025-04-12</td>
+                <td><span class="badge bg-danger">Rejected</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
