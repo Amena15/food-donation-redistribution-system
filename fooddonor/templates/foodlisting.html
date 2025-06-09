@@ -1,153 +1,286 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Food Listing - Share Food, Share Hope Donation</title>
-    <!-- Google Fonts for a clean, modern look -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Roboto', sans-serif;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Food Listings - Share Food, Share Hope</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
 
-        body {
-            background-color: #f4f4f9;
-            color: #333;
-            padding: 20px;
-            line-height: 1.6;
-        }
+    body {
+      background-color: #f4f4f9;
+      color: #333;
+    }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #052f14;
+      padding: 15px 30px;
+      color: white;
+    }
 
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      margin: 0 10px;
+      font-weight: bold;
+    }
 
-        .header h1 {
-            font-family: 'Poppins', sans-serif;
-            font-size: 36px;
-            color: #0a6e31;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
+    .navbar a:hover {
+      text-decoration: underline;
+    }
 
-        .header p {
-            font-size: 18px;
-            color: #666;
-        }
+    .navbar .logo {
+      font-size: 24px;
+      font-weight: bold;
+    }
 
-        .food-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 20px;
+    }
 
-        .food-card {
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            width: 30%;
-            padding: 15px;
-            text-align: center;
-            transition: box-shadow 0.3s ease;
-        }
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
 
-        .food-card:hover {
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
+    .header h1 {
+      font-size: 36px;
+      color: #0a6e31;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
 
-        .food-card img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
+    .header p {
+      font-size: 18px;
+      color: #666;
+    }
 
-        .food-card h3 {
-            font-size: 20px;
-            color: #0a6e31;
-            margin-bottom: 10px;
-        }
+    .food-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      justify-content: center;
+    }
 
-        .food-card p {
-            font-size: 16px;
-            color: #555;
-            margin-bottom: 10px;
-        }
+    .food-card {
+      background: #fff;
+      border-radius: 12px;
+      width: 30%;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
 
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #0a6e31;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
+    .food-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
 
-        .btn:hover {
-            background-color: #0d8f45;
-        }
+    .food-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
 
-        @media (max-width: 768px) {
-            .food-card {
-                width: 48%;
-            }
-        }
+    .food-card h3 {
+      font-size: 22px;
+      color: #0a6e31;
+      margin-bottom: 10px;
+    }
 
-        @media (max-width: 480px) {
-            .food-card {
-                width: 100%;
-            }
-        }
-    </style>
+    .food-card p {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 15px;
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 10px;
+    }
+
+
+    .btn {
+      display: inline-block;
+      padding: 10px 25px;
+      background-color: transparent;
+      color: #0a6e31;
+      border: 2px solid #0a6e31;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #0a6e31;
+      color: white;
+    }
+
+    .btn-delete {
+        border-color: #c0392b;
+        color: #c0392b;
+        margin-left: 10px;
+    }
+
+    .btn-delete:hover {
+    background-color: #c0392b;
+    color: white;
+    }
+
+    footer {
+      background-color: #f5f5f5;
+      padding: 20px;
+      text-align: center;
+      font-size: 14px;
+      color: #666;
+      margin-top: 60px;
+    }
+
+    @media (max-width: 768px) {
+      .food-card {
+        width: 45%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .food-card {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header">
-            <h1>Available Food Listings</h1>
-            <p>Explore and request food items available for donation</p>
-        </div>
+  <header class="navbar">
+    <div class="logo">Share Food, Share Hope</div>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">About Us</a>
+      <a href="#">Contact Us</a>
+      <a href="#">Dashboard</a>
+      <a href="{% url 'fooddonor:chooselogin' %}">Logout</a>
+    </nav>
+  </header>
 
-        <div class="food-list">
-            <!-- Food Card 1 -->
-            <div class="food-card">
-                <img src="https://images.unsplash.com/photo-1589187150065-2b20a8a62f68" alt="Fresh Apples">
-                <h3>Fresh Apples</h3>
-                <p>Quantity: 20kg | Expires: 2023-08-20</p>
-                <a href="#" class="btn">Request Food</a>
-            </div>
+  <div class="container">
+    <div class="header">
+      <h1>Your Listed Food Items</h1>
+      <p>Manage and update the food items you've listed for donation</p>
+    </div>
 
-            <!-- Food Card 2 -->
-            <div class="food-card">
-                <img src="https://images.unsplash.com/photo-1574760484770-bc348ba03efa" alt="Whole Wheat Bread">
-                <h3>Whole Wheat Bread</h3>
-                <p>Quantity: 15 Loaves | Expires: 2023-08-15</p>
-                <a href="#" class="btn">Request Food</a>
-            </div>
-
-            <!-- Food Card 3 -->
-            <div class="food-card">
-                <img src="https://images.unsplash.com/photo-1553729784-e91953dec042" alt="Pasta Packages">
-                <h3>Pasta Packages</h3>
-                <p>Quantity: 10 Packs | Expires: 2023-09-10</p>
-                <a href="#" class="btn">Request Food</a>
-            </div>
-
-            <!-- Add more food cards as needed -->
+    <div class="food-list">
+      <div class="food-card">
+        <img src="https://images.unsplash.com/photo-1589187150065-2b20a8a62f68" alt="Fresh Apples">
+        <h3>Fresh Apples</h3>
+        <p>Quantity: 20kg | Expires: 2023-08-20</p>
+        <div class="button-group">
+            <a href="#" class="btn">Edit Listing</a>
+            <a href="#" class="btn btn-delete">Delete Listing</a>
         </div>
     </div>
+
+      <div class="food-card">
+        <img src="https://images.unsplash.com/photo-1574760484770-bc348ba03efa" alt="Whole Wheat Bread">
+        <h3>Whole Wheat Bread</h3>
+        <p>Quantity: 15 Loaves | Expires: 2023-08-15</p>
+        <div class="button-group">
+            <a href="#" class="btn">Edit Listing</a>
+            <a href="#" class="btn btn-delete">Delete Listing</a>
+        </div>
+      </div>
+
+      <div class="food-card">
+        <img src="https://images.unsplash.com/photo-1553729784-e91953dec042" alt="Pasta Packages">
+        <h3>Pasta Packages</h3>
+        <p>Quantity: 10 Packs | Expires: 2023-09-10</p>
+        <div class="button-group">
+            <a href="#" class="btn">Edit Listing</a>
+            <a href="#" class="btn btn-delete">Delete Listing</a>
+        </div>
+      </div>
+
+      <div class="food-card">
+        <img src="https://images.unsplash.com/photo-1567306226416-28f0efdc88ce" alt="Bananas">
+        <h3>Bananas</h3>
+        <p>Quantity: 12 Bunches | Expires: 2023-08-22</p>
+        <div class="button-group">
+            <a href="#" class="btn">Edit Listing</a>
+            <a href="#" class="btn btn-delete">Delete Listing</a>
+        </div>
+      </div>
+
+      <div class="food-card">
+        <img src="https://images.unsplash.com/photo-1623061618897-ff1dcdbcf54d" alt="Canned Beans">
+        <h3>Canned Beans</h3>
+        <p>Quantity: 30 Cans | Expires: 2024-01-01</p>
+        <div class="button-group">
+            <a href="#" class="btn">Edit Listing</a>
+            <a href="#" class="btn btn-delete">Delete Listing</a>
+        </div>
+      </div>
+
+      <div class="food-card">
+        <img src="https://images.unsplash.com/photo-1585238342028-5d4b75ee0c74" alt="Milk Cartons">
+        <h3>Milk Cartons</h3>
+        <p>Quantity: 25 Cartons | Expires: 2023-08-18</p>
+        <div class="button-group">
+            <a href="#" class="btn">Edit Listing</a>
+            <a href="#" class="btn btn-delete">Delete Listing</a>
+        </div>
+      </div>
+
+      <div class="food-card">
+        <img src="https://images.unsplash.com/photo-1604909053729-8db90d70d4b2" alt="Carrots">
+        <h3>Fresh Carrots</h3>
+        <p>Quantity: 10kg | Expires: 2023-08-25</p>
+        <div class="button-group">
+            <a href="#" class="btn">Edit Listing</a>
+            <a href="#" class="btn btn-delete">Delete Listing</a>
+        </div>
+      </div>
+
+      <div class="food-card">
+        <img src="https://images.unsplash.com/photo-1603052875457-5011c47fd3cc" alt="Bottled Water">
+        <h3>Bottled Water</h3>
+        <p>Quantity: 100 Bottles | Expires: 2024-06-01</p>
+        <div class="button-group">
+            <a href="#" class="btn">Edit Listing</a>
+            <a href="#" class="btn btn-delete">Delete Listing</a>
+        </div>
+      </div>
+
+      <div class="food-card">
+        <img src="https://images.unsplash.com/photo-1576866209830-c2e2da517a9e" alt="Rice Bags">
+        <h3>Rice Bags</h3>
+        <p>Quantity: 50kg | Expires: 2024-03-15</p>
+        <div class="button-group">
+            <a href="#" class="btn">Edit Listing</a>
+            <a href="#" class="btn btn-delete">Delete Listing</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Share Food, Share Hope Donation</p>
+  </footer>
 
 </body>
 </html>
