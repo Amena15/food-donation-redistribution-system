@@ -2,18 +2,18 @@
 Food Donation & Redistribution System is a web-based platform developed using the Django framework to tackle the growing issues of food wastage and food insecurity in Malaysia. The system facilitates the complete food donation lifecycle by connecting food donors with recipients and empowering administrators with intelligent tools to manage and optimize redistribution efforts.
 
 ## 🧠 Key Features
-- 📝 **Donor Module**: List surplus food with quantity, expiry, and location.
-- 🍽️ **Recipient Module**: Browse available items, request food, and track status.
-- 📊 **Admin Module**: Manage users, approve/reject requests, generate reports.
-- 🔄 **Live Updates**: Observer Pattern for real-time stock and expiry tracking.
-- 🧩 **Modular Architecture**: Built with 5 key design patterns for flexibility:
+- **Donor Module**: List surplus food with quantity, expiry, and location.
+- **Recipient Module**: Browse available items, request food, and track status.
+- **Admin Module**: Manage users, approve/reject requests, generate reports.
+- **Live Updates**: Observer Pattern for real-time stock and expiry tracking.
+- **Modular Architecture**: Built with 5 key design patterns for flexibility:
   - Factory Pattern – Role-based user creation
   - Strategy Pattern – Customizable food-matching algorithms
   - Observer Pattern – Automated updates for food status
   - Singleton Pattern – Centralized app settings
   - Decorator Pattern – Scalable, pluggable notification system
 
-## ✨ Use Cases
+## 🛠️ Use Cases
 ### Food Donor
 - Register an account  
 - Log in to the system  
