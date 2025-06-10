@@ -24,6 +24,19 @@ def register_view(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
+            # Create Profile instance linked to user
+            phone_number = form.cleaned_data.get('phone_number')
+            role = form.cleaned_data.get('role')
+            location = form.cleaned_data.get('location')
+            needs_description = form.cleaned_data.get('needs_description')
+            from .models import Profile
+            Profile.objects.create(
+                user=user,
+                phone_number=phone_number,
+                role=role,
+                location=location,
+                needs_description=needs_description
+            )
             login(request, user)
             return redirect('fooddonor:donor_dashboard')  # Correct redirection after successful signup
     else:
@@ -69,12 +82,14 @@ def donor_login(request):
         user = form.get_user()
         login(request, user)
 
-        # Redirect to 'next' if it exists
+        # ✅ Get the original destination if it exists
         next_url = request.POST.get('next')
+
+        # ✅ If next exists and is safe, go there
         if next_url:
             return redirect(next_url)
 
-        # Else, redirect by role
+        # Otherwise, role-based redirection
         if hasattr(user, 'profile'):
             role = user.profile.role
             if role == 'donor':
@@ -84,9 +99,10 @@ def donor_login(request):
             elif role == 'admin':
                 return redirect('foodadmin:admin_dashboard')
 
-        return redirect('fooddonor:home')  # Fallback
+        return redirect('fooddonor:home')  # fallback
 
     return render(request, 'donorlogin.html', {'form': form})
+
 
 
 def recipient_login(request):
@@ -400,4 +416,3 @@ def update_request_status(request, pk, status):
     
     messages.success(request, f"Request has been {status} successfully.")
     return redirect('donation:request_detail', pk=donation_request.pk)
-
