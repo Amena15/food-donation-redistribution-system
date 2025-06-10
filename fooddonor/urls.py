@@ -3,6 +3,8 @@ from django.contrib import admin
 from django.urls import path, include
 from . import views
 from django.contrib.auth import views as auth_views
+from django.urls import reverse_lazy
+LOGIN_URL = reverse_lazy('donorlogin')
 
 app_name = 'fooddonor'
 
@@ -30,7 +32,6 @@ urlpatterns = [
     # Donation Management URLs
     #path('donations/request/<int:donation_id>/', views.request_donation, name='request_donation'),
     #path('donations/manage/<int:donation_id>/', views.manage_requests, name='manage_requests'),
-    #path('requests/approve/<int:request_id>/', views.approve_request, name='approve_request'),
 
     # Donation listing URLs
     #path('donations/', views.donation_list, name='donation_list'),
@@ -43,5 +44,6 @@ urlpatterns = [
     #path('requests/', views.request_list, name='request_list'),
     #path('requests/<int:pk>/', views.request_detail, name='request_detail'),
     #path('requests/<int:pk>/status/<str:status>/', views.update_request_status, name='update_request_status'),
+    
     
 ]

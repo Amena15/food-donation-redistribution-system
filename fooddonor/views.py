@@ -9,6 +9,11 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django import forms
 from django.contrib.auth import logout as django_logout
 from django.urls import reverse
+from django.db.models import Sum, Count
+from datetime import date
+from django.db.models.functions import TruncMonth
+from django.utils.http import url_has_allowed_host_and_scheme
+from django.conf import settings
 
 
 def home(request):
@@ -58,13 +63,31 @@ def choose_login(request):
         return render(request, 'chooselogin.html')
 
 def donor_login(request):
-    form = AuthenticationForm()
-    if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
-        if form.is_valid():
-            # login user
-            return redirect('dashboard')
+    form = AuthenticationForm(request, data=request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        user = form.get_user()
+        login(request, user)
+
+        # Redirect to 'next' if it exists
+        next_url = request.POST.get('next')
+        if next_url:
+            return redirect(next_url)
+
+        # Else, redirect by role
+        if hasattr(user, 'profile'):
+            role = user.profile.role
+            if role == 'donor':
+                return redirect('fooddonor:donor_dashboard')
+            elif role == 'recipient':
+                return redirect('foodrecipient:recipient_dashboard')
+            elif role == 'admin':
+                return redirect('foodadmin:admin_dashboard')
+
+        return redirect('fooddonor:home')  # Fallback
+
     return render(request, 'donorlogin.html', {'form': form})
+
 
 def recipient_login(request):
     """
@@ -106,20 +129,89 @@ def clean_username(self):
     return username
 
 
-
-def logout(request):
-    django_logout(request)
-    return redirect('fooddonor:home')  # or 'home' or wherever you want to send the user after logout
-
-def donor_dashboard(request):
-    return render(request, 'donordashboard.html')
-
 # Helper functions for role checks
 def is_donor(user):
     try:
         return user.profile.role == 'donor'
     except Profile.DoesNotExist:
         return False
+
+def logout(request):
+    django_logout(request)
+    return redirect('fooddonor:home')  # or 'home' or wherever you want to send the user after logout
+
+
+@login_required
+@user_passes_test(is_donor)
+def donor_dashboard(request):
+    profile = request.user.profile
+    user = request.user
+
+    # 1. Active Listings
+    active_listings = FoodDonation.objects.filter(donor=profile, status='available')
+
+    # 2. Total Donated (only delivered donations)
+    total_donated = FoodDonation.objects.filter(
+        donor=profile,
+        status='delivered'
+    ).aggregate(total=Sum('quantity'))['total'] or 0
+
+    # 3. Upcoming Pickups
+    upcoming_pickups = DonationRequest.objects.filter(
+        donation__donor=profile,
+        status='approved',
+        donation__expiry_date__gte=date.today()
+    ).order_by('donation__expiry_date')
+
+    # 4. People Impacted (e.g. 1 kg = ~2.5 meals)
+    people_impacted = round(total_donated * 2.5)
+
+    # 5. For Tables Below:
+    monthly_donated = (
+        FoodDonation.objects.filter(donor=profile, status='delivered')
+        .annotate(month=TruncMonth('created_at'))
+        .values('month')
+        .annotate(total=Sum('quantity'))
+        .order_by('month')
+    )
+
+    donated_by_category = (
+        FoodDonation.objects.filter(donor=profile, status='delivered')
+        .values('title')
+        .annotate(total=Sum('quantity'))
+        .order_by('-total')
+    )
+
+    impact_stats = []
+    for entry in monthly_donated:
+        meals = round(entry['total'] * 2.5)
+        beneficiaries = round(meals / 2.0)  # ~2 meals per person
+        impact_stats.append({
+            'month': entry['month'].strftime("%b %Y"),
+            'meals': meals,
+            'beneficiaries': beneficiaries,
+        })
+
+    context = {
+        'active_listings': active_listings.count(),
+        'active_listings_data': active_listings,
+        'total_donated_kg': total_donated,
+        'upcoming_pickups': upcoming_pickups,
+        'people_impacted': people_impacted,
+        'total_donated_monthly': monthly_donated,
+        'donated_by_category': donated_by_category,
+        'impact_stats': impact_stats,
+        'user_full_name': user.get_full_name() or user.username,
+        'user_first_name': user.first_name or user.username,
+    }
+
+    return render(request, 'donordashboard.html', context)
+
+@login_required
+@user_passes_test(is_donor)
+def food_listing(request):
+    donations = FoodDonation.objects.filter(donor=request.user.profile).order_by('-created_at')
+    return render(request, 'foodlisting.html', {'donations': donations})
 
 def is_recipient(user):
     try:

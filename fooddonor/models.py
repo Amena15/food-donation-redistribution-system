@@ -47,11 +47,20 @@ class DonationRequest(models.Model):
     )
     
     # Use string references consistently
-    recipient = models.ForeignKey('fooddonor.Profile', on_delete=models.CASCADE, related_name='requests')
-    donation = models.ForeignKey('fooddonor.FoodDonation', on_delete=models.CASCADE, related_name='requests')
-    message = models.TextField()
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    donation = models.ForeignKey(FoodDonation, on_delete=models.CASCADE)
+    recipient = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    message = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    pickup_date = models.DateField(null=True, blank=True)
+    category = models.CharField(max_length=50, default='General')
     
     def __str__(self):
         return f"Request for {self.donation.title} by {self.recipient.user.username}"
+    
+class FoodItem(models.Model):
+    title = models.CharField(max_length=100)
+    image_url = models.URLField()
+    quantity = models.CharField(max_length=100)
+    expiry_date = models.DateField()
+    donor = models.ForeignKey('auth.User', on_delete=models.CASCADE)

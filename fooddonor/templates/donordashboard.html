@@ -45,6 +45,7 @@
         display: flex;
         gap: 20px;
         align-items: center;
+        justify-content: flex-end;
     }
 
     .nav-links a {
@@ -56,8 +57,8 @@
     }
 
     .nav-links a:hover {
-        opacity: 0.8;
-        text-decoration: underline;
+    opacity: 0.8;
+    text-decoration: underline;
     }
 
     .topbar .logo {
@@ -338,12 +339,13 @@
 <body>
 <div class="topbar">
   <div class="logo">Share Food, Share Hope</div>
-  <nav class="nav-links">
-    <a href="#">Home</a>
-    <a href="#">About Us</a>
-    <a href="#">Contact Us</a>
-    <a href="#">Logout</a>
-  </nav>
+  <div class="nav-links">
+  <a href="{% url 'fooddonor:donor_dashboard' %}">Dashboard</a>
+  <a href="{% url 'fooddonor:home' %}">Home</a>
+  <a href="#">About Us</a>
+  <a href="#">Contact Us</a>
+  <a href="{% url 'fooddonor:home' %}">Logout</a>
+</div>
 </div>
 <div class="dashboard">
 <!-- Sidebar for Donor -->
@@ -353,9 +355,24 @@
 <p>Food Donor Dashboard</p>
 </div>
 <div class="user-info">
-<div class="user-avatar">JD</div>
+<div class="user-avatar">
+  <!-- Generate initials from user's name -->
+  {% if user.first_name and user.last_name %}
+    {{ user.first_name.0 }}{{ user.last_name.0 }}
+  {% elif user.first_name %}
+    {{ user.first_name.0 }}{{ user.first_name.1|default:'' }}
+  {% else %}
+    {{ user.username.0 }}{{ user.username.1|default:'' }}
+  {% endif %}
+</div>
 <div class="user-details">
-<h3>Jane Doe</h3>
+<h3>
+  {% if user.get_full_name %}
+    {{ user.get_full_name }}
+  {% else %}
+    {{ user.username }}
+  {% endif %}
+</h3>
 <p>Donor Organization</p>
 </div>
 </div>
@@ -397,7 +414,14 @@
 <div class="main-content">
 <div class="header">
 <div class="header-title">
-<h1>Welcome back, Jane!</h1>
+<h1>
+  Welcome back, 
+  {% if user.first_name %}
+    {{ user.first_name }}!
+  {% else %}
+    {{ user.username }}!
+  {% endif %}
+</h1>
 <p>Here's a summary of your donations.</p>
 </div>
 <div class="header-actions">

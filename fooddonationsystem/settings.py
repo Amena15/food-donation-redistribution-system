@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'foodadmin',  # Custom app for handling admin functionalities
 ]
 
+LOGIN_URL = '/donor/login/'
+LOGIN_REDIRECT_URL = '/dashboard/'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

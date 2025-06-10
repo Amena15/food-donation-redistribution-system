@@ -22,7 +22,6 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('fooddonor.urls')),
-    path('accounts/', include('django.contrib.auth.urls')),  # enables login/logout
     path('recipient/', include('recipient.urls')),
     path('foodadmin/', include('foodadmin.urls')),      # New admin app URLs
 ]
