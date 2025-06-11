@@ -135,15 +135,23 @@
     }
 
     .menu {
-      flex-grow: 1;
+      background-color: var(--primary);
     }
 
     .menu-item {
-      padding: 15px 20px;
+      padding: 12px 20px;
       display: flex;
       align-items: center;
-      transition: all 0.2s ease;
+      transition: background-color 0.3s ease;
       cursor: pointer;
+      background-color: var(--primary);
+      color: white;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .menu-item:hover {
+      background-color: var(--primary-light);
     }
 
     .menu-item.active {
@@ -151,19 +159,13 @@
       border-left: 4px solid var(--secondary);
     }
 
-    .menu-item:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .menu-icon {
-      margin-right: 15px;
-      width: 20px;
-      text-align: center;
-    }
-
-    .menu-text {
+    .menu-item .menu-icon,
+    .menu-item .menu-text {
+      color: white;
+      font-weight: 500;
       font-size: 14px;
     }
+
 
     .sidebar-footer {
       padding: 20px;
@@ -334,6 +336,7 @@
         grid-template-columns: 1fr;
       }
     }
+
   </style>
 </head>
 <body>
@@ -377,34 +380,34 @@
 </div>
 </div>
 <div class="menu">
-<div class="menu-item active">
+<a href="{% url 'fooddonor:donor_dashboard' %}" class="menu-item active">
 <div class="menu-icon">🏠</div>
 <div class="menu-text">Dashboard</div>
-</div>
-<div class="menu-item">
+</a> 
+<a href="#" class="menu-item">
 <div class="menu-icon">➕</div>
 <div class="menu-text">Add Donation</div>
-</div>
-<div class="menu-item">
+</a>
+<a href="{% url 'fooddonor:food_listing' %}" class="menu-item">
 <div class="menu-icon">📋</div>
 <div class="menu-text">My Listings</div>
-</div>
-<div class="menu-item">
+</a>
+<a href="#" class="menu-item">
 <div class="menu-icon">📆</div>
 <div class="menu-text">Pickup Schedule</div>
-</div>
-<div class="menu-item">
+</a>
+<a href="#" class="menu-item">
 <div class="menu-icon">📈</div>
 <div class="menu-text">Donation Reports</div>
-</div>
-<div class="menu-item">
+</a>
+<a href="#" class="menu-item">
 <div class="menu-icon">⚙️</div>
 <div class="menu-text">Settings</div>
-</div>
-<div class="menu-item">
+</a>
+<a href="#" class="menu-item">
 <div class="menu-icon">🚪</div>
-<div class="menu-text"><a href="#" style="color: white;">Logout</a></div>
-</div>
+<div class="menu-text">Logout</div>
+</a>
 </div>
 <div class="sidebar-footer">
 <p>© 2025 Share Food, Share Hope</p>

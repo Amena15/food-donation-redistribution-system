@@ -4,127 +4,434 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Food Listings | Share Food, Share Hope</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
+    :root {
+      --primary: #052f14;
+      --primary-light: #0a6e31;
+      --secondary: #f8b042;
+      --light: #f5f5f5;
+      --dark: #333;
+      --danger: #dc3545;
+      --success: #28a745;
+      --info: #17a2b8;
+      --warning: #ffc107;
+      --gray: #6c757d;
+      --white: #ffffff;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
       background-color: #f0f2f5;
-      color: #333;
+      color: var(--dark);
+      line-height: 1.6;
     }
 
     .topbar {
-      background-color: #052f14;
-      color: white;
+      background-color: var(--primary);
+      color: var(--white);
       padding: 15px 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      box-shadow: var(--shadow);
+    }
+
+    .topbar .logo {
+      font-size: 20px;
+      font-weight: 600;
     }
 
     .nav-links {
       display: flex;
       gap: 20px;
+      align-items: center;
     }
 
     .nav-links a {
-      color: white;
+      color: var(--white);
       text-decoration: none;
       font-weight: 500;
       font-size: 14px;
+      transition: opacity 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      opacity: 0.8;
+      text-decoration: underline;
     }
 
     .container {
-      max-width: 1100px;
-      margin: 40px auto;
-      padding: 0 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
     }
 
-    h1 {
+    .page-header {
       text-align: center;
-      color: #052f14;
+      margin-bottom: 40px;
     }
 
-    .sort-filter {
-      text-align: center;
+    .page-header h1 {
+      color: var(--primary);
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .page-header p {
+      color: var(--gray);
+      font-size: 16px;
+    }
+
+    .controls-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .filters-sort {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .filter-group label {
+      font-weight: 500;
+      color: var(--dark);
+      font-size: 14px;
+    }
+
+    .filter-group select, .filter-group input {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      background: white;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      text-decoration: none;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      border: none;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-light);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background-color: var(--gray);
+      color: var(--white);
+    }
+
+    .btn-danger {
+      background-color: var(--danger);
+      color: var(--white);
+    }
+
+    .btn-danger:hover {
+      background-color: #c82333;
+      transform: translateY(-1px);
+    }
+
+    .btn-small {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+
+    .bulk-actions {
+      display: none;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      background: var(--light);
+      border-radius: 8px;
       margin-bottom: 20px;
+    }
+
+    .bulk-actions.show {
+      display: flex;
     }
 
     .food-listings {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
     }
 
     .food-card {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      background: var(--white);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .food-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
+    .food-card-header {
+      position: relative;
+      overflow: hidden;
     }
 
     .food-card img {
       width: 100%;
-      height: 160px;
+      height: 180px;
       object-fit: cover;
-      border-radius: 8px;
-      margin-bottom: 10px;
+      transition: transform 0.3s ease;
     }
 
-    .food-card h3 {
-      margin: 0 0 5px;
-      font-size: 16px;
+    .food-card:hover img {
+      transform: scale(1.05);
     }
 
-    .food-card p {
-      margin: 0 0 10px;
-      font-size: 14px;
-      text-align: center;
+    .card-checkbox {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
     }
 
     .status-tag {
-      background-color: #28a745;
-      color: white;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 4px 12px;
+      border-radius: 20px;
       font-size: 12px;
-      padding: 2px 8px;
-      border-radius: 10px;
-      margin-bottom: 8px;
+      font-weight: 500;
+      color: white;
+      text-transform: capitalize;
+    }
+
+    .status-available {
+      background-color: var(--success);
+    }
+
+    .status-pending {
+      background-color: var(--warning);
+      color: var(--dark);
+    }
+
+    .status-delivered {
+      background-color: var(--info);
+    }
+
+    .status-expired {
+      background-color: var(--danger);
+    }
+
+    .food-card-body {
+      padding: 20px;
+    }
+
+    .food-card h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: var(--primary);
+    }
+
+    .food-details {
+      margin-bottom: 15px;
+    }
+
+    .food-details p {
+      margin: 5px 0;
+      font-size: 14px;
+      color: var(--gray);
+    }
+
+    .expiry-warning {
+      color: var(--danger);
+      font-weight: 500;
+    }
+
+    .expiry-soon {
+      color: var(--warning);
+      font-weight: 500;
     }
 
     .button-group {
       display: flex;
       gap: 10px;
+      justify-content: center;
     }
 
-    .btn {
-      background-color: #052f14;
-      color: white;
-      padding: 6px 14px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      text-decoration: none;
-      font-size: 13px;
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--gray);
     }
 
-    .btn-delete {
-      background-color: #dc3545;
+    .empty-state .icon {
+      font-size: 60px;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    .empty-state h3 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .empty-state p {
+      font-size: 16px;
+      margin-bottom: 20px;
     }
 
     .pagination {
-      text-align: center;
-      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-top: 40px;
+    }
+
+    .pagination a, .pagination span {
+      padding: 8px 16px;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: all 0.2s ease;
     }
 
     .pagination a {
-      margin: 0 10px;
-      color: #052f14;
-      text-decoration: none;
+      color: var(--primary);
+      border: 1px solid #ddd;
+    }
+
+    .pagination a:hover {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .pagination .current {
+      background-color: var(--primary);
+      color: white;
+      border: 1px solid var(--primary);
+    }
+
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 30px;
+      padding: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-item .number {
+      font-size: 24px;
       font-weight: 600;
+      color: var(--primary);
+    }
+
+    .stat-item .label {
+      font-size: 14px;
+      color: var(--gray);
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 15% auto;
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .modal h3 {
+      margin-bottom: 15px;
+      color: var(--danger);
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .controls-section {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .filters-sort {
+        justify-content: center;
+      }
+
+      .food-listings {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-bar {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .pagination {
+        flex-wrap: wrap;
+      }
     }
   </style>
 </head>
@@ -132,53 +439,282 @@
   <div class="topbar">
     <div class="logo">Share Food, Share Hope</div>
     <div class="nav-links">
-      <a href="#">Home</a>
+      <a href="{% url 'fooddonor:donor_dashboard' %}">Dashboard</a>
+      <a href="{% url 'fooddonor:home' %}">Home</a>
       <a href="#">About Us</a>
       <a href="#">Contact Us</a>
-      <a href="#">Logout</a>
+      <a href="{% url 'fooddonor:home' %}">Logout</a>
     </div>
   </div>
 
   <div class="container">
-    <h1>My Food Listings</h1>
-
-    <div class="sort-filter">
-      <label for="sort">Sort by: </label>
-      <select id="sort" name="sort">
-        <option value="expiry">Expiry Date</option>
-        <option value="quantity">Quantity</option>
-        <option value="name">Name</option>
-      </select>
+    <div class="page-header">
+      <h1>My Food Listings</h1>
+      <p>Manage your food donations and track their status</p>
     </div>
 
-    <div class="food-listings">
+    <!-- Statistics Bar -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="number">{{ total_listings }}</div>
+        <div class="label">Total Listings</div>
+      </div>
+      <div class="stat-item">
+        <div class="number">{{ active_listings }}</div>
+        <div class="label">Active</div>
+      </div>
+      <div class="stat-item">
+        <div class="number">{{ pending_listings }}</div>
+        <div class="label">Pending</div>
+      </div>
+      <div class="stat-item">
+        <div class="number">{{ delivered_listings }}</div>
+        <div class="label">Delivered</div>
+      </div>
+    </div>
+
+    <!-- Controls Section -->
+    <div class="controls-section">
+      <div class="filters-sort">
+        <div class="filter-group">
+          <label for="status-filter">Status:</label>
+          <select id="status-filter" name="status">
+            <option value="">All Statuses</option>
+            <option value="available">Available</option>
+            <option value="pending">Pending</option>
+            <option value="delivered">Delivered</option>
+            <option value="expired">Expired</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="sort">Sort by:</label>
+          <select id="sort" name="sort">
+            <option value="expiry">Expiry Date</option>
+            <option value="quantity">Quantity</option>
+            <option value="name">Name</option>
+            <option value="created">Date Created</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="search">Search:</label>
+          <input type="text" id="search" placeholder="Search listings..." />
+        </div>
+      </div>
+      <div>
+        <a href="#" class="btn btn-primary">
+          ➕ Add New Listing
+        </a>
+      </div>
+    </div>
+
+    <!-- Bulk Actions -->
+    <div class="bulk-actions" id="bulk-actions">
+      <span id="selected-count">0 items selected</span>
+      <button class="btn btn-danger btn-small" onclick="bulkDelete()">
+        🗑️ Delete Selected
+      </button>
+      <button class="btn btn-secondary btn-small" onclick="clearSelection()">
+        Clear Selection
+      </button>
+    </div>
+
+    <!-- Food Listings -->
+    <div class="food-listings" id="food-listings">
       {% for food in food_listings %}
-        <div class="food-card">
-          <img src="{{ food.image.url }}" alt="{{ food.name }}">
-          <span class="status-tag">{{ food.status }}</span>
-          <h3>{{ food.name }}</h3>
-          <p>Quantity: {{ food.quantity }}<br>Expires: {{ food.expiry_date }}</p>
-          <div class="button-group">
-            <a href="{% url 'edit_listing' food.id %}" class="btn">Edit</a>
-            <a href="{% url 'delete_listing' food.id %}" class="btn btn-delete">Delete</a>
+        <div class="food-card" data-status="{{ food.status }}" data-name="{{ food.title|lower }}" data-expiry="{{ food.expiry_date|date:'Y-m-d' }}">
+          <div class="food-card-header">
+            <input type="checkbox" class="card-checkbox" value="{{ food.id }}" onchange="toggleBulkActions()">
+            {% if food.image %}
+              <img src="{{ food.image.url }}" alt="{{ food.title }}">
+            {% else %}
+              <img src="https://via.placeholder.com/280x180/f0f2f5/666?text=No+Image" alt="No image">
+            {% endif %}
+            <span class="status-tag status-{{ food.status }}">{{ food.status }}</span>
+          </div>
+          <div class="food-card-body">
+            <h3>{{ food.title }}</h3>
+            <div class="food-details">
+              <p><strong>Quantity:</strong> {{ food.quantity }} {{ food.unit|default:"kg" }}</p>
+              <p><strong>Category:</strong> {{ food.category|default:"General" }}</p>
+              <p class="{% if food.expiry_date|timeuntil|slice:':1' == '-' %}expiry-warning{% elif food.expiry_date|timeuntil|slice:':2' == '1 ' or food.expiry_date|timeuntil|slice:':2' == '2 ' %}expiry-soon{% endif %}">
+                <strong>Expires:</strong> {{ food.expiry_date|date:"M d, Y" }}
+                {% if food.expiry_date|timeuntil|slice:':1' != '-' %}
+                  ({{ food.expiry_date|timeuntil }} left)
+                {% else %}
+                  (Expired)
+                {% endif %}
+              </p>
+              {% if food.description %}
+                <p><strong>Description:</strong> {{ food.description|truncatewords:10 }}</p>
+              {% endif %}
+            </div>
+            <div class="button-group">
+              <a href="#" class="btn btn-secondary btn-small">
+                ✏️ Edit
+              </a>
+              <a href="#" class="btn btn-danger btn-small"
+                data-id="{{ food.id }}"
+                data-title="{{ food.title|escape }}"
+                onclick="confirmDeleteFromElement(this)">
+                🗑️ Delete
+              </a>
+            </div>
           </div>
         </div>
       {% empty %}
-        <p style="text-align: center;">You have no active listings.</p>
+        <div class="empty-state">
+          <div class="icon">🍽️</div>
+          <h3>No Food Listings Yet</h3>
+          <p>You haven't created any food listings. Start sharing food with your community!</p>
+          <a href="#" class="btn btn-primary">
+            ➕ Create Your First Listing
+          </a>
+        </div>
       {% endfor %}
     </div>
 
-    <div class="pagination">
-      {% if food_listings.has_previous %}
-        <a href="?page={{ food_listings.previous_page_number }}">&laquo; Previous</a>
-      {% endif %}
+    <!-- Pagination -->
+    {% if food_listings.has_other_pages %}
+      <div class="pagination">
+        {% if food_listings.has_previous %}
+          <a href="?page=1{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">&laquo;&laquo; First</a>
+          <a href="?page={{ food_listings.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">&laquo; Previous</a>
+        {% endif %}
 
-      <span>Page {{ food_listings.number }} of {{ food_listings.paginator.num_pages }}</span>
+        <span class="current">
+          Page {{ food_listings.number }} of {{ food_listings.paginator.num_pages }}
+        </span>
 
-      {% if food_listings.has_next %}
-        <a href="?page={{ food_listings.next_page_number }}">Next &raquo;</a>
-      {% endif %}
+        {% if food_listings.has_next %}
+          <a href="?page={{ food_listings.next_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">Next &raquo;</a>
+          <a href="?page={{ food_listings.paginator.num_pages }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">Last &raquo;&raquo;</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div id="delete-modal" class="modal">
+    <div class="modal-content">
+      <h3>Confirm Deletion</h3>
+      <p>Are you sure you want to delete "<span id="delete-item-name"></span>"?</p>
+      <p style="font-size: 14px; color: #666;">This action cannot be undone.</p>
+      <div class="modal-buttons">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <a id="confirm-delete-btn" href="#" class="btn btn-danger">Delete</a>
+      </div>
     </div>
   </div>
+
+  <script>
+    // Filter and Sort functionality
+    document.getElementById('status-filter').addEventListener('change', filterListings);
+    document.getElementById('sort').addEventListener('change', sortListings);
+    document.getElementById('search').addEventListener('input', searchListings);
+
+    function filterListings() {
+      const status = document.getElementById('status-filter').value.toLowerCase();
+      const cards = document.querySelectorAll('.food-card');
+      
+      cards.forEach(card => {
+        const cardStatus = card.dataset.status.toLowerCase();
+        if (status === '' || cardStatus === status) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function searchListings() {
+      const search = document.getElementById('search').value.toLowerCase();
+      const cards = document.querySelectorAll('.food-card');
+      
+      cards.forEach(card => {
+        const cardName = card.dataset.name;
+        if (cardName.includes(search)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function sortListings() {
+      const sortBy = document.getElementById('sort').value;
+      const container = document.getElementById('food-listings');
+      const cards = Array.from(container.getElementsByClassName('food-card'));
+      
+      cards.sort((a, b) => {
+        switch(sortBy) {
+          case 'expiry':
+            return new Date(a.dataset.expiry) - new Date(b.dataset.expiry);
+          case 'name':
+            return a.dataset.name.localeCompare(b.dataset.name);
+          default:
+            return 0;
+        }
+      });
+      
+      cards.forEach(card => container.appendChild(card));
+    }
+
+    // Bulk selection functionality
+    function toggleBulkActions() {
+      const checkboxes = document.querySelectorAll('.card-checkbox:checked');
+      const bulkActions = document.getElementById('bulk-actions');
+      const selectedCount = document.getElementById('selected-count');
+      
+      if (checkboxes.length > 0) {
+        bulkActions.classList.add('show');
+        selectedCount.textContent = `${checkboxes.length} item${checkboxes.length > 1 ? 's' : ''} selected`;
+      } else {
+        bulkActions.classList.remove('show');
+      }
+    }
+
+    function clearSelection() {
+      const checkboxes = document.querySelectorAll('.card-checkbox');
+      checkboxes.forEach(cb => cb.checked = false);
+      toggleBulkActions();
+    }
+
+    function bulkDelete() {
+      const checkboxes = document.querySelectorAll('.card-checkbox:checked');
+      if (checkboxes.length > 0) {
+        const ids = Array.from(checkboxes).map(cb => cb.value);
+        if (confirm(`Are you sure you want to delete ${ids.length} item(s)?`)) {
+          // Implement bulk delete logic here
+          console.log('Bulk delete:', ids);
+        }
+      }
+    }
+
+    // Delete confirmation modal
+    function confirmDelete(id, name) {
+      document.getElementById('delete-item-name').textContent = name;
+      document.getElementById('confirm-delete-btn').href = `/delete-listing/${id}/`;
+      document.getElementById('delete-modal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('delete-modal').style.display = 'none';
+    }
+
+    function confirmDeleteFromElement(el) {
+      const id = el.dataset.id;
+      const title = el.dataset.title;
+      confirmDelete(id, title);
+    }
+
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('delete-modal');
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    }
+  </script>
 </body>
 </html>
