@@ -416,3 +416,9 @@ def update_request_status(request, pk, status):
     
     messages.success(request, f"Request has been {status} successfully.")
     return redirect('donation:request_detail', pk=donation_request.pk)
+
+def add_food_listing(request):
+    if request.method == 'POST':
+        # TODO: process the form submission (you can add logic later)
+        pass
+    return render(request, 'addfoodlisting.html')

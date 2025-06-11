@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Add Food Listing | Share Food, Share Hope</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+    :root {
+      --primary: #052f14;
+      --primary-light: #0a6e31;
+      --secondary: #f8b042;
+      --light: #f5f5f5;
+      --dark: #333;
+      --danger: #dc3545;
+      --success: #28a745;
+      --info: #17a2b8;
+      --gray: #6c757d;
+      --white: #ffffff;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #f0f2f5;
+      color: var(--dark);
+    }
+
+    .topbar {
+      background-color: var(--primary);
+      color: var(--white);
+      padding: 10px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .nav-links a {
+        color: var(--white);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        transition: opacity 0.2s ease;
+    }
+
+    .nav-links a:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+    }
+
+    .topbar .logo {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .dashboard {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: var(--primary);
+      color: var(--white);
+      padding: 20px 0;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-header {
+      padding: 10px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .sidebar-header h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .sidebar-header p {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      padding: 0 20px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .user-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      color: var(--primary);
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    .user-details h3 {
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .user-details p {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .menu {
+      background-color: var(--primary);
+    }
+
+    .menu-item {
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      transition: background-color 0.3s ease;
+      cursor: pointer;
+      background-color: var(--primary);
+      color: white;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .menu-item:hover {
+      background-color: var(--primary-light);
+    }
+
+    .menu-item.active {
+      background-color: var(--primary-light);
+      border-left: 4px solid var(--secondary);
+    }
+
+    .menu-item .menu-icon,
+    .menu-item .menu-text {
+      color: white;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .sidebar-footer {
+      padding: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .main-content {
+      flex-grow: 1;
+      padding: 30px;
+      overflow-y: auto;
+      display: flex;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .header-title h1 {
+      font-size: 28px;
+      color: var(--primary);
+      margin-bottom: 5px;
+    }
+
+    .header-title p {
+      color: var(--gray);
+      font-size: 14px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: var(--gray);
+    }
+
+    .breadcrumb a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .form{
+        width: 100%;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+    }
+
+    .form-container {
+      background: var(--white);
+      border-radius: 10px;
+      padding: 20px 30px;
+      box-shadow: var(--shadow);
+      max-width: none;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .form-section {
+      margin-bottom: 30px;
+    }
+
+    .form-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-section-title {
+      font-size: 18px;
+      color: var(--primary);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #eee;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .form-row-three {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      color: var(--dark);
+      font-size: 14px;
+    }
+
+    .form-label.required::after {
+      content: " *";
+      color: var(--danger);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border-color 0.3s ease;
+      background-color: var(--white);
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(5, 47, 20, 0.1);
+    }
+
+    .form-control:invalid {
+      border-color: var(--danger);
+    }
+
+    .form-select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+      background-position: right 12px center;
+      background-repeat: no-repeat;
+      background-size: 16px;
+      padding-right: 40px;
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .form-help {
+      font-size: 12px;
+      color: var(--gray);
+      margin-top: 4px;
+    }
+
+    .image-upload {
+      border: 2px dashed #ddd;
+      border-radius: 8px;
+      padding: 40px 20px;
+      text-align: center;
+      transition: border-color 0.3s ease;
+      background-color: #fafafa;
+    }
+
+    .image-upload:hover {
+      border-color: var(--primary);
+      background-color: rgba(5, 47, 20, 0.02);
+    }
+
+    .image-upload.dragover {
+      border-color: var(--primary);
+      background-color: rgba(5, 47, 20, 0.05);
+    }
+
+    .upload-icon {
+      font-size: 48px;
+      color: var(--gray);
+      margin-bottom: 10px;
+    }
+
+    .upload-text {
+      color: var(--gray);
+      margin-bottom: 10px;
+    }
+
+    .upload-input {
+      display: none;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      border: none;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-light);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background-color: var(--gray);
+      color: var(--white);
+    }
+
+    .btn-secondary:hover {
+      background-color: #5a6268;
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--primary);
+      color: var(--white);
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: flex-end;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+    }
+
+    .quantity-input {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .quantity-input input {
+      flex: 1;
+    }
+
+    .unit-select {
+      min-width: 80px;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+    }
+
+    .preview-images {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .preview-image {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      aspect-ratio: 1;
+    }
+
+    .preview-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .remove-image {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: var(--danger);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
+    .success-message {
+      background-color: var(--success);
+      color: white;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .error-message {
+      background-color: var(--danger);
+      color: white;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        padding: 10px 0;
+      }
+
+      .main-content {
+        padding: 20px;
+      }
+
+      .form-container {
+        padding: 20px;
+      }
+
+      .form-row,
+      .form-row-three {
+        grid-template-columns: 1fr;
+      }
+
+      .form-actions {
+        flex-direction: column;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    .page-header {
+        margin-bottom: 30px;
+        text-align: left;
+        color: var(--primary);
+    }
+
+    .page-header h1 {
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+
+    .page-header .breadcrumb {
+        font-size: 14px;
+        color: var(--gray);
+        margin-bottom: 5px;
+    }
+
+    .page-header .subtitle {
+        font-size: 16px;
+        color: var(--gray);
+    }
+
+
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">Share Food, Share Hope</div>
+  <div class="nav-links">
+    <a href="{% url 'fooddonor:donor_dashboard' %}">Dashboard</a>
+    <a href="{% url 'fooddonor:home' %}">Home</a>
+    <a href="#">About Us</a>
+    <a href="#">Contact Us</a>
+    <a href="#">Logout</a>
+  </div>
+</div>
+
+<div class="dashboard">
+<div class="sidebar">
+<div class="sidebar-header">
+<h2>Donor Panel</h2>
+<p>Food Donor Dashboard</p>
+</div>
+<div class="user-info">
+<div class="user-avatar">
+  <!-- Generate initials from user's name -->
+  {% if user.first_name and user.last_name %}
+    {{ user.first_name.0 }}{{ user.last_name.0 }}
+  {% elif user.first_name %}
+    {{ user.first_name.0 }}{{ user.first_name.1|default:'' }}
+  {% else %}
+    {{ user.username.0 }}{{ user.username.1|default:'' }}
+  {% endif %}
+</div>
+<div class="user-details">
+<h3>
+  {% if user.get_full_name %}
+    {{ user.get_full_name }}
+  {% else %}
+    {{ user.username }}
+  {% endif %}
+</h3>
+<p>Donor Organization</p>
+</div>
+</div>
+<div class="menu">
+<a href="{% url 'fooddonor:donor_dashboard' %}" class="menu-item active">
+<div class="menu-icon">🏠</div>
+<div class="menu-text">Dashboard</div>
+</a> 
+<a href="{% url 'fooddonor:add_food' %}" class="menu-item">
+<div class="menu-icon">➕</div>
+<div class="menu-text">Add Donation</div>
+</a>
+<a href="{% url 'fooddonor:food_listing' %}" class="menu-item">
+<div class="menu-icon">📋</div>
+<div class="menu-text">My Listings</div>
+</a>
+<a href="#" class="menu-item">
+<div class="menu-icon">📆</div>
+<div class="menu-text">Pickup Schedule</div>
+</a>
+<a href="#" class="menu-item">
+<div class="menu-icon">📈</div>
+<div class="menu-text">Donation Reports</div>
+</a>
+<a href="#" class="menu-item">
+<div class="menu-icon">⚙️</div>
+<div class="menu-text">Settings</div>
+</a>
+<a href="#" class="menu-item">
+<div class="menu-icon">🚪</div>
+<div class="menu-text">Logout</div>
+</a>
+</div>
+<div class="sidebar-footer">
+<p>© 2025 Share Food, Share Hope</p>
+</div>
+</div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+        <div class="page-header" style="text-align: center; padding: 30px 0;">
+            <p class="breadcrumb">Dashboard>Add Food Listing</p>
+            <h1>Add Food Listing</h1>
+            <p class="subtitle">Share your food donations with those in need</p>
+        </div>
+
+    <div id="successMessage" class="success-message"></div>
+    <div id="errorMessage" class="error-message"></div>
+
+    <div class="form-container">
+      <form id="foodListingForm" method="POST" action="{% url 'fooddonor:add_food' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <!-- Basic Information -->
+        <div class="form-section">
+          <h3 class="form-section-title">📋 Basic Information</h3>
+          
+          <div class="form-group">
+            <label class="form-label required" for="foodName">Food Item Name</label>
+            <input type="text" id="foodName" name="foodName" class="form-control" required 
+                   placeholder="e.g., Fresh Vegetables, Cooked Rice, Bread">
+            <div class="form-help">Enter a clear, descriptive name for your food item</div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label required" for="category">Category</label>
+              <select id="category" name="category" class="form-control form-select" required>
+                <option value="">Select category</option>
+                <option value="fruits">🍎 Fruits</option>
+                <option value="vegetables">🥕 Vegetables</option>
+                <option value="grains">🌾 Grains & Cereals</option>
+                <option value="dairy">🥛 Dairy Products</option>
+                <option value="meat">🍖 Meat & Poultry</option>
+                <option value="seafood">🐟 Seafood</option>
+                <option value="bakery">🍞 Bakery Items</option>
+                <option value="prepared">🍲 Prepared Food</option>
+                <option value="beverages">🥤 Beverages</option>
+                <option value="canned">🥫 Canned Goods</option>
+                <option value="other">📦 Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label required" for="foodType">Food Type</label>
+              <select id="foodType" name="foodType" class="form-control form-select" required>
+                <option value="">Select type</option>
+                <option value="raw">Raw/Fresh</option>
+                <option value="cooked">Cooked</option>
+                <option value="packaged">Packaged</option>
+                <option value="frozen">Frozen</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="description">Description</label>
+            <textarea id="description" name="description" class="form-control form-textarea" 
+                      placeholder="Describe the food item, its condition, preparation method, etc."></textarea>
+            <div class="form-help">Provide details about the food item to help recipients understand what you're offering</div>
+          </div>
+        </div>
+
+        <!-- Quantity & Expiry -->
+        <div class="form-section">
+          <h3 class="form-section-title">📏 Quantity & Expiry</h3>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label required" for="quantity">Quantity</label>
+              <div class="quantity-input">
+                <input type="number" id="quantity" name="quantity" class="form-control" 
+                       min="1" step="0.1" required placeholder="0">
+                <select id="unit" name="unit" class="form-control form-select unit-select" required>
+                  <option value="kg">kg</option>
+                  <option value="lbs">lbs</option>
+                  <option value="pieces">pieces</option>
+                  <option value="portions">portions</option>
+                  <option value="liters">liters</option>
+                  <option value="packs">packs</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="servings">Estimated Servings</label>
+              <input type="number" id="servings" name="servings" class="form-control" 
+                     min="1" placeholder="e.g., 10">
+              <div class="form-help">How many people can this food serve?</div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label required" for="expiryDate">Expiry/Best Before Date</label>
+              <input type="datetime-local" id="expiryDate" name="expiryDate" class="form-control" required>
+              <div class="form-help">When does this food expire or need to be consumed by?</div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label required" for="availableUntil">Available Until</label>
+              <input type="datetime-local" id="availableUntil" name="availableUntil" class="form-control" required>
+              <div class="form-help">When is the latest this can be picked up?</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Location & Pickup -->
+        <div class="form-section">
+          <h3 class="form-section-title">📍 Location & Pickup</h3>
+          
+          <div class="form-group">
+            <label class="form-label required" for="address">Pickup Address</label>
+            <textarea id="address" name="address" class="form-control" rows="3" required
+                      placeholder="Enter the full pickup address including street, city, state, and postal code"></textarea>
+          </div>
+
+          <div class="form-row-three">
+            <div class="form-group">
+              <label class="form-label" for="city">City</label>
+              <input type="text" id="city" name="city" class="form-control" placeholder="City">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="state">State</label>
+              <input type="text" id="state" name="state" class="form-control" placeholder="State">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="postalCode">Postal Code</label>
+              <input type="text" id="postalCode" name="postalCode" class="form-control" placeholder="Postal Code">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="pickupInstructions">Pickup Instructions</label>
+              <textarea id="pickupInstructions" name="pickupInstructions" class="form-control" rows="3"
+                        placeholder="e.g., Ring doorbell, Contact security, Available at back entrance, etc."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="contactPhone">Contact Phone</label>
+              <input type="tel" id="contactPhone" name="contactPhone" class="form-control" 
+                     placeholder="Phone number for pickup coordination">
+              <div class="form-help">Optional: Phone number for pickup coordination</div>
+            </div>
+          </div>
+
+          <div class="checkbox-group">
+            <input type="checkbox" id="flexibleTiming" name="flexibleTiming">
+            <label for="flexibleTiming">I'm flexible with pickup timing</label>
+          </div>
+        </div>
+
+        <!-- Food Safety & Storage -->
+        <div class="form-section">
+          <h3 class="form-section-title">🛡️ Food Safety & Storage</h3>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label required" for="storageCondition">Current Storage Condition</label>
+              <select id="storageCondition" name="storageCondition" class="form-control form-select" required>
+                <option value="">Select condition</option>
+                <option value="room_temperature">Room Temperature</option>
+                <option value="refrigerated">Refrigerated</option>
+                <option value="frozen">Frozen</option>
+                <option value="dry_storage">Dry Storage</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label required" for="foodCondition">Food Condition</label>
+              <select id="foodCondition" name="foodCondition" class="form-control form-select" required>
+                <option value="">Select condition</option>
+                <option value="excellent">Excellent</option>
+                <option value="good">Good</option>
+                <option value="fair">Fair (near expiry)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="allergens">Known Allergens</label>
+            <div class="checkbox-group">
+              <input type="checkbox" id="nuts" name="allergens" value="nuts">
+              <label for="nuts">Nuts</label>
+            </div>
+            <div class="checkbox-group">
+              <input type="checkbox" id="dairy" name="allergens" value="dairy">
+              <label for="dairy">Dairy</label>
+            </div>
+            <div class="checkbox-group">
+              <input type="checkbox" id="gluten" name="allergens" value="gluten">
+              <label for="gluten">Gluten</label>
+            </div>
+            <div class="checkbox-group">
+              <input type="checkbox" id="eggs" name="allergens" value="eggs">
+              <label for="eggs">Eggs</label>
+            </div>
+            <div class="checkbox-group">
+              <input type="checkbox" id="shellfish" name="allergens" value="shellfish">
+              <label for="shellfish">Shellfish</label>
+            </div>
+          </div>
+
+          <div class="checkbox-group">
+            <input type="checkbox" id="halal" name="dietaryInfo" value="halal">
+            <label for="halal">Halal</label>
+          </div>
+          <div class="checkbox-group">
+            <input type="checkbox" id="vegetarian" name="dietaryInfo" value="vegetarian">
+            <label for="vegetarian">Vegetarian</label>
+          </div>
+          <div class="checkbox-group">
+            <input type="checkbox" id="vegan" name="dietaryInfo" value="vegan">
+            <label for="vegan">Vegan</label>
+          </div>
+        </div>
+
+        <!-- Images -->
+        <div class="form-section">
+          <h3 class="form-section-title">📸 Food Images</h3>
+          
+          <div class="form-group">
+            <div class="image-upload" id="imageUpload">
+              <div class="upload-icon">📷</div>
+              <div class="upload-text">
+                <strong>Click to upload images</strong> or drag and drop
+              </div>
+              <div class="form-help">Upload clear photos of your food items (max 5 images, 5MB each)</div>
+              <input type="file" id="imageInput" name="images" class="upload-input" 
+                     multiple accept="image/*" onchange="handleImageUpload(event)">
+            </div>
+            <div class="preview-images" id="previewImages"></div>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="saveDraft()">
+            <span>💾</span>
+            Save as Draft
+          </button>
+          <button type="button" class="btn btn-outline" onclick="previewListing()">
+            <span>👁️</span>
+            Preview
+          </button>
+          <button type="submit" class="btn btn-primary">
+            <span>✅</span>
+            Publish Listing
+          </button>
+        </div>
+      </form>
+    </div>
+</div>
+
+<script>
+// Set minimum date to current date/time
+const now = new Date();
+const isoString = now.toISOString().slice(0, 16);
+document.getElementById('expiryDate').min = isoString;
+document.getElementById('availableUntil').min = isoString;
+
+// Image upload handling
+let uploadedImages = [];
+
+document.getElementById('imageUpload').addEventListener('click', function() {
+    document.getElementById('imageInput').click();
+});
+
+document.getElementById('imageUpload').addEventListener('dragover', function(e) {
+    e.preventDefault();
+    this.classList.add('dragover');
+});
+
+document.getElementById('imageUpload').addEventListener('dragleave', function(e) {
+    e.preventDefault();
+    this.classList.remove('dragover');
+});
+
+document.getElementById('imageUpload').addEventListener('drop', function(e) {
+    e.preventDefault();
+    this.classList.remove('dragover');
+    const files = e.dataTransfer.files;
+    handleImageUpload({ target: { files: files } });
+});
+
+function handleImageUpload(event) {
+    const files = Array.from(event.target.files);
+    const maxFiles = 5;
+    const maxSize = 5 * 1024 * 1024; // 5MB
+
+    files.forEach((file, index) => {
+        if (uploadedImages.length >= maxFiles) {
+            alert(`Maximum ${maxFiles} images allowed`);
+            return;
+        }
+
+        if (file.size > maxSize) {
+            alert(`File ${file.name} is too large. Maximum size is 5MB`);
+            return;
+        }
+
+        if (!file.type.startsWith('image/')) {
+            alert(`File ${file.name} is not an image`);
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imageData = {
+                file: file,
+                url: e.target.result,
+                name: file.name
+            };
+            
+            uploadedImages.push(imageData);
+            document.getElementById('imageInput').value = '';
+            displayImagePreview(imageData, uploadedImages.length - 1);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+function displayImagePreview(imageData, index) {
+    const previewContainer = document.getElementById('previewImages');
+
+    const previewDiv = document.createElement('div');
+    previewDiv.className = 'preview-image';
+    
+    const img = document.createElement('img');
+    img.src = imageData.url;
+    img.alt = imageData.name;
+    
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'remove-image';
+    removeBtn.innerHTML = '&times;';
+    removeBtn.onclick = function() {
+    uploadedImages = uploadedImages.filter((_, i) => i !== index);
+    previewContainer.removeChild(previewDiv);
+
+    };
+    
+    previewDiv.appendChild(img);
+    previewDiv.appendChild(removeBtn);
+    previewContainer.appendChild(previewDiv);
+}
+
+</script>

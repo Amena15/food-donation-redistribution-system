@@ -27,6 +27,7 @@ urlpatterns = [
     # Dashboard URLs
     path('dashboard/', views.donor_dashboard, name='donor_dashboard'),
     path('foodlisting/', views.food_listing, name='food_listing'),
+    path('add-food/', views.add_food_listing, name='add_food'),
     #path('recipient/', views.recipient_dashboard, name='recipient_dashboard'),
     #path('admin/dashboard/', views.admin_dashboard, name='admin_dashboard'),
     
