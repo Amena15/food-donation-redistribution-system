@@ -46,7 +46,7 @@ class FoodDonationModelTest(TestCase):
 class UserSignupTest(TestCase):
     def setUp(self):
         self.client = Client()
-        self.signup_url = reverse('signup')
+        self.signup_url = reverse('fooddonor:register')
     
     def test_signup_donor(self):
         response = self.client.post(self.signup_url, {
@@ -77,6 +77,66 @@ class UserSignupTest(TestCase):
         self.assertEqual(response.status_code, 302)  # Redirects on success
         self.assertTrue(User.objects.filter(username='newrecipient').exists())
         self.assertTrue(Profile.objects.filter(user__username='newrecipient', role='recipient').exists())
+
+    def test_signup_donor_missing_location(self):
+        response = self.client.post(self.signup_url, {
+            'username': 'donormissingloc',
+            'email': 'donormissingloc@test.com',
+            'password1': 'securepassword123',
+            'password2': 'securepassword123',
+            'phone_number': '1234567890',
+            'role': 'donor',
+            # 'location' is missing
+        })
+        # Form should be invalid, so status code 200 with form errors
+        self.assertEqual(response.status_code, 200)
+        form = response.context.get('form')
+        self.assertIsNotNone(form)
+        self.assertIn('Location is required for Food Donors.', form.non_field_errors())
+        self.assertFalse(User.objects.filter(username='donormissingloc').exists())
+
+    def test_get_registration_form(self):
+        response = self.client.get(self.signup_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'registeruser.html')
+        self.assertIn('form', response.context)
+
+    def test_signup_short_username(self):
+        response = self.client.post(self.signup_url, {
+            'username': 'short',
+            'email': 'short@test.com',
+            'password1': 'securepassword123',
+            'password2': 'securepassword123',
+            'phone_number': '1234567890',
+            'role': 'donor',
+            'location': 'Test Location'
+        })
+        self.assertEqual(response.status_code, 200)
+        form = response.context.get('form')
+        self.assertIsNotNone(form)
+        self.assertIn('Username must be at least 6 characters long.', form.errors.get('username', []))
+        self.assertFalse(User.objects.filter(username='short').exists())
+
+    def test_signup_missing_required_fields(self):
+        response = self.client.post(self.signup_url, {
+            'username': '',
+            'email': '',
+            'password1': '',
+            'password2': '',
+            'phone_number': '',
+            'role': '',
+            'location': ''
+        })
+        self.assertEqual(response.status_code, 200)
+        form = response.context.get('form')
+        self.assertIsNotNone(form)
+        self.assertIn('This field is required.', form.errors.get('username', []))
+        self.assertIn('This field is required.', form.errors.get('email', []))
+        self.assertIn('This field is required.', form.errors.get('password1', []))
+        self.assertIn('This field is required.', form.errors.get('password2', []))
+        self.assertIn('This field is required.', form.errors.get('phone_number', []))
+        self.assertIn('This field is required.', form.errors.get('role', []))
+        self.assertFalse(User.objects.filter(username='').exists())
 
 class DonationProcessTest(TestCase):
     def setUp(self):
@@ -145,3 +205,52 @@ class DonationProcessTest(TestCase):
         self.donation.refresh_from_db()
         self.assertEqual(request.status, 'approved')
         self.assertEqual(self.donation.status, 'claimed')
+
+class DonorLoginTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.login_url = reverse('fooddonor:donorlogin')
+        self.user = User.objects.create_user(username='donoruser', password='testpassword')
+        self.profile = Profile.objects.create(
+            user=self.user,
+            phone_number='1234567890',
+            role='donor',
+            location='Test Location'
+        )
+
+    def test_get_login_page(self):
+        response = self.client.get(self.login_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Login')
+        self.assertIn('form', response.context)
+
+    def test_post_valid_login(self):
+        response = self.client.post(self.login_url, {
+            'username': 'donoruser',
+            'password': 'testpassword'
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('fooddonor:donor_dashboard'))
+
+    def test_post_invalid_login(self):
+        response = self.client.post(self.login_url, {
+            'username': 'donoruser',
+            'password': 'wrongpassword'
+        })
+        self.assertEqual(response.status_code, 200)
+        # Adjusted assertion to check for form errors instead of specific error message text
+        form = response.context.get('form')
+        self.assertIsNotNone(form)
+        self.assertTrue(form.errors)
+        self.assertIn('__all__', form.errors)
+        self.assertIn('form', response.context)
+
+    def test_post_login_with_next_redirect(self):
+        next_url = reverse('fooddonor:donor_dashboard')
+        response = self.client.post(self.login_url + '?next=' + next_url, {
+            'username': 'donoruser',
+            'password': 'testpassword',
+            'next': next_url
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, next_url)

@@ -583,11 +583,11 @@
 </div>
 </div>
 <div class="menu">
-<a href="{% url 'fooddonor:donor_dashboard' %}" class="menu-item active">
+<a href="{% url 'fooddonor:donor_dashboard' %}" class="menu-item {% if request.resolver_match.url_name == 'donor_dashboard' %}active{% endif %}">
 <div class="menu-icon">🏠</div>
 <div class="menu-text">Dashboard</div>
 </a> 
-<a href="{% url 'fooddonor:add_food' %}" class="menu-item">
+<a href="{% url 'fooddonor:add_food' %}" class="menu-item {% if request.resolver_match.url_name == 'add_food' %}active{% endif %}">
 <div class="menu-icon">➕</div>
 <div class="menu-text">Add Donation</div>
 </a>
@@ -620,7 +620,7 @@
   <!-- Main Content -->
   <div class="main-content">
         <div class="page-header" style="text-align: center; padding: 30px 0;">
-            <p class="breadcrumb">Dashboard>Add Food Listing</p>
+            <p class="breadcrumb">Dashboard > Add Food Listing</p>
             <h1>Add Food Listing</h1>
             <p class="subtitle">Share your food donations with those in need</p>
         </div>

@@ -14,6 +14,8 @@ from datetime import date
 from django.db.models.functions import TruncMonth
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.conf import settings
+from .models import FoodListing
+from .forms import FoodDonationForm
 
 
 def home(request):
@@ -422,3 +424,23 @@ def add_food_listing(request):
         # TODO: process the form submission (you can add logic later)
         pass
     return render(request, 'addfoodlisting.html')
+
+
+def edit_food(request, pk):
+    food = get_object_or_404(FoodListing, pk=pk)
+    if request.method == 'POST':
+        form = FoodDonationForm(request.POST, request.FILES, instance=food)
+        if form.is_valid():
+            form.save()
+            return redirect('fooddonor:food_listing')
+    else:
+        form = FoodDonationForm(instance=food)
+    return render(request, 'editfoodlisting.html', {'form': form})
+
+def delete_food(request, pk):
+    food = get_object_or_404(FoodListing, pk=pk)
+    if request.method == 'POST':
+        food.delete()
+        return redirect('fooddonor:food_listing')
+    return render(request, 'confirm_delete.html', {'food': food})
+

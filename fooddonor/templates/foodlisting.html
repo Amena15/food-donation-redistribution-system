@@ -37,11 +37,10 @@
     .topbar {
       background-color: var(--primary);
       color: var(--white);
-      padding: 15px 30px;
+      padding: 10px 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: var(--shadow);
     }
 
     .topbar .logo {
@@ -53,6 +52,7 @@
       display: flex;
       gap: 20px;
       align-items: center;
+      justify-content: flex-end;
     }
 
     .nav-links a {
@@ -68,10 +68,118 @@
       text-decoration: underline;
     }
 
+    .dashboard {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: var(--primary);
+      color: var(--white);
+      padding: 20px 0;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-header {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .sidebar-header h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .sidebar-header p {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      padding: 0 20px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .user-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      color: var(--primary);
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    .user-details h3 {
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .user-details p {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .menu {
+      background-color: var(--primary);
+    }
+
+    .menu-item {
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      transition: background-color 0.3s ease;
+      cursor: pointer;
+      background-color: var(--primary);
+      color: white;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .menu-item:hover {
+      background-color: var(--primary-light);
+    }
+
+    .menu-item.active {
+      background-color: var(--primary-light);
+      border-left: 4px solid var(--secondary);
+    }
+
+    .menu-item .menu-icon,
+    .menu-item .menu-text {
+      color: white;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .sidebar-footer {
+      padding: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .main-content {
+      flex-grow: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
     .container {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 40px 20px;
     }
 
     .page-header {
@@ -295,7 +403,6 @@
       justify-content: center;
     }
 
-
     .empty-state {
       text-align: center;
       padding: 60px 20px;
@@ -410,6 +517,25 @@
     }
 
     /* Responsive Design */
+    @media (max-width: 1024px) {
+      .dashboard {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        padding: 10px 0;
+      }
+
+      .sidebar-header {
+        padding: 10px 20px;
+      }
+
+      .main-content {
+        padding: 20px;
+      }
+    }
+
     @media (max-width: 768px) {
       .controls-section {
         flex-direction: column;
@@ -447,150 +573,218 @@
     </div>
   </div>
 
-  <div class="container">
-    <div class="page-header">
-      <h1>My Food Listings</h1>
-      <p>Manage your food donations and track their status</p>
-    </div>
-
-    <!-- Statistics Bar -->
-    <div class="stats-bar">
-      <div class="stat-item">
-        <div class="number">{{ total_listings }}</div>
-        <div class="label">Total Listings</div>
+  <div class="dashboard">
+    <!-- Sidebar for Donor -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h2>Donor Panel</h2>
+        <p>Food Donor Dashboard</p>
       </div>
-      <div class="stat-item">
-        <div class="number">{{ active_listings }}</div>
-        <div class="label">Active</div>
-      </div>
-      <div class="stat-item">
-        <div class="number">{{ pending_listings }}</div>
-        <div class="label">Pending</div>
-      </div>
-      <div class="stat-item">
-        <div class="number">{{ delivered_listings }}</div>
-        <div class="label">Delivered</div>
-      </div>
-    </div>
-
-    <!-- Controls Section -->
-    <div class="controls-section">
-      <div class="filters-sort">
-        <div class="filter-group">
-          <label for="status-filter">Status:</label>
-          <select id="status-filter" name="status">
-            <option value="">All Statuses</option>
-            <option value="available">Available</option>
-            <option value="pending">Pending</option>
-            <option value="delivered">Delivered</option>
-            <option value="expired">Expired</option>
-          </select>
+      <div class="user-info">
+        <div class="user-avatar">
+          <!-- Generate initials from user's name -->
+          {% if user.first_name and user.last_name %}
+            {{ user.first_name.0 }}{{ user.last_name.0 }}
+          {% elif user.first_name %}
+            {{ user.first_name.0 }}{{ user.first_name.1|default:'' }}
+          {% else %}
+            {{ user.username.0 }}{{ user.username.1|default:'' }}
+          {% endif %}
         </div>
-        <div class="filter-group">
-          <label for="sort">Sort by:</label>
-          <select id="sort" name="sort">
-            <option value="expiry">Expiry Date</option>
-            <option value="quantity">Quantity</option>
-            <option value="name">Name</option>
-            <option value="created">Date Created</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label for="search">Search:</label>
-          <input type="text" id="search" placeholder="Search listings..." />
+        <div class="user-details">
+          <h3>
+            {% if user.get_full_name %}
+              {{ user.get_full_name }}
+            {% else %}
+              {{ user.username }}
+            {% endif %}
+          </h3>
+          <p>Donor Organization</p>
         </div>
       </div>
-      <div>
-        <a href="#" class="btn btn-primary">
-          ➕ Add New Listing
+      <div class="menu">
+        <a href="{% url 'fooddonor:donor_dashboard' %}" class="menu-item">
+          <div class="menu-icon">🏠</div>
+          <div class="menu-text">Dashboard</div>
+        </a> 
+        <a href="{% url 'fooddonor:add_food' %}" class="menu-item">
+          <div class="menu-icon">➕</div>
+          <div class="menu-text">Add Donation</div>
+        </a>
+        <a href="{% url 'fooddonor:food_listing' %}" class="menu-item active">
+          <div class="menu-icon">📋</div>
+          <div class="menu-text">My Listings</div>
+        </a>
+        <a href="#" class="menu-item">
+          <div class="menu-icon">📆</div>
+          <div class="menu-text">Pickup Schedule</div>
+        </a>
+        <a href="#" class="menu-item">
+          <div class="menu-icon">📈</div>
+          <div class="menu-text">Donation Reports</div>
+        </a>
+        <a href="#" class="menu-item">
+          <div class="menu-icon">⚙️</div>
+          <div class="menu-text">Settings</div>
+        </a>
+        <a href="#" class="menu-item">
+          <div class="menu-icon">🚪</div>
+          <div class="menu-text">Logout</div>
         </a>
       </div>
+      <div class="sidebar-footer">
+        <p>© 2025 Share Food, Share Hope</p>
+      </div>
     </div>
 
-    <!-- Bulk Actions -->
-    <div class="bulk-actions" id="bulk-actions">
-      <span id="selected-count">0 items selected</span>
-      <button class="btn btn-danger btn-small" onclick="bulkDelete()">
-        🗑️ Delete Selected
-      </button>
-      <button class="btn btn-secondary btn-small" onclick="clearSelection()">
-        Clear Selection
-      </button>
-    </div>
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="container">
+        <div class="page-header">
+          <h1>My Food Listings</h1>
+          <p>Manage your food donations and track their status</p>
+        </div>
 
-    <!-- Food Listings -->
-    <div class="food-listings" id="food-listings">
-      {% for food in food_listings %}
-        <div class="food-card" data-status="{{ food.status }}" data-name="{{ food.title|lower }}" data-expiry="{{ food.expiry_date|date:'Y-m-d' }}">
-          <div class="food-card-header">
-            <input type="checkbox" class="card-checkbox" value="{{ food.id }}" onchange="toggleBulkActions()">
-            {% if food.image %}
-              <img src="{{ food.image.url }}" alt="{{ food.title }}">
-            {% else %}
-              <img src="https://via.placeholder.com/280x180/f0f2f5/666?text=No+Image" alt="No image">
-            {% endif %}
-            <span class="status-tag status-{{ food.status }}">{{ food.status }}</span>
+        <!-- Statistics Bar -->
+        <div class="stats-bar">
+          <div class="stat-item">
+            <div class="number">{{ total_listings }}</div>
+            <div class="label">Total Listings</div>
           </div>
-          <div class="food-card-body">
-            <h3>{{ food.title }}</h3>
-            <div class="food-details">
-              <p><strong>Quantity:</strong> {{ food.quantity }} {{ food.unit|default:"kg" }}</p>
-              <p><strong>Category:</strong> {{ food.category|default:"General" }}</p>
-              <p class="{% if food.expiry_date|timeuntil|slice:':1' == '-' %}expiry-warning{% elif food.expiry_date|timeuntil|slice:':2' == '1 ' or food.expiry_date|timeuntil|slice:':2' == '2 ' %}expiry-soon{% endif %}">
-                <strong>Expires:</strong> {{ food.expiry_date|date:"M d, Y" }}
-                {% if food.expiry_date|timeuntil|slice:':1' != '-' %}
-                  ({{ food.expiry_date|timeuntil }} left)
+          <div class="stat-item">
+            <div class="number">{{ active_listings }}</div>
+            <div class="label">Active</div>
+          </div>
+          <div class="stat-item">
+            <div class="number">{{ pending_listings }}</div>
+            <div class="label">Pending</div>
+          </div>
+          <div class="stat-item">
+            <div class="number">{{ delivered_listings }}</div>
+            <div class="label">Delivered</div>
+          </div>
+        </div>
+
+        <!-- Controls Section -->
+        <div class="controls-section">
+          <div class="filters-sort">
+            <div class="filter-group">
+              <label for="status-filter">Status:</label>
+              <select id="status-filter" name="status">
+                <option value="">All Statuses</option>
+                <option value="available">Available</option>
+                <option value="pending">Pending</option>
+                <option value="delivered">Delivered</option>
+                <option value="expired">Expired</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="sort">Sort by:</label>
+              <select id="sort" name="sort">
+                <option value="expiry">Expiry Date</option>
+                <option value="quantity">Quantity</option>
+                <option value="name">Name</option>
+                <option value="created">Date Created</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="search">Search:</label>
+              <input type="text" id="search" placeholder="Search listings..." />
+            </div>
+          </div>
+          <div>
+            <a href="#" class="btn btn-primary">
+              ➕ Add New Listing
+            </a>
+          </div>
+        </div>
+
+        <!-- Bulk Actions -->
+        <div class="bulk-actions" id="bulk-actions">
+          <span id="selected-count">0 items selected</span>
+          <button class="btn btn-danger btn-small" onclick="bulkDelete()">
+            🗑️ Delete Selected
+          </button>
+          <button class="btn btn-secondary btn-small" onclick="clearSelection()">
+            Clear Selection
+          </button>
+        </div>
+
+        <!-- Food Listings -->
+        <div class="food-listings" id="food-listings">
+          {% for food in food_listings %}
+            <div class="food-card" data-status="{{ food.status }}" data-name="{{ food.title|lower }}" data-expiry="{{ food.expiry_date|date:'Y-m-d' }}">
+              <div class="food-card-header">
+                <input type="checkbox" class="card-checkbox" value="{{ food.id }}" onchange="toggleBulkActions()">
+                {% if food.image %}
+                  <img src="{{ food.image.url }}" alt="{{ food.title }}">
                 {% else %}
-                  (Expired)
+                  <img src="https://via.placeholder.com/280x180/f0f2f5/666?text=No+Image" alt="No image">
                 {% endif %}
-              </p>
-              {% if food.description %}
-                <p><strong>Description:</strong> {{ food.description|truncatewords:10 }}</p>
-              {% endif %}
+                <span class="status-tag status-{{ food.status }}">{{ food.status }}</span>
+              </div>
+              <div class="food-card-body">
+                <h3>{{ food.title }}</h3>
+                <div class="food-details">
+                  <p><strong>Quantity:</strong> {{ food.quantity }} {{ food.unit|default:"kg" }}</p>
+                  <p><strong>Category:</strong> {{ food.category|default:"General" }}</p>
+                  <p class="{% if food.expiry_date|timeuntil|slice:':1' == '-' %}expiry-warning{% elif food.expiry_date|timeuntil|slice:':2' == '1 ' or food.expiry_date|timeuntil|slice:':2' == '2 ' %}expiry-soon{% endif %}">
+                    <strong>Expires:</strong> {{ food.expiry_date|date:"M d, Y" }}
+                    {% if food.expiry_date|timeuntil|slice:':1' != '-' %}
+                      ({{ food.expiry_date|timeuntil }} left)
+                    {% else %}
+                      (Expired)
+                    {% endif %}
+                  </p>
+                  {% if food.description %}
+                    <p><strong>Description:</strong> {{ food.description|truncatewords:10 }}</p>
+                  {% endif %}
+                </div>
+                <div class="button-group">
+                  <a href="#" class="btn btn-secondary btn-small">
+                    ✏️ Edit
+                  </a>
+                  <a href="#" class="btn btn-danger btn-small"
+                    data-id="{{ food.id }}"
+                    data-title="{{ food.title|escape }}"
+                    onclick="confirmDeleteFromElement(this)">
+                    🗑️ Delete
+                  </a>
+                </div>
+              </div>
             </div>
-            <div class="button-group">
-              <a href="#" class="btn btn-secondary btn-small">
-                ✏️ Edit
-              </a>
-              <a href="#" class="btn btn-danger btn-small"
-                data-id="{{ food.id }}"
-                data-title="{{ food.title|escape }}"
-                onclick="confirmDeleteFromElement(this)">
-                🗑️ Delete
+          {% empty %}
+            <div class="empty-state">
+              <div class="icon">🍽️</div>
+              <h3>No Food Listings Yet</h3>
+              <p>You haven't created any food listings. Start sharing food with your community!</p>
+              <a href="#" class="btn btn-primary">
+                ➕ Create Your First Listing
               </a>
             </div>
+          {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if food_listings.has_other_pages %}
+          <div class="pagination">
+            {% if food_listings.has_previous %}
+              <a href="?page=1{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">&laquo;&laquo; First</a>
+              <a href="?page={{ food_listings.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">&laquo; Previous</a>
+            {% endif %}
+
+            <span class="current">
+              Page {{ food_listings.number }} of {{ food_listings.paginator.num_pages }}
+            </span>
+
+            {% if food_listings.has_next %}
+              <a href="?page={{ food_listings.next_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">Next &raquo;</a>
+              <a href="?page={{ food_listings.paginator.num_pages }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">Last &raquo;&raquo;</a>
+            {% endif %}
           </div>
-        </div>
-      {% empty %}
-        <div class="empty-state">
-          <div class="icon">🍽️</div>
-          <h3>No Food Listings Yet</h3>
-          <p>You haven't created any food listings. Start sharing food with your community!</p>
-          <a href="#" class="btn btn-primary">
-            ➕ Create Your First Listing
-          </a>
-        </div>
-      {% endfor %}
-    </div>
-
-    <!-- Pagination -->
-    {% if food_listings.has_other_pages %}
-      <div class="pagination">
-        {% if food_listings.has_previous %}
-          <a href="?page=1{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">&laquo;&laquo; First</a>
-          <a href="?page={{ food_listings.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">&laquo; Previous</a>
-        {% endif %}
-
-        <span class="current">
-          Page {{ food_listings.number }} of {{ food_listings.paginator.num_pages }}
-        </span>
-
-        {% if food_listings.has_next %}
-          <a href="?page={{ food_listings.next_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">Next &raquo;</a>
-          <a href="?page={{ food_listings.paginator.num_pages }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">Last &raquo;&raquo;</a>
         {% endif %}
       </div>
-    {% endif %}
+    </div>
   </div>
 
   <!-- Delete Confirmation Modal -->
@@ -706,7 +900,6 @@
       const title = el.dataset.title;
       confirmDelete(id, title);
     }
-
 
     // Close modal when clicking outside
     window.onclick = function(event) {

@@ -1,6 +1,28 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class FoodListing(models.Model):
+    donor = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    quantity = models.IntegerField()
+    location = models.CharField(max_length=255)
+    expiry_date = models.DateField()
+    pickup_date = models.DateField()
+    image = models.ImageField(upload_to='food_images/', blank=True, null=True)
+    status = models.CharField(max_length=20, choices=[
+        ('available', 'Available'),
+        ('pending', 'Pending'),
+        ('delivered', 'Delivered'),
+        ('expired', 'Expired')
+    ], default='available')
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.title} - {self.donor.username}"
+
+
 class Profile(models.Model):
     USER_ROLES = (
         ('donor', 'Food Donor'),
