@@ -606,38 +606,53 @@
         <p>Food Donor Dashboard</p>
       </div>
       <div class="user-info">
-        <div class="user-avatar">JD</div>
+        <div class="user-avatar">
+          <!-- Generate initials from user's name -->
+          {% if user.first_name and user.last_name %}
+            {{ user.first_name.0 }}{{ user.last_name.0 }}
+          {% elif user.first_name %}
+            {{ user.first_name.0 }}{{ user.first_name.1|default:'' }}
+          {% else %}
+            {{ user.username.0 }}{{ user.username.1|default:'' }}
+          {% endif %}
+        </div>
         <div class="user-details">
-          <h3>John Doe</h3>
+          <h3>
+            {% if user.get_full_name %}
+              {{ user.get_full_name }}
+            {% else %}
+              {{ user.username }}
+            {% endif %}
+          </h3>
           <p>Donor Organization</p>
         </div>
       </div>
       <div class="menu">
-        <a href="#dashboard" class="menu-item">
+        <a href="{% url 'fooddonor:donor_dashboard' %}" class="menu-item {% if request.resolver_match.url_name == 'donor_dashboard' %}active{% endif %}">
           <div class="menu-icon">🏠</div>
           <div class="menu-text">Dashboard</div>
         </a> 
-        <a href="#add-food" class="menu-item">
+        <a href="{% url 'fooddonor:add_food' %}" class="menu-item {% if request.resolver_match.url_name == 'add_food' %}active{% endif %}">
           <div class="menu-icon">➕</div>
           <div class="menu-text">Add Donation</div>
         </a>
-        <a href="#food-listing" class="menu-item active">
+        <a href="{% url 'fooddonor:food_listing' %}" class="menu-item active">
           <div class="menu-icon">📋</div>
           <div class="menu-text">My Listings</div>
         </a>
-        <a href="#pickup-schedule" class="menu-item">
+        <a href="#" class="menu-item">
           <div class="menu-icon">📆</div>
           <div class="menu-text">Pickup Schedule</div>
         </a>
-        <a href="#reports" class="menu-item">
-          <div class="menu-icon">📈</div>
-          <div class="menu-text">Donation Reports</div>
+        <a href="#" class="menu-item">
+        <div class="menu-icon">🔔</div>
+        <div class="menu-text">Notifications and Alerts</div>
         </a>
-        <a href="#settings" class="menu-item">
+        <a href="#" class="menu-item">
           <div class="menu-icon">⚙️</div>
           <div class="menu-text">Settings</div>
         </a>
-        <a href="#logout" class="menu-item">
+        <a href="#" class="menu-item">
           <div class="menu-icon">🚪</div>
           <div class="menu-text">Logout</div>
         </a>

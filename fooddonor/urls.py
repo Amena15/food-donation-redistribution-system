@@ -27,11 +27,13 @@ urlpatterns = [
     # Dashboard URLs
     path('dashboard/', views.donor_dashboard, name='donor_dashboard'),
     path('foodlisting/', views.food_listing, name='food_listing'),
-    path('add-food/', views.add_food_listing, name='add_food'),
+    path('add-food/', views.add_food, name='add_food'),
     
     # Donation listing URLs
     path('edit/<int:pk>/', views.edit_food, name='edit_food'),
     path('delete/<int:pk>/', views.delete_food, name='delete_food'),
+    path('pickup-schedule/', views.pickup_schedule, name='pickup_schedule'),
+    path('notifications/', views.notifications, name='notifications'),
     
     # Request management URLs
     #path('requests/', views.request_list, name='request_list'),

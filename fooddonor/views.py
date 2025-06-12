@@ -105,8 +105,6 @@ def donor_login(request):
 
     return render(request, 'donorlogin.html', {'form': form})
 
-
-
 def recipient_login(request):
     """
     View for handling food recipient login.
@@ -419,11 +417,19 @@ def update_request_status(request, pk, status):
     messages.success(request, f"Request has been {status} successfully.")
     return redirect('donation:request_detail', pk=donation_request.pk)
 
-def add_food_listing(request):
+@login_required
+def add_food(request):
     if request.method == 'POST':
-        # TODO: process the form submission (you can add logic later)
-        pass
-    return render(request, 'addfoodlisting.html')
+        form = FoodDonationForm(request.POST)
+        if form.is_valid():
+            donation = form.save(commit=False)
+            donation.donor = request.user
+            donation.save()
+            return redirect('fooddonor:food_listing')  # or your desired redirect
+    else:
+        form = FoodDonationForm()
+    
+    return render(request, 'addfoodlisting.html', {'form': form})
 
 
 def edit_food(request, pk):
@@ -443,4 +449,19 @@ def delete_food(request, pk):
         food.delete()
         return redirect('fooddonor:food_listing')
     return render(request, 'confirm_delete.html', {'food': food})
+
+def pickup_schedule(request):
+    # Replace with your actual queryset
+    upcoming_pickups = []  # Example: PickupSchedule.objects.filter(donor=request.user)
+    return render(request, 'pickup_schedule.html', {
+        'upcoming_pickups': upcoming_pickups
+    })
+
+def notifications(request):
+    # Dummy notifications for display purposes
+    notifications = [
+        {"date": "2025-06-12", "message": "Your donation has been picked up.", "status": "Read"},
+        {"date": "2025-06-10", "message": "New pickup scheduled for June 15.", "status": "Unread"},
+    ]
+    return render(request, 'notifications.html', {'notifications': notifications})
 
