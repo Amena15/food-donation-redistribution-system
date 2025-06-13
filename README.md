@@ -45,7 +45,7 @@ Food Donation & Redistribution System is a web-based platform developed using th
 - Manage incoming food requests and transactions  
 - Moderate and verify food listings  
 - Manage user accounts (donors and recipients)  
-- Monitor pickup schedules and fulfillment  
-- Generate system usage and performance reports  
+- Monitor pickup schedules and fulfillment
+- Generate reports on system activities and operations
 
 [![](https://visitcount.itsvg.in/api?id=imy1l&icon=0&color=0)](https://visitcount.itsvg.in)
