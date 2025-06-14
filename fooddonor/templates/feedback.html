@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Submit Feedback | Share Food, Share Hope</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <style>
+        :root {
+            --primary: #052f14;
+            --primary-light: #0a6e31;
+            --secondary: #f8b042;
+            --light: #f5f5f5;
+            --dark: #333;
+            --danger: #dc3545;
+            --success: #28a745;
+            --info: #17a2b8;
+            --gray: #6c757d;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            color: var(--dark);
+        }
+
+        .topbar {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 10px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: opacity 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        .topbar .logo {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-header p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .user-details h3 {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .user-details p {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .menu {
+            background-color: var(--primary);
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+            background-color: var(--primary);
+            color: white;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .menu-item:hover {
+            background-color: var(--primary-light);
+        }
+
+        .menu-item.active {
+            background-color: var(--primary-light);
+            border-left: 4px solid var(--secondary);
+        }
+
+        .menu-item .menu-icon,
+        .menu-item .menu-text {
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .feedback-card {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: var(--white);
+            padding: 30px;
+            text-align: center;
+        }
+
+        .card-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .card-header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .card-body {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: var(--white);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(5, 47, 20, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .form-control::placeholder {
+            color: #999;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .rating-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 8px;
+        }
+
+        .rating-stars {
+            display: flex;
+            gap: 5px;
+        }
+
+        .star {
+            font-size: 24px;
+            color: #ddd;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .star:hover,
+        .star.active {
+            color: var(--secondary);
+            transform: scale(1.1);
+        }
+
+        .rating-text {
+            margin-left: 10px;
+            font-size: 14px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+
+        .checkbox-group label {
+            font-size: 14px;
+            color: var(--gray);
+            cursor: pointer;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 35px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 140px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(5, 47, 20, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--gray);
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+            background: var(--light);
+            border-color: var(--gray);
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, var(--success) 0%, #32c967 100%);
+            color: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+            display: none;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .feedback-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .feedback-type {
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            background: var(--white);
+        }
+
+        .feedback-type:hover {
+            border-color: var(--primary);
+            background: rgba(5, 47, 20, 0.05);
+        }
+
+        .feedback-type.selected {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 10px 0;
+            }
+
+            .sidebar-header {
+                padding: 10px 20px;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .card-header {
+                padding: 25px 20px;
+            }
+
+            .card-body {
+                padding: 25px 20px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-group {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .nav-links {
+                gap: 15px;
+            }
+
+            .nav-links a {
+                font-size: 12px;
+                padding: 6px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="logo">Share Food, Share Hope</div>
+        <div class="nav-links">
+            <a href="#">Dashboard</a>
+            <a href="#">Home</a>
+            <a href="#">About Us</a>
+            <a href="#">Contact Us</a>
+            <a href="#">Logout</a>
+        </div>
+    </div>
+
+    <div class="dashboard">
+        <!-- Sidebar for Donor -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Donor Panel</h2>
+                <p>Food Donor Dashboard</p>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar">
+                    <!-- Generate initials from user's name -->
+                    {% if user.first_name and user.last_name %}
+                        {{ user.first_name.0 }}{{ user.last_name.0 }}
+                    {% elif user.first_name %}
+                        {{ user.first_name.0 }}{{ user.first_name.1|default:'' }}
+                    {% else %}
+                        {{ user.username.0 }}{{ user.username.1|default:'' }}
+                    {% endif %}
+                </div>
+                <div class="user-details">
+                    <h3>
+                        {% if user.get_full_name %}
+                        {{ user.get_full_name }}
+                        {% else %}
+                        {{ user.username }}
+                        {% endif %}
+                    </h3>
+                    <p>Donor Organization</p>
+                </div>
+            </div>
+            <div class="menu">
+                <a href="{% url 'fooddonor:donor_dashboard' %}" class="menu-item">
+                    <div class="menu-icon">🏠</div>
+                    <div class="menu-text">Dashboard</div>
+                </a> 
+                <a href="{% url 'fooddonor:add_food' %}" class="menu-item">
+                    <div class="menu-icon">➕</div>
+                    <div class="menu-text">Add Donation</div>
+                </a>
+                <a href="{% url 'fooddonor:food_listing' %}" class="menu-item">
+                    <div class="menu-icon">📋</div>
+                    <div class="menu-text">Donation Listings</div>
+                </a>
+                <a href="{% url 'fooddonor:donation_history' %}" class="menu-item">
+                    <div class="menu-icon">📜</div> 
+                    <div class="menu-text">Donation History</div>
+                </a>
+                <a href="{% url 'fooddonor:pickup_schedule' %}" class="menu-item">
+                    <div class="menu-icon">📆</div>
+                    <div class="menu-text">Pickup Schedule</div>
+                </a>
+                <a href="{% url 'fooddonor:notifications' %}" class="menu-item">
+                    <div class="menu-icon">🔔</div>
+                    <div class="menu-text">Notifications</div>
+                </a>
+            <a href="{% url 'fooddonor:submit_feedback' %}" class="menu-item active">
+                <div class="menu-icon">💬</div>  
+                <div class="menu-text">Submit Feedback</div>
+            </a>
+            <a href="{% url 'fooddonor:settings' %}" class="menu-item">
+                <div class="menu-icon">⚙️</div>
+                <div class="menu-text">Settings</div>
+            </a>
+            <a href="{% url 'fooddonor:logout' %}" class="menu-item">
+                <div class="menu-icon">🚪</div>
+                <div class="menu-text">Logout</div>
+            </a>
+            </div>
+            <div class="sidebar-footer">
+                <p>© 2025 Share Food, Share Hope</p>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="feedback-card">
+                <div class="card-header">
+                    <h1>💭 Share Your Feedback</h1>
+                    <p>Help us improve our platform and serve you better</p>
+                </div>
+                
+                <div class="card-body">
+                    <div class="success-message" id="successMessage">
+                        <h3>✅ Thank you for your feedback!</h3>
+                        <p>Your submission has been received and will help us improve our services.</p>
+                    </div>
+
+                    <form id="feedbackForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Full Name *</label>
+                                <input type="text" class="form-control" name="name" placeholder="Enter your full name" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email Address *</label>
+                                <input type="email" class="form-control" name="email" placeholder="Enter your email" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Feedback Type *</label>
+                            <div class="feedback-types">
+                                <div class="feedback-type" data-type="suggestion">💡 Suggestion</div>
+                                <div class="feedback-type" data-type="bug">🐛 Bug Report</div>
+                                <div class="feedback-type" data-type="compliment">👏 Compliment</div>
+                                <div class="feedback-type" data-type="complaint">😟 Complaint</div>
+                                <div class="feedback-type" data-type="feature">🚀 Feature Request</div>
+                                <div class="feedback-type" data-type="other">📝 Other</div>
+                            </div>
+                            <input type="hidden" name="feedbackType" id="feedbackType" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Overall Rating *</label>
+                            <div class="rating-group">
+                                <div class="rating-stars">
+                                    <span class="star" data-rating="1">⭐</span>
+                                    <span class="star" data-rating="2">⭐</span>
+                                    <span class="star" data-rating="3">⭐</span>
+                                    <span class="star" data-rating="4">⭐</span>
+                                    <span class="star" data-rating="5">⭐</span>
+                                </div>
+                                <span class="rating-text" id="ratingText">Please rate your experience</span>
+                            </div>
+                            <input type="hidden" name="rating" id="rating" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Subject *</label>
+                            <input type="text" class="form-control" name="subject" placeholder="Brief summary of your feedback" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Detailed Feedback *</label>
+                            <textarea class="form-control" name="message" placeholder="Please provide detailed feedback about your experience..." required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Additional Information</label>
+                            <textarea class="form-control" name="additional" placeholder="Any additional comments or suggestions (optional)"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="followUp" name="followUp">
+                                <label for="followUp">I would like to be contacted regarding this feedback</label>
+                            </div>
+                        </div>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                                🔄 Reset Form
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                📤 Submit Feedback
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Feedback type selection
+        document.querySelectorAll('.feedback-type').forEach(type => {
+            type.addEventListener('click', function() {
+                document.querySelectorAll('.feedback-type').forEach(t => t.classList.remove('selected'));
+                this.classList.add('selected');
+                document.getElementById('feedbackType').value = this.dataset.type;
+            });
+        });
+
+        // Star rating
+        const stars = document.querySelectorAll('.star');
+        const ratingText = document.getElementById('ratingText');
+        const ratingInput = document.getElementById('rating');
+        const ratingTexts = ['Very Poor', 'Poor', 'Average', 'Good', 'Excellent'];
+
+        stars.forEach((star, index) => {
+            star.addEventListener('click', function() {
+                const rating = index + 1;
+                ratingInput.value = rating;
+                ratingText.textContent = ratingTexts[index];
+                
+                stars.forEach((s, i) => {
+                    s.classList.toggle('active', i < rating);
+                });
+            });
+
+            star.addEventListener('mouseenter', function() {
+                const rating = index + 1;
+                stars.forEach((s, i) => {
+                    s.style.color = i < rating ? '#f8b042' : '#ddd';
+                });
+            });
+        });
+
+        document.querySelector('.rating-stars').addEventListener('mouseleave', function() {
+            const currentRating = parseInt(ratingInput.value) || 0;
+            stars.forEach((s, i) => {
+                s.style.color = i < currentRating ? '#f8b042' : '#ddd';
+            });
+        });
+
+        // Form submission
+        document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validate required fields
+            const name = document.querySelector('input[name="name"]').value.trim();
+            const email = document.querySelector('input[name="email"]').value.trim();
+            const feedbackType = document.getElementById('feedbackType').value;
+            const rating = document.getElementById('rating').value;
+            const subject = document.querySelector('input[name="subject"]').value.trim();
+            const message = document.querySelector('textarea[name="message"]').value.trim();
+
+            if (!name || !email || !feedbackType || !rating || !subject || !message) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            // Show success message
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('feedbackForm').style.display = 'none';
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Here you would typically send the data to your server
+            console.log('Feedback submitted:', {
+                name, email, feedbackType, rating, subject, message,
+                additional: document.querySelector('textarea[name="additional"]').value,
+                followUp: document.getElementById('followUp').checked
+            });
+        });
+
+        // Reset form function
+        function resetForm() {
+            if (confirm('Are you sure you want to reset the form? All entered data will be lost.')) {
+                document.getElementById('feedbackForm').reset();
+                document.getElementById('feedbackType').value = '';
+                document.getElementById('rating').value = '';
+                document.getElementById('ratingText').textContent = 'Please rate your experience';
+                document.querySelectorAll('.feedback-type').forEach(t => t.classList.remove('selected'));
+                document.querySelectorAll('.star').forEach(s => {
+                    s.classList.remove('active');
+                    s.style.color = '#ddd';
+                });
+                document.getElementById('successMessage').style.display = 'none';
+                document.getElementById('feedbackForm').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

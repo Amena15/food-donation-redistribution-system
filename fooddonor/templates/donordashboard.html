@@ -390,21 +390,29 @@
 </a>
 <a href="{% url 'fooddonor:food_listing' %}" class="menu-item">
 <div class="menu-icon">📋</div>
-<div class="menu-text">My Listings</div>
+<div class="menu-text">Donation Listings</div>
 </a>
-<a href="#" class="menu-item">
+<a href="{% url 'fooddonor:donation_history' %}" class="menu-item">
+  <div class="menu-icon">📜</div>  <!-- Scroll/record icon -->
+  <div class="menu-text">Donation History</div>
+</a>
+<a href="{% url 'fooddonor:pickup_schedule' %}" class="menu-item">
 <div class="menu-icon">📆</div>
 <div class="menu-text">Pickup Schedule</div>
 </a>
-<a href="#" class="menu-item">
+<a href="{% url 'fooddonor:notifications' %}" class="menu-item">
   <div class="menu-icon">🔔</div>
-  <div class="menu-text">Notifications and Alerts</div>
+  <div class="menu-text">Notifications</div>
 </a>
-<a href="#" class="menu-item">
+<a href="{% url 'fooddonor:submit_feedback' %}" class="menu-item">
+  <div class="menu-icon">💬</div>  <!-- Chat/feedback icon -->
+  <div class="menu-text">Submit Feedback</div>
+</a>
+<a href="{% url 'fooddonor:settings' %}" class="menu-item">
 <div class="menu-icon">⚙️</div>
 <div class="menu-text">Settings</div>
 </a>
-<a href="#" class="menu-item">
+<a href="{% url 'fooddonor:logout' %}" class="menu-item">
 <div class="menu-icon">🚪</div>
 <div class="menu-text">Logout</div>
 </a>

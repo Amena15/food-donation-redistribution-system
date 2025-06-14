@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Settings | Share Food, Share Hope</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+    :root {
+      --primary: #052f14;
+      --primary-light: #0a6e31;
+      --secondary: #f8b042;
+      --light: #f5f5f5;
+      --dark: #333;
+      --danger: #dc3545;
+      --success: #28a745;
+      --info: #17a2b8;
+      --gray: #6c757d;
+      --white: #ffffff;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #f0f2f5;
+      color: var(--dark);
+    }
+
+    .topbar {
+      background-color: var(--primary);
+      color: var(--white);
+      padding: 10px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .nav-links {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .nav-links a {
+        color: var(--white);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        transition: opacity 0.2s ease;
+    }
+
+    .nav-links a:hover {
+        opacity: 0.8;
+        text-decoration: underline;
+    }
+
+    .topbar .logo {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .dashboard {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: var(--primary);
+      color: var(--white);
+      padding: 20px 0;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-header {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .sidebar-header h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .sidebar-header p {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      padding: 0 20px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .user-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      color: var(--primary);
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    .user-details h3 {
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .user-details p {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .menu {
+      background-color: var(--primary);
+    }
+
+    .menu-item {
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      transition: background-color 0.3s ease;
+      cursor: pointer;
+      background-color: var(--primary);
+      color: white;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .menu-item:hover {
+      background-color: var(--primary-light);
+    }
+
+    .menu-item.active {
+      background-color: var(--primary-light);
+      border-left: 4px solid var(--secondary);
+    }
+
+    .menu-item .menu-icon,
+    .menu-item .menu-text {
+      color: white;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .sidebar-footer {
+      padding: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .main-content {
+      flex-grow: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .header-title h1 {
+      font-size: 28px;
+      color: var(--primary);
+      margin-bottom: 5px;
+    }
+
+    .header-title p {
+      color: var(--gray);
+      font-size: 14px;
+    }
+
+    .settings-container {
+      max-width: 800px;
+    }
+
+    .settings-section {
+      background: var(--white);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .section-header {
+      background-color: var(--primary);
+      color: var(--white);
+      padding: 15px 20px;
+      font-weight: 600;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-content {
+      padding: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: var(--dark);
+      font-size: 14px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+      font-family: 'Poppins', sans-serif;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(5, 47, 20, 0.1);
+    }
+
+    .form-control.error {
+      border-color: var(--danger);
+      box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.1);
+    }
+
+    .form-control.success {
+      border-color: var(--success);
+      box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.1);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      transition: all 0.3s ease;
+      font-size: 14px;
+      border: none;
+      gap: 8px;
+      position: relative;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: var(--white);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background-color: var(--primary-light);
+    }
+
+    .btn-secondary {
+      background-color: var(--gray);
+      color: var(--white);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background-color: #545b62;
+    }
+
+    .btn-danger {
+      background-color: var(--danger);
+      color: var(--white);
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background-color: #c82333;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--primary);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+
+    .notification-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .notification-item:last-child {
+      border-bottom: none;
+    }
+
+    .notification-info h4 {
+      font-size: 14px;
+      margin-bottom: 5px;
+      color: var(--dark);
+    }
+
+    .notification-info p {
+      font-size: 12px;
+      color: var(--gray);
+    }
+
+    .alert {
+      padding: 12px 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .alert.show {
+      display: block;
+    }
+
+    .alert-success {
+      background-color: #d4edda;
+      border: 1px solid #c3e6cb;
+      color: #155724;
+    }
+
+    .alert-error {
+      background-color: #f8d7da;
+      border: 1px solid #f5c6cb;
+      color: #721c24;
+    }
+
+    .alert-info {
+      background-color: #d1ecf1;
+      border: 1px solid #bee5eb;
+      color: #0c5460;
+    }
+
+    .alert-warning {
+      background-color: #fff3cd;
+      border: 1px solid #ffeaa7;
+      color: #856404;
+    }
+
+    .loading-spinner {
+      display: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid transparent;
+      border-top: 2px solid currentColor;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .form-error {
+      color: var(--danger);
+      font-size: 12px;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .form-error.show {
+      display: block;
+    }
+
+    .password-strength {
+      margin-top: 5px;
+      font-size: 12px;
+    }
+
+    .last-updated {
+      font-size: 12px;
+      color: var(--gray);
+      font-style: italic;
+      margin-top: 5px;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        padding: 10px 0;
+      }
+
+      .main-content {
+        padding: 20px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .form-actions {
+        flex-direction: column;
+      }
+    }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">Share Food, Share Hope</div>
+  <div class="nav-links">
+    <a href="{% url 'fooddonor:donor_dashboard' %}">Dashboard</a>
+    <a href="{% url 'fooddonor:home' %}">Home</a>
+    <a href="#">About Us</a>
+    <a href="#">Contact Us</a>
+    <a href="{% url 'fooddonor:home' %}">Logout</a>
+  </div>
+</div>
+
+<div class="dashboard">
+  <!-- Sidebar for Donor -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h2>Donor Panel</h2>
+      <p>Food Donor Dashboard</p>
+    </div>
+    
+    <div class="user-info">
+      <div class="user-avatar">
+        {% if user.first_name and user.last_name %}
+          {{ user.first_name.0 }}{{ user.last_name.0 }}
+        {% elif user.first_name %}
+          {{ user.first_name.0 }}{{ user.first_name.1|default:'' }}
+        {% else %}
+          {{ user.username.0 }}{{ user.username.1|default:'' }}
+        {% endif %}
+      </div>
+      <div class="user-details">
+        <h3>
+          {% if user.get_full_name %}
+            {{ user.get_full_name }}
+          {% else %}
+            {{ user.username }}
+          {% endif %}
+        </h3>
+        <p>Donor Organization</p>
+      </div>
+    </div>
+    
+    <div class="menu">
+      <a href="{% url 'fooddonor:donor_dashboard' %}" class="menu-item">
+        <div class="menu-icon">🏠</div>
+        <div class="menu-text">Dashboard</div>
+      </a>
+      <a href="{% url 'fooddonor:add_food' %}" class="menu-item">
+        <div class="menu-icon">➕</div>
+        <div class="menu-text">Add Donation</div>
+      </a>
+      <a href="{% url 'fooddonor:food_listing' %}" class="menu-item">
+        <div class="menu-icon">📋</div>
+        <div class="menu-text">Donation Listings</div>
+      </a>
+      <a href="{% url 'fooddonor:donation_history' %}" class="menu-item">
+        <div class="menu-icon">📜</div> 
+        <div class="menu-text">Donation History</div>
+      </a>
+      <a href="{% url 'fooddonor:pickup_schedule' %}" class="menu-item">
+        <div class="menu-icon">📆</div>
+        <div class="menu-text">Pickup Schedule</div>
+      </a>
+      <a href="{% url 'fooddonor:notifications' %}" class="menu-item">
+        <div class="menu-icon">🔔</div>
+        <div class="menu-text">Notifications</div>
+      </a>
+      <a href="{% url 'fooddonor:submit_feedback' %}" class="menu-item">
+        <div class="menu-icon">💬</div>
+        <div class="menu-text">Submit Feedback</div>
+      </a>
+      <a href="{% url 'fooddonor:settings' %}" class="menu-item active">
+        <div class="menu-icon">⚙️</div>
+        <div class="menu-text">Settings</div>
+      </a>
+      <a href="{% url 'fooddonor:logout' %}" class="menu-item">
+        <div class="menu-icon">🚪</div>
+        <div class="menu-text">Logout</div>
+      </a>
+    </div>
+    
+    <div class="sidebar-footer">
+      <p>© 2025 Share Food, Share Hope</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="header">
+      <div class="header-title">
+        <h1>Settings</h1>
+        <p>Manage your account and preferences</p>
+      </div>
+    </div>
+
+    <!-- Global Alert Messages -->
+    <div id="global-alert" class="alert">
+      <span id="alert-message"></span>
+    </div>
+
+    <div class="settings-container">
+      <!-- Profile Information -->
+      <div class="settings-section">
+        <div class="section-header">
+          <span>👤</span>
+          Profile Information
+        </div>
+        <div class="section-content">
+          <form id="profile-form" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="profile">
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="first_name">First Name</label>
+                <input type="text" id="first_name" name="first_name" class="form-control" 
+                       value="{{ user.first_name }}" placeholder="Enter first name" required>
+                <div class="form-error" id="first_name_error"></div>
+              </div>
+              <div class="form-group">
+                <label for="last_name">Last Name</label>
+                <input type="text" id="last_name" name="last_name" class="form-control" 
+                       value="{{ user.last_name }}" placeholder="Enter last name" required>
+                <div class="form-error" id="last_name_error"></div>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input type="email" id="email" name="email" class="form-control" 
+                     value="{{ user.email }}" placeholder="Enter email address" required>
+              <div class="form-error" id="email_error"></div>
+              {% if user.profile.email_verified %}
+                <div class="last-updated">✅ Email verified</div>
+              {% else %}
+                <div class="last-updated">⚠️ Email not verified - <a href="#" id="verify-email">Send verification</a></div>
+              {% endif %}
+            </div>
+            
+            <div class="form-group">
+              <label for="phone">Phone Number</label>
+              <input type="tel" id="phone" name="phone" class="form-control" 
+                     value="{{ user.profile.phone|default:'' }}" placeholder="Enter phone number">
+              <div class="form-error" id="phone_error"></div>
+            </div>
+            
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" id="reset-profile">Reset</button>
+              <button type="submit" class="btn btn-primary">
+                <span class="loading-spinner"></span>
+                💾 Save Changes
+              </button>
+            </div>
+          </form>
+          
+          <div class="last-updated">
+            Last updated: {{ user.profile.updated_at|date:"F d, Y g:i A"|default:"Never" }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Organization Details -->
+      <div class="settings-section">
+        <div class="section-header">
+          <span>🏢</span>
+          Organization Details
+        </div>
+        <div class="section-content">
+          <form id="organization-form" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="organization">
+            
+            <div class="form-group">
+              <label for="org_name">Organization Name</label>
+              <input type="text" id="org_name" name="org_name" class="form-control" 
+                     value="{{ user.profile.organization_name|default:'' }}" placeholder="Enter organization name" required>
+              <div class="form-error" id="org_name_error"></div>
+            </div>
+            
+            <div class="form-group">
+              <label for="org_type">Organization Type</label>
+              <select id="org_type" name="org_type" class="form-control" required>
+                <option value="">Select organization type</option>
+                <option value="restaurant" {% if user.profile.organization_type == 'restaurant' %}selected{% endif %}>Restaurant</option>
+                <option value="grocery" {% if user.profile.organization_type == 'grocery' %}selected{% endif %}>Grocery Store</option>
+                <option value="catering" {% if user.profile.organization_type == 'catering' %}selected{% endif %}>Catering Service</option>
+                <option value="bakery" {% if user.profile.organization_type == 'bakery' %}selected{% endif %}>Bakery</option>
+                <option value="hotel" {% if user.profile.organization_type == 'hotel' %}selected{% endif %}>Hotel</option>
+                <option value="other" {% if user.profile.organization_type == 'other' %}selected{% endif %}>Other</option>
+              </select>
+              <div class="form-error" id="org_type_error"></div>
+            </div>
+            
+            <div class="form-group">
+              <label for="address">Address</label>
+              <textarea id="address" name="address" class="form-control" rows="3" 
+                        placeholder="Enter full address" required>{{ user.profile.address|default:'' }}</textarea>
+              <div class="form-error" id="address_error"></div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="city">City</label>
+                <input type="text" id="city" name="city" class="form-control" 
+                       value="{{ user.profile.city|default:'' }}" placeholder="Enter city" required>
+                <div class="form-error" id="city_error"></div>
+              </div>
+              <div class="form-group">
+                <label for="postal_code">Postal Code</label>
+                <input type="text" id="postal_code" name="postal_code" class="form-control" 
+                       value="{{ user.profile.postal_code|default:'' }}" placeholder="Enter postal code" required>
+                <div class="form-error" id="postal_code_error"></div>
+              </div>
+            </div>
+            
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" id="reset-organization">Reset</button>
+              <button type="submit" class="btn btn-primary">
+                <span class="loading-spinner"></span>
+                💾 Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Notification Preferences -->
+      <div class="settings-section">
+        <div class="section-header">
+          <span>🔔</span>
+          Notification Preferences
+        </div>
+        <div class="section-content">
+          <form id="notifications-form" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="notifications">
+            
+            <div class="notification-item">
+              <div class="notification-info">
+                <h4>Email Notifications</h4>
+                <p>Receive email updates about your donations and pickups</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" name="email_notifications" 
+                       {% if user.profile.email_notifications %}checked{% endif %}>
+                <span class="slider"></span>
+              </label>
+            </div>
+            
+            <div class="notification-item">
+              <div class="notification-info">
+                <h4>SMS Notifications</h4>
+                <p>Get text messages for urgent pickup reminders</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" name="sms_notifications" 
+                       {% if user.profile.sms_notifications %}checked{% endif %}>
+                <span class="slider"></span>
+              </label>
+            </div>
+            
+            <div class="notification-item">
+              <div class="notification-info">
+                <h4>Pickup Reminders</h4>
+                <p>Receive reminders 24 hours before scheduled pickups</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" name="pickup_reminders" 
+                       {% if user.profile.pickup_reminders %}checked{% endif %}>
+                <span class="slider"></span>
+              </label>
+            </div>
+            
+            <div class="notification-item">
+              <div class="notification-info">
+                <h4>Weekly Reports</h4>
+                <p>Get weekly summary of your donation impact</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" name="weekly_reports" 
+                       {% if user.profile.weekly_reports %}checked{% endif %}>
+                <span class="slider"></span>
+              </label>
+            </div>
+            
+            <div class="notification-item">
+              <div class="notification-info">
+                <h4>New Feature Updates</h4>
+                <p>Stay informed about new platform features</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" name="feature_updates" 
+                       {% if user.profile.feature_updates %}checked{% endif %}>
+                <span class="slider"></span>
+              </label>
+            </div>
+            
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">
+                <span class="loading-spinner"></span>
+                💾 Save Preferences
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Donation Preferences -->
+      <div class="settings-section">
+        <div class="section-header">
+          <span>🥗</span>
+          Donation Preferences
+        </div>
+        <div class="section-content">
+          <form id="donation-preferences-form" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="donation_preferences">
+            
+            <div class="form-group">
+              <label for="default_quantity_unit">Default Quantity Unit</label>
+              <select id="default_quantity_unit" name="default_quantity_unit" class="form-control">
+                <option value="kg" {% if user.profile.default_quantity_unit == 'kg' %}selected{% endif %}>Kilograms (kg)</option>
+                <option value="lbs" {% if user.profile.default_quantity_unit == 'lbs' %}selected{% endif %}>Pounds (lbs)</option>
+                <option value="portions" {% if user.profile.default_quantity_unit == 'portions' %}selected{% endif %}>Portions</option>
+                <option value="items" {% if user.profile.default_quantity_unit == 'items' %}selected{% endif %}>Items</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="preferred_pickup_time">Preferred Pickup Time Window</label>
+              <select id="preferred_pickup_time" name="preferred_pickup_time" class="form-control">
+                <option value="morning" {% if user.profile.preferred_pickup_time == 'morning' %}selected{% endif %}>Morning (8:00 AM - 12:00 PM)</option>
+                <option value="afternoon" {% if user.profile.preferred_pickup_time == 'afternoon' %}selected{% endif %}>Afternoon (12:00 PM - 5:00 PM)</option>
+                <option value="evening" {% if user.profile.preferred_pickup_time == 'evening' %}selected{% endif %}>Evening (5:00 PM - 8:00 PM)</option>
+                <option value="flexible" {% if user.profile.preferred_pickup_time == 'flexible' %}selected{% endif %}>Flexible</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="advance_notice">Minimum Advance Notice Required</label>
+              <select id="advance_notice" name="advance_notice" class="form-control">
+                <option value="2hours" {% if user.profile.advance_notice == '2hours' %}selected{% endif %}>2 Hours</option>
+                <option value="4hours" {% if user.profile.advance_notice == '4hours' %}selected{% endif %}>4 Hours</option>
+                <option value="1day" {% if user.profile.advance_notice == '1day' %}selected{% endif %}>1 Day</option>
+                <option value="2days" {% if user.profile.advance_notice == '2days' %}selected{% endif %}>2 Days</option>
+              </select>
+            </div>
+            
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" id="reset-donation-preferences">Reset to Default</button>
+              <button type="submit" class="btn btn-primary">
+                <span class="loading-spinner"></span>
+                💾 Save Preferences
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Privacy & Security -->
+      <div class="settings-section">
+        <div class="section-header">
+          <span>🔒</span>
+          Privacy & Security
+        </div>
+        <div class="section-content">
+          <div class="alert alert-info show">
+            <strong>Password Security:</strong> Your account is protected with strong encryption. 
+            Last password change: {{ user.last_login|date:"F d, Y"|default:"Never" }}
+          </div>
+          
+          <form id="password-form" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="password">
+            
+            <div class="form-group">
+              <label for="current_password">Current Password</label>
+              <input type="password" id="current_password" name="current_password" class="form-control" 
+                     placeholder="Enter current password" required>
+              <div class="form-error" id="current_password_error"></div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="new_password">New Password</label>
+                <input type="password" id="new_password" name="new_password" class="form-control" 
+                       placeholder="Enter new password" required>
+                <div class="password-strength" id="password-strength"></div>
+                <div class="form-error" id="new_password_error"></div>
+              </div>
+              <div class="form-group">
+                <label for="confirm_password">Confirm New Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" class="form-control" 
+                       placeholder="Confirm new password" required>
+                <div class="form-error" id="confirm_password_error"></div>
+                </div>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" id="reset-password">Reset</button>
+              <button type="submit" class="btn btn-primary">
+                <span class="loading-spinner"></span>
+                💾 Change Password
+              </button>
+            </div>
+            </form>
+            <div class="last-updated">
+                Last password change: {{ user.profile.password_changed_at|date:"F d, Y g:i A"|default:"Never" }}
+            </div>
+        </div>
+        </div>
+        <!-- Account Deletion -->
+        <div class="settings-section">
+          <div class="section-header">
+            <span>🗑️</span>
+            Account Deletion
+          </div>
+          <div class="section-content">
+            <p class="alert alert-warning">
+              Deleting your account is permanent and cannot be undone. All your data will be lost.
+            </p>
+            <form id="delete-account-form" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="form_type" value="delete_account">
+              <button type="submit" class="btn btn-danger">
+                <span class="loading-spinner"></span>
+                🗑️ Delete My Account
+              </button>
+            </form>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Utility functions
+      function showError(input, message) {
+        const errorDiv = document.getElementById(input.id + '_error');
+        if (errorDiv) {
+          errorDiv.textContent = message;
+          errorDiv.classList.add('show');
+          input.classList.add('error');
+        }
+      }
+
+      function clearError(input) {
+        const errorDiv = document.getElementById(input.id + '_error');
+        if (errorDiv) {
+          errorDiv.textContent = '';
+          errorDiv.classList.remove('show');
+          input.classList.remove('error');
+        }
+      }
+
+      function validateEmail(email) {
+        const re = /^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$/;
+        return re.test(email);
+      }
+
+      // Reset form fields to initial values
+      function resetForm(formId) {
+        const form = document.getElementById(formId);
+        if (!form) return;
+        form.reset();
+        // Clear errors
+        form.querySelectorAll('.form-error').forEach(el => el.classList.remove('show'));
+        form.querySelectorAll('.form-control').forEach(el => el.classList.remove('error'));
+      }
+
+      // Show loading spinner on submit button
+      function showLoading(form) {
+        const spinner = form.querySelector('.loading-spinner');
+        if (spinner) spinner.style.display = 'inline-block';
+      }
+
+      // Hide loading spinner on submit button
+      function hideLoading(form) {
+        const spinner = form.querySelector('.loading-spinner');
+        if (spinner) spinner.style.display = 'none';
+      }
+
+      // Profile form reset
+      const resetProfileBtn = document.getElementById('reset-profile');
+      if (resetProfileBtn) {
+        resetProfileBtn.addEventListener('click', () => resetForm('profile-form'));
+      }
+
+      // Organization form reset
+      const resetOrgBtn = document.getElementById('reset-organization');
+      if (resetOrgBtn) {
+        resetOrgBtn.addEventListener('click', () => resetForm('organization-form'));
+      }
+
+      // Donation preferences reset
+      const resetDonationBtn = document.getElementById('reset-donation-preferences');
+      if (resetDonationBtn) {
+        resetDonationBtn.addEventListener('click', () => resetForm('donation-preferences-form'));
+      }
+
+      // Password form reset
+      const resetPasswordBtn = document.getElementById('reset-password');
+      if (resetPasswordBtn) {
+        resetPasswordBtn.addEventListener('click', () => resetForm('password-form'));
+      }
+
+      // Password strength meter
+      const newPasswordInput = document.getElementById('new_password');
+      const passwordStrengthDiv = document.getElementById('password-strength');
+
+      function checkPasswordStrength(password) {
+        let strength = 0;
+        if (password.length >= 8) strength++;
+        if (/[A-Z]/.test(password)) strength++;
+        if (/[a-z]/.test(password)) strength++;
+        if (/[0-9]/.test(password)) strength++;
+        if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+        switch (strength) {
+          case 0:
+          case 1:
+          case 2:
+            return { text: 'Weak', color: 'var(--danger)' };
+          case 3:
+          case 4:
+            return { text: 'Moderate', color: 'orange' };
+          case 5:
+            return { text: 'Strong', color: 'var(--success)' };
+          default:
+            return { text: '', color: '' };
+        }
+      }
+
+      if (newPasswordInput && passwordStrengthDiv) {
+        newPasswordInput.addEventListener('input', () => {
+          const val = newPasswordInput.value;
+          if (val.length === 0) {
+            passwordStrengthDiv.textContent = '';
+            passwordStrengthDiv.style.color = '';
+            return;
+          }
+          const strength = checkPasswordStrength(val);
+          passwordStrengthDiv.textContent = 'Strength: ' + strength.text;
+          passwordStrengthDiv.style.color = strength.color;
+        });
+      }
+
+      // Email verification link
+      const verifyEmailLink = document.getElementById('verify-email');
+      if (verifyEmailLink) {
+        verifyEmailLink.addEventListener('click', function (e) {
+          e.preventDefault();
+          alert('Verification email sent. Please check your inbox.');
+          // TODO: Implement AJAX call to send verification email
+        });
+      }
+
+      // Form validation and submit handlers
+      function validateProfileForm(form) {
+        let valid = true;
+        const firstName = form.first_name;
+        const lastName = form.last_name;
+        const email = form.email;
+        clearError(firstName);
+        clearError(lastName);
+        clearError(email);
+
+        if (!firstName.value.trim()) {
+          showError(firstName, 'First name is required.');
+          valid = false;
+        }
+        if (!lastName.value.trim()) {
+          showError(lastName, 'Last name is required.');
+          valid = false;
+        }
+        if (!email.value.trim()) {
+          showError(email, 'Email is required.');
+          valid = false;
+        } else if (!validateEmail(email.value.trim())) {
+          showError(email, 'Invalid email format.');
+          valid = false;
+        }
+        return valid;
+      }
+
+      function validateOrganizationForm(form) {
+        let valid = true;
+        const orgName = form.org_name;
+        const orgType = form.org_type;
+        const address = form.address;
+        const city = form.city;
+        const postalCode = form.postal_code;
+        clearError(orgName);
+        clearError(orgType);
+        clearError(address);
+        clearError(city);
+        clearError(postalCode);
+
+        if (!orgName.value.trim()) {
+          showError(orgName, 'Organization name is required.');
+          valid = false;
+        }
+        if (!orgType.value.trim()) {
+          showError(orgType, 'Organization type is required.');
+          valid = false;
+        }
+        if (!address.value.trim()) {
+          showError(address, 'Address is required.');
+          valid = false;
+        }
+        if (!city.value.trim()) {
+          showError(city, 'City is required.');
+          valid = false;
+        }
+        if (!postalCode.value.trim()) {
+          showError(postalCode, 'Postal code is required.');
+          valid = false;
+        }
+        return valid;
+      }
+
+      function validatePasswordForm(form) {
+        let valid = true;
+        const currentPassword = form.current_password;
+        const newPassword = form.new_password;
+        const confirmPassword = form.confirm_password;
+        clearError(currentPassword);
+        clearError(newPassword);
+        clearError(confirmPassword);
+
+        if (!currentPassword.value.trim()) {
+          showError(currentPassword, 'Current password is required.');
+          valid = false;
+        }
+        if (!newPassword.value.trim()) {
+          showError(newPassword, 'New password is required.');
+          valid = false;
+        }
+        if (!confirmPassword.value.trim()) {
+          showError(confirmPassword, 'Please confirm your new password.');
+          valid = false;
+        }
+        if (newPassword.value && confirmPassword.value && newPassword.value !== confirmPassword.value) {
+          showError(confirmPassword, 'Passwords do not match.');
+          valid = false;
+        }
+        return valid;
+      }
+
+      // Generic form submit handler
+      function handleFormSubmit(event, validateFn) {
+        event.preventDefault();
+        const form = event.target;
+        if (!validateFn(form)) {
+          return;
+        }
+        showLoading(form);
+        // Submit the form normally or via AJAX here
+        form.submit();
+      }
+
+      // Attach submit handlers
+      const profileForm = document.getElementById('profile-form');
+      if (profileForm) {
+        profileForm.addEventListener('submit', (e) => handleFormSubmit(e, validateProfileForm));
+      }
+
+      const organizationForm = document.getElementById('organization-form');
+      if (organizationForm) {
+        organizationForm.addEventListener('submit', (e) => handleFormSubmit(e, validateOrganizationForm));
+      }
+
+      const passwordForm = document.getElementById('password-form');
+      if (passwordForm) {
+        passwordForm.addEventListener('submit', (e) => handleFormSubmit(e, validatePasswordForm));
+      }
+
+      // For notifications and donation preferences forms, just show loading spinner on submit
+      const notificationsForm = document.getElementById('notifications-form');
+      if (notificationsForm) {
+        notificationsForm.addEventListener('submit', function (e) {
+          showLoading(notificationsForm);
+        });
+      }
+
+      const donationPreferencesForm = document.getElementById('donation-preferences-form');
+      if (donationPreferencesForm) {
+        donationPreferencesForm.addEventListener('submit', function (e) {
+          showLoading(donationPreferencesForm);
+        });
+      }
+
+      // Account deletion confirmation
+      const deleteAccountForm = document.getElementById('delete-account-form');
+      if (deleteAccountForm) {
+        deleteAccountForm.addEventListener('submit', function (e) {
+          if (!confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+            e.preventDefault();
+          } else {
+            showLoading(deleteAccountForm);
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

@@ -16,6 +16,13 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.conf import settings
 from .models import FoodListing
 from .forms import FoodDonationForm
+from django.utils import timezone
+import json
+from django.http import JsonResponse
+from .models import Notification
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 
 
 def home(request):
@@ -268,6 +275,31 @@ def donation_detail(request, pk):
     }
     return render(request, 'donation/donation_detail.html', context)
 
+@login_required
+def request_donation(request, pk):
+    """View to handle a recipient requesting a donation"""
+    donation = get_object_or_404(FoodDonation, pk=pk)
+    user_profile = request.user.profile
+
+    if user_profile.role != 'recipient':
+        messages.error(request, "Only recipients can request donations.")
+        return redirect('donation:donation_detail', pk=pk)
+
+    if request.method == 'POST':
+        form = DonationRequestForm(request.POST)
+        if form.is_valid():
+            donation_request = form.save(commit=False)
+            donation_request.donation = donation
+            donation_request.recipient = user_profile
+            donation_request.status = 'pending'
+            donation_request.save()
+            messages.success(request, "Your request has been submitted.")
+            return redirect('donation:donation_detail', pk=pk)
+    else:
+        form = DonationRequestForm()
+
+    return render(request, 'donation/request_form.html', {'form': form, 'donation': donation})
+
 # Create donation view
 @login_required
 @user_passes_test(is_donor)
@@ -453,7 +485,7 @@ def delete_food(request, pk):
 def pickup_schedule(request):
     # Replace with your actual queryset
     upcoming_pickups = []  # Example: PickupSchedule.objects.filter(donor=request.user)
-    return render(request, 'pickup_schedule.html', {
+    return render(request, 'pickupschedule.html', {
         'upcoming_pickups': upcoming_pickups
     })
 
@@ -465,3 +497,163 @@ def notifications(request):
     ]
     return render(request, 'notifications.html', {'notifications': notifications})
 
+def submit_feedback(request):
+    if request.method == 'POST':
+        # Here you can handle the feedback form submission if needed
+        # For now, just redirect back to the feedback page or show a success message
+        return render(request, 'feedback.html', {'message': 'Thank you for your feedback!'})
+    return render(request, 'feedback.html')
+
+@login_required
+def donation_history(request):
+    """View to display the donation history of the logged-in donor"""
+    profile = request.user.profile
+    donations = FoodDonation.objects.filter(donor=profile).order_by('-created_at')
+    return render(request, 'donationhistory.html', {'donations': donations})
+
+@login_required
+@user_passes_test(is_donor)
+def settings(request):
+    user = request.user
+    profile = user.profile
+
+    if request.method == 'POST':
+        form_type = request.POST.get('form_type')
+
+        if form_type == 'profile':
+            first_name = request.POST.get('first_name', '').strip()
+            last_name = request.POST.get('last_name', '').strip()
+            email = request.POST.get('email', '').strip()
+            phone = request.POST.get('phone', '').strip()
+
+            # Basic validation (can be extended)
+            if not first_name or not last_name or not email:
+                messages.error(request, "Please fill in all required profile fields.")
+            else:
+                user.first_name = first_name
+                user.last_name = last_name
+                user.email = email
+                user.save()
+
+                profile.phone = phone
+                profile.save()
+
+                messages.success(request, "Profile information updated successfully.")
+
+        elif form_type == 'organization':
+            org_name = request.POST.get('org_name', '').strip()
+            org_type = request.POST.get('org_type', '').strip()
+            address = request.POST.get('address', '').strip()
+            city = request.POST.get('city', '').strip()
+            postal_code = request.POST.get('postal_code', '').strip()
+
+            if not org_name or not org_type or not address or not city or not postal_code:
+                messages.error(request, "Please fill in all required organization fields.")
+            else:
+                profile.organization_name = org_name
+                profile.organization_type = org_type
+                profile.address = address
+                profile.city = city
+                profile.postal_code = postal_code
+                profile.save()
+
+                messages.success(request, "Organization details updated successfully.")
+
+        elif form_type == 'notifications':
+            profile.email_notifications = 'email_notifications' in request.POST
+            profile.sms_notifications = 'sms_notifications' in request.POST
+            profile.pickup_reminders = 'pickup_reminders' in request.POST
+            profile.weekly_reports = 'weekly_reports' in request.POST
+            profile.feature_updates = 'feature_updates' in request.POST
+            profile.save()
+
+            messages.success(request, "Notification preferences updated successfully.")
+
+        elif form_type == 'donation_preferences':
+            profile.default_quantity_unit = request.POST.get('default_quantity_unit', profile.default_quantity_unit)
+            profile.preferred_pickup_time = request.POST.get('preferred_pickup_time', profile.preferred_pickup_time)
+            profile.advance_notice = request.POST.get('advance_notice', profile.advance_notice)
+            profile.save()
+
+            messages.success(request, "Donation preferences updated successfully.")
+
+        elif form_type == 'password':
+            current_password = request.POST.get('current_password', '')
+            new_password = request.POST.get('new_password', '')
+            confirm_password = request.POST.get('confirm_password', '')
+
+            if not user.check_password(current_password):
+                messages.error(request, "Current password is incorrect.")
+            elif new_password != confirm_password:
+                messages.error(request, "New passwords do not match.")
+            elif len(new_password) < 8:
+                messages.error(request, "New password must be at least 8 characters long.")
+            else:
+                user.set_password(new_password)
+                user.save()
+                profile.password_changed_at = timezone.now()
+                profile.save()
+                messages.success(request, "Password changed successfully.")
+                # After password change, re-login might be required
+                return redirect('fooddonor:donorlogin')
+
+        elif form_type == 'delete_account':
+            user.delete()
+            messages.success(request, "Your account has been deleted.")
+            return redirect('fooddonor:home')
+
+        else:
+            messages.error(request, "Invalid form submission.")
+
+    context = {
+        'user': user,
+        'profile': profile,
+    }
+    return render(request, 'donorsettings.html', context)
+
+@login_required
+def notifications_view(request):
+    notifications = Notification.objects.filter(user=request.user).order_by('-timestamp')
+    return render(request, 'notifications.html', {'notifications': notifications})
+
+@login_required
+def mark_all_notifications_read(request):
+    if request.method == 'POST':
+        Notification.objects.filter(user=request.user, read=False).update(read=True)
+        return JsonResponse({'status': 'success'})
+
+@login_required
+def mark_notification_read(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        Notification.objects.filter(id=data['id'], user=request.user).update(read=True)
+        return JsonResponse({'status': 'success'})
+
+@login_required
+def delete_notification(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        Notification.objects.filter(id=data['id'], user=request.user).delete()
+        return JsonResponse({'status': 'success'})
+
+
+@login_required
+@csrf_exempt
+def toggle_email_notifications(request):
+    if request.method == 'POST':
+        profile = request.user.profile
+        profile.email_notifications = not profile.email_notifications
+        profile.save()
+        return JsonResponse({'status': 'success', 'email_notifications': profile.email_notifications})
+
+@login_required
+@require_POST
+def toggle_sms_notifications(request):
+    # Dummy response; replace with your actual logic
+    return JsonResponse({'status': 'SMS notifications toggled'})
+
+@login_required
+@require_POST
+def toggle_push_notifications(request):
+    # Replace with your actual toggle logic
+    return JsonResponse({'status': 'Push notifications toggled'})
