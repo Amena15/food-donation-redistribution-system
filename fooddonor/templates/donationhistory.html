@@ -625,22 +625,22 @@
     <div class="summary-cards">
       <div class="summary-card">
         <div class="icon">📦</div>
-        <h3 id="totalDonations">47</h3>
+        <h3 id="totalDonations">{{total_donations}}</h3>
         <p>Total Donations</p>
       </div>
       <div class="summary-card">
         <div class="icon">⚖️</div>
-        <h3 id="totalWeight">1,234 kg</h3>
+        <h3 id="totalWeight">{{total_weight}} kg</h3>
         <p>Total Weight Donated</p>
       </div>
       <div class="summary-card">
         <div class="icon">🍽️</div>
-        <h3 id="totalMeals">4,936</h3>
+        <h3 id="totalMeals">{{estimated_meals}}</h3>
         <p>Estimated Meals Provided</p>
       </div>
       <div class="summary-card">
         <div class="icon">🌍</div>
-        <h3 id="totalImpact">2,468</h3>
+        <h3 id="totalImpact">{{total_impact}}</h3>
         <p>People Impacted</p>
       </div>
     </div>
@@ -668,6 +668,22 @@
           </thead>
           <tbody id="historyTableBody">
             <!-- Table content will be populated by JavaScript -->
+             {% for donation in donations %}
+              <tr>
+                <td>{{ donation.date|date:"M d, Y" }}</td>
+                <td><strong>{{ donation.food_item }}</strong></td>
+                <td>{{ donation.category }}</td>
+                <td>{{ donation.quantity }} kg</td>
+                <td>{{ donation.recipient.name }}</td>
+                <td><span class="status-badge status-{{ donation.status }}">{{ donation.status }}</span></td>
+                <td>{{ donation.impact }} meals</td>
+                <td>
+                  <a class="btn btn-outline" href="{% url 'fooddonor:donation_detail' donation.id %}">👁️ View</a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr><td colspan="8" class="no-data">No donations found.</td></tr>
+            {% endfor %}
           </tbody>
         </table>
       </div>
@@ -686,120 +702,6 @@
 </div>
 
 <script>
-// Sample donation history data
-const donationHistory = [
-  {
-    id: 1,
-    date: '2025-06-10',
-    item: 'Fresh Vegetables Mix',
-    category: 'Vegetables',
-    quantity: '25 kg',
-    recipient: 'Hope Community Center',
-    status: 'completed',
-    impact: '100 meals',
-    pickupDate: '2025-06-11'
-  },
-  {
-    id: 2,
-    date: '2025-06-08',
-    item: 'Bread & Pastries',
-    category: 'Bakery',
-    quantity: '15 kg',
-    recipient: 'City Food Bank',
-    status: 'completed',
-    impact: '60 meals',
-    pickupDate: '2025-06-08'
-  },
-  {
-    id: 3,
-    date: '2025-06-05',
-    item: 'Rice & Grains',
-    category: 'Grains',
-    quantity: '50 kg',
-    recipient: 'Sunrise Shelter',
-    status: 'completed',
-    impact: '200 meals',
-    pickupDate: '2025-06-06'
-  },
-  {
-    id: 4,
-    date: '2025-06-03',
-    item: 'Fresh Fruits',
-    category: 'Fruits',
-    quantity: '30 kg',
-    recipient: 'Children\'s Home',
-    status: 'completed',
-    impact: '120 meals',
-    pickupDate: '2025-06-04'
-  },
-  {
-    id: 5,
-    date: '2025-06-01',
-    item: 'Dairy Products',
-    category: 'Dairy',
-    quantity: '20 kg',
-    recipient: 'Elder Care Center',
-    status: 'completed',
-    impact: '80 meals',
-    pickupDate: '2025-06-02'
-  },
-  {
-    id: 6,
-    date: '2025-05-28',
-    item: 'Canned Goods',
-    category: 'Preserved',
-    quantity: '35 kg',
-    recipient: 'Community Kitchen',
-    status: 'completed',
-    impact: '140 meals',
-    pickupDate: '2025-05-29'
-  },
-  {
-    id: 7,
-    date: '2025-05-25',
-    item: 'Prepared Meals',
-    category: 'Prepared',
-    quantity: '40 kg',
-    recipient: 'Homeless Shelter',
-    status: 'completed',
-    impact: '160 meals',
-    pickupDate: '2025-05-25'
-  },
-  {
-    id: 8,
-    date: '2025-05-22',
-    item: 'Meat & Protein',
-    category: 'Meat',
-    quantity: '18 kg',
-    recipient: 'Family Support Center',
-    status: 'completed',
-    impact: '72 meals',
-    pickupDate: '2025-05-23'
-  },
-  {
-    id: 9,
-    date: '2025-05-20',
-    item: 'Vegetables & Salads',
-    category: 'Vegetables',
-    quantity: '22 kg',
-    recipient: 'Hope Community Center',
-    status: 'completed',
-    impact: '88 meals',
-    pickupDate: '2025-05-21'
-  },
-  {
-    id: 10,
-    date: '2025-05-18',
-    item: 'Bakery Items',
-    category: 'Bakery',
-    quantity: '28 kg',
-    recipient: 'City Food Bank',
-    status: 'completed',
-    impact: '112 meals',
-    pickupDate: '2025-05-19'
-  }
-];
-
 let currentPage = 1;
 const itemsPerPage = 10;
 let filteredData = [...donationHistory];

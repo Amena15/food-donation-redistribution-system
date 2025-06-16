@@ -132,7 +132,7 @@ def donor_login(request):
             elif role == 'recipient':
                 return redirect('foodrecipient:recipient_dashboard')
             elif role == 'admin':
-                return redirect('foodadmin:admin_dashboard')
+                return redirect('foodadmin:admindashboard')
 
         return redirect('fooddonor:home')  # fallback
 
@@ -564,10 +564,21 @@ def submit_feedback(request):
 
 @login_required
 def donation_history(request):
-    """View to display the donation history of the logged-in donor"""
-    profile = request.user.profile
-    donations = FoodDonation.objects.filter(donor=profile).order_by('-created_at')
-    return render(request, 'donationhistory.html', {'donations': donations})
+    donations = FoodDonation.objects.filter(donor__user=request.user)
+
+    # Sample logic for statistics (customize as needed)
+    total_donations = donations.count()
+    total_weight = sum([float(d.quantity.replace("kg", "").strip()) for d in donations if "kg" in d.quantity])
+    estimated_meals = total_weight * 4  # e.g., 1kg = 4 meals
+    total_impact = estimated_meals // 2  # example assumption
+
+    return render(request, 'donationhistory.html', {
+        'donations': donations,
+        'total_donations': total_donations,
+        'total_weight': total_weight,
+        'estimated_meals': estimated_meals,
+        'total_impact': total_impact,
+    })
 
 @login_required
 @user_passes_test(is_donor)
