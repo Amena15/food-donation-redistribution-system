@@ -211,6 +211,8 @@
       display: inline-flex;
       align-items: center;
       transition: all 0.3s ease;
+      text-decoration: none;
+      font-size: 14px;
     }
 
     .btn-primary {
@@ -347,7 +349,7 @@
   <a href="{% url 'fooddonor:home' %}">Home</a>
   <a href="#">About Us</a>
   <a href="#">Contact Us</a>
-  <a href="{% url 'fooddonor:home' %}">Logout</a>
+  <a href="{% url 'fooddonor:logout' %}">Logout</a>
 </div>
 </div>
 <div class="dashboard">
@@ -436,10 +438,10 @@
 <p>Here's a summary of your donations.</p>
 </div>
 <div class="header-actions">
-<button class="btn btn-primary">
-<span class="btn-icon">➕</span>
-            New Donation
-          </button>
+  <a href="{% url 'fooddonor:add_food' %}" class="btn btn-primary">
+    <span class="btn-icon">➕</span>
+    New Donation
+  </a>
 </div>
 </div>
 <div class="cards-row">

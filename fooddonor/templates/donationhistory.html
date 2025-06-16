@@ -554,7 +554,7 @@
           <div class="menu-icon">⚙️</div>
           <div class="menu-text">Settings</div>
         </a>
-        <a href="#" class="menu-item">
+        <a href="{% url 'fooddonor:logout' %}" class="menu-item">
           <div class="menu-icon">🚪</div>
           <div class="menu-text">Logout</div>
         </a>
@@ -575,7 +575,7 @@
         <button class="btn btn-outline" onclick="exportHistory()">
           📄 Export Report
         </button>
-        <a href="#" class="btn btn-primary">
+        <a href="{% url 'fooddonor:add_food' %}" class="btn btn-primary">
           ➕ New Donation
         </a>
       </div>

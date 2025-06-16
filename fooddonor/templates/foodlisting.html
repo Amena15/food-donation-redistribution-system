@@ -31,7 +31,6 @@
     body {
       background-color: #f0f2f5;
       color: var(--dark);
-      line-height: 1.6;
     }
 
     .topbar {
@@ -569,12 +568,11 @@
       <a href="{% url 'fooddonor:home' %}">Home</a>
       <a href="#">About Us</a>
       <a href="#">Contact Us</a>
-      <a href="{% url 'fooddonor:home' %}">Logout</a>
+      <a href="{% url 'fooddonor:logout' %}">Logout</a>
     </div>
   </div>
 
   <div class="dashboard">
-    <!-- Sidebar for Donor -->
     <div class="sidebar">
       <div class="sidebar-header">
         <h2>Donor Panel</h2>
@@ -616,7 +614,7 @@
           <div class="menu-text">Donation Listings</div>
         </a>
         <a href="{% url 'fooddonor:donation_history' %}" class="menu-item">
-          <div class="menu-icon">📜</div> 
+          <div class="menu-icon">📜</div>
           <div class="menu-text">Donation History</div>
         </a>
         <a href="{% url 'fooddonor:pickup_schedule' %}" class="menu-item">
@@ -626,19 +624,19 @@
         <a href="{% url 'fooddonor:notifications' %}" class="menu-item">
           <div class="menu-icon">🔔</div>
           <div class="menu-text">Notifications</div>
-      </a>
-      <a href="{% url 'fooddonor:submit_feedback' %}" class="menu-item">
-        <div class="menu-icon">💬</div>  <!-- Chat/feedback icon -->
-        <div class="menu-text">Submit Feedback</div>
-      </a>
-      <a href="{% url 'fooddonor:settings' %}" class="menu-item">
-        <div class="menu-icon">⚙️</div>
-        <div class="menu-text">Settings</div>
-      </a>
-      <a href="{% url 'fooddonor:logout' %}" class="menu-item">
-        <div class="menu-icon">🚪</div>
-        <div class="menu-text">Logout</div>
-      </a>
+        </a>
+        <a href="{% url 'fooddonor:submit_feedback' %}" class="menu-item">
+          <div class="menu-icon">💬</div>
+          <div class="menu-text">Submit Feedback</div>
+        </a>
+        <a href="{% url 'fooddonor:settings' %}" class="menu-item">
+          <div class="menu-icon">⚙️</div>
+          <div class="menu-text">Settings</div>
+        </a>
+        <a href="{% url 'fooddonor:logout' %}" class="menu-item">
+          <div class="menu-icon">🚪</div>
+          <div class="menu-text">Logout</div>
+        </a>
       </div>
       <div class="sidebar-footer">
         <p>© 2025 Share Food, Share Hope</p>
@@ -701,7 +699,7 @@
             </div>
           </div>
           <div>
-            <a href="#" class="btn btn-primary">
+            <a href="{% url 'fooddonor:add_food' %}" class="btn btn-primary">
               ➕ Add New Listing
             </a>
           </div>
@@ -766,7 +764,7 @@
               <div class="icon">🍽️</div>
               <h3>No Food Listings Yet</h3>
               <p>You haven't created any food listings. Start sharing food with your community!</p>
-              <a href="#" class="btn btn-primary">
+              <a href="{% url 'fooddonor:add_food' %}" class="btn btn-primary">
                 ➕ Create Your First Listing
               </a>
             </div>

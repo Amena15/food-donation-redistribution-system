@@ -23,7 +23,14 @@ from .models import Notification
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-
+from .factories import UserFactory 
+from .strategies.context import DonationContext
+from .strategies.nearest_recipient import NearestRecipientStrategy
+from .strategies.urgent_needs import UrgentNeedsStrategy
+from .strategies.first_come import FirstComeFirstServeStrategy
+from recipient.models import Recipient
+from .observers.subject import Subject
+from .observers.recipient_notifier import RecipientNotifier
 
 def home(request):
     return render(request, 'home.html')
@@ -33,39 +40,53 @@ def register_view(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
-            # Create Profile instance linked to user
+            
+            # Extract form data
             phone_number = form.cleaned_data.get('phone_number')
             role = form.cleaned_data.get('role')
             location = form.cleaned_data.get('location')
             needs_description = form.cleaned_data.get('needs_description')
-            from .models import Profile
-            Profile.objects.create(
-                user=user,
-                phone_number=phone_number,
-                role=role,
-                location=location,
-                needs_description=needs_description
-            )
+
+            # Use the Factory Pattern here!
+            profile = UserFactory.create_user(user, role)
+            profile.phone_number = phone_number
+            profile.location = location
+            profile.needs_description = needs_description
+            profile.save()
+
             login(request, user)
-            return redirect('fooddonor:donor_dashboard')  # Correct redirection after successful signup
+
+            # Role-based redirect (optional for future enhancement)
+            if role == 'donor':
+                return redirect('fooddonor:donor_dashboard')
+            elif role == 'recipient':
+                return redirect('foodrecipient:recipient_dashboard')
+            elif role == 'admin':
+                return redirect('foodadmin:admin_dashboard')
+            else:
+                return redirect('home')  # fallback
+        else:
+            # Return form with errors if invalid
+            # Add Bootstrap styling to all fields
+            for field in form.fields.values():
+                if isinstance(field.widget, (forms.Textarea, forms.TextInput, forms.EmailInput, forms.PasswordInput)):
+                    field.widget.attrs.update({'class': 'form-control'})
+                elif isinstance(field.widget, forms.Select):
+                    field.widget.attrs.update({'class': 'form-select'})
+                else:
+                    field.widget.attrs.update({'class': 'form-control'})
+            return render(request, 'registeruser.html', {'form': form})
     else:
         form = SignUpForm()
 
-    # Add Bootstrap classes to form fields
-    for field_name, field in form.fields.items():
-        # Check if widget is Textarea or other field types
-        if isinstance(field.widget, forms.Textarea):
+    # Add Bootstrap styling to all fields
+    for field in form.fields.values():
+        if isinstance(field.widget, (forms.Textarea, forms.TextInput, forms.EmailInput, forms.PasswordInput)):
             field.widget.attrs.update({'class': 'form-control'})
         elif isinstance(field.widget, forms.Select):
             field.widget.attrs.update({'class': 'form-select'})
-        elif isinstance(field.widget, forms.TextInput):
-            field.widget.attrs.update({'class': 'form-control'})
-        elif isinstance(field.widget, forms.EmailInput):
-            field.widget.attrs.update({'class': 'form-control'})
-        elif isinstance(field.widget, forms.PasswordInput):
-            field.widget.attrs.update({'class': 'form-control'})
         else:
-            field.widget.attrs.update({'class': 'form-control'})  # Fallback for other types
+            field.widget.attrs.update({'class': 'form-control'})
 
     return render(request, 'registeruser.html', {'form': form})
 
@@ -161,7 +182,7 @@ def is_donor(user):
 
 def logout(request):
     django_logout(request)
-    return redirect('fooddonor:home')  # or 'home' or wherever you want to send the user after logout
+    return redirect('fooddonor:home') 
 
 
 @login_required
@@ -274,6 +295,19 @@ def donation_detail(request, pk):
         'request_form': request_form
     }
     return render(request, 'donation/donation_detail.html', context)
+
+def assign_donation(request, donation_id):
+    donation = get_object_or_404(FoodDonation, pk=donation_id)
+    recipient_list = Recipient.objects.all()  # Example list
+
+    # Select strategy (can be chosen by user input in real app)
+    strategy = NearestRecipientStrategy()  # You can switch this to UrgentNeedsStrategy(), etc.
+    
+    context = DonationContext(strategy)
+    selected_recipients = context.assign_recipient(donation, recipient_list)
+
+    # Do something with selected_recipients (e.g., show in template or auto-assign)
+    return render(request, 'assign_result.html', {'recipients': selected_recipients})
 
 @login_required
 def request_donation(request, pk):
@@ -457,6 +491,12 @@ def add_food(request):
             donation = form.save(commit=False)
             donation.donor = request.user
             donation.save()
+
+            #Observer Pattern: Notify recipients of new food donation
+            subject = Subject()
+            subject.attach(RecipientNotifier())
+            subject.notify(donation)
+            messages.success(request, "Food donation listing added successfully!")
             return redirect('fooddonor:food_listing')  # or your desired redirect
     else:
         form = FoodDonationForm()
