@@ -31,6 +31,11 @@ from .strategies.first_come import FirstComeFirstServeStrategy
 from recipient.models import Recipient
 from .observers.subject import Subject
 from .observers.recipient_notifier import RecipientNotifier
+from .decorators.base_donation_handler import BaseDonationHandler
+from .decorators.donation_logger import DonationLogger
+from .decorators.email_notifier import EmailNotifier
+
+
 
 def home(request):
     return render(request, 'home.html')
@@ -345,6 +350,13 @@ def donation_create(request):
             donation = form.save(commit=False)
             donation.donor = request.user.profile
             donation.save()
+
+            # Call the decorated handler after saving
+            handler = BaseDonationHandler()
+            handler = DonationLogger(handler)
+            handler = EmailNotifier(handler)
+            handler.handle(donation)
+            
             messages.success(request, "Your donation has been posted successfully!")
             return redirect('donation:donation_detail', pk=donation.pk)
     else:
