@@ -34,7 +34,7 @@ from .observers.recipient_notifier import RecipientNotifier
 from .decorators.base_donation_handler import BaseDonationHandler
 from .decorators.donation_logger import DonationLogger
 from .decorators.email_notifier import EmailNotifier
-
+from .singleton.singleton import NotificationManager
 
 
 def home(request):
@@ -356,13 +356,19 @@ def donation_create(request):
             handler = DonationLogger(handler)
             handler = EmailNotifier(handler)
             handler.handle(donation)
-            
+
             messages.success(request, "Your donation has been posted successfully!")
             return redirect('donation:donation_detail', pk=donation.pk)
     else:
         form = FoodDonationForm()
     
     return render(request, 'donation/donation_form.html', {'form': form, 'action': 'Create'})
+
+
+def donation_created(request):
+    manager = NotificationManager()
+    manager.send_notification(request.user, "Your donation was successfully posted!")
+
 
 # Edit donation view
 @login_required
