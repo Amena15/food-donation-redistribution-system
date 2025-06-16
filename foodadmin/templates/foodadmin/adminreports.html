@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | System Report</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+        --primary: #0a6e31;
+        --primary-light: #128a3e;
+        --secondary: #f8b042;
+        --light: #f5f5f5;
+        --dark: #333333;
+        --danger: #dc3545;
+        --success: #28a745;
+        --info: #17a2b8;
+        --gray: #6c757d;
+        --white: #ffffff;
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+        background-color: #f0f2f5;
+        color: var(--dark);
+    }
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+    .dashboard {
+        display: flex;
+        min-height: 100vh;
+    }
+    .sidebar {
+        width: 250px;
+        background-color: var(--primary);
+        color: var(--white);
+        padding: 20px 0;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.3s ease;
+    }
+    .sidebar-header {
+        padding: 0 20px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .sidebar-header h2 {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+    .sidebar-header p {
+        font-size: 14px;
+        opacity: 0.8;
+    }
+    .user-info {
+        display: flex;
+        align-items: center;
+        padding: 0 20px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 20px;
+    }
+    .user-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: var(--white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+        color: var(--primary);
+        font-weight: bold;
+        font-size: 20px;
+    }
+    .user-details h3 {
+        font-size: 16px;
+        margin-bottom: 4px;
+    }
+    .menu {
+        flex-grow: 1;
+    }
+    .menu-item {
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+    .menu-item.active {
+        background-color: var(--primary-light);
+        border-left: 4px solid var(--secondary);
+        color: var(--white);
+    }
+    .menu-item:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    .menu-icon {
+        margin-right: 15px;
+        width: 20px;
+        text-align: center;
+    }
+    .sidebar-footer {
+        padding: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 12px;
+        text-align: center;
+    }
+    .main {
+        flex: 1;
+        padding: 30px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    .report-buttons {
+      margin-bottom: 20px;
+    }
+    .report-button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-right: 10px;
+      transition: background-color 0.3s;
+    }
+    .report-button:hover {
+      background-color: var(--primary-light);
+    }
+	.save-buttons {
+      margin-bottom: 20px;
+    }
+    .save-button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-right: 10px;
+      transition: background-color 0.3s;
+    }
+    .save-button:hover {
+      background-color: var(--primary-light);
+    }
+    .filter-input {
+        padding: 8px 16px;
+        width: 300px;
+        max-width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 14px;
+        outline: none;
+		margin-bottom: 2rem;
+    }
+    .table-container {
+        width: 100%;
+        background: white;
+        border-radius: 0.75rem;
+        padding: 1rem;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    thead th {
+        background-color: #f1f1f1;
+        text-align: left;
+        padding: 12px 15px;
+        font-size: 14px;
+        color: #6c757d;
+        border-bottom: 1px solid #ddd;
+    }
+    tbody td {
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        font-size: 14px;
+    }
+    tbody tr:hover {
+        background-color: rgba(10, 110, 49, 0.03);
+    }
+    .status {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    .pending {
+        background-color: #fce68a; /* Yellow for Pending */
+        color: #b45309; /* Darker yellow for text */
+    }
+    .approved {
+        background-color: #d1fae5; /* Green for Approved */
+        color: #047857; /* Dark green for text */
+    }
+    .rejected {
+        background-color: #fee2e2; /* Red for Rejected */
+        color: #b91c1c; /* Dark red for text */
+    }
+	.spacing {
+    margin-top: 1rem; /* Adjust the value as needed for desired spacing */
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h2>FoodShare<span style="color:#22c55e;">.</span></h2>
+        <p>Admin Dashboard</p>
+      </div>
+      <div class="user-info">
+        <div class="user-avatar">JP</div>
+        <div class="user-details">
+          <h3>James Park</h3>
+        </div>
+      </div>
+            <div class="menu">
+                <a href="{% url 'foodadmin:admindashboard' %}" class="menu-item">
+                    <div class="menu-icon">📊</div>
+                    <div class="menu-text">Dashboard</div>
+                </a>
+
+                <a href="{% url 'foodadmin:adminusersmanagement' %}" class="menu-item">
+                    <div class="menu-icon">👤</div>
+                    <div class="menu-text">Users</div>
+                </a>
+
+                <a href="{% url 'foodadmin:adminfoodlistings' %}" class="menu-item">
+                    <div class="menu-icon">📋</div>
+                    <div class="menu-text">Food Listings</div>
+                </a>
+
+                <a href="{% url 'foodadmin:admindonations' %}" class="menu-item">
+                    <div class="menu-icon">📦</div>
+                    <div class="menu-text">Donations</div>
+                </a>
+
+                <a href="{% url 'foodadmin:adminrequests' %}" class="menu-item">
+                    <div class="menu-icon">📩</div>
+                    <div class="menu-text">Requests</div>
+                </a>
+
+                <a href="{% url 'foodadmin:analytics' %}" class="menu-item active">
+                    <div class="menu-icon">📈</div>
+                    <div class="menu-text">Reports</div>
+                </a>
+
+                <a href="{% url 'foodadmin:admin_logout' %}" class="menu-item">
+                    <div class="menu-icon">🚪</div>
+                    <div class="menu-text">Logout</div>
+                </a>
+            </div>
+      <div class="sidebar-footer"><p>© 2025 Share Food, Share Hope</p></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+      <div class="header">
+        <h2>System Report</h2>
+      </div>
+      <!-- Search Filter -->
+      <div class="filter-inputs">
+        <input type="text" id="dateRange" class="filter-input" placeholder="Enter date range (e.g., 2025-01-01 to 2025-12-31)">
+        <select id="reportType" class="filter-input">
+          <option value="">Donation</option>
+          <option value="summary">Request</option>
+          <option value="detailed">Pickup</option>
+        </select>
+        <button class="report-button" onclick="requestReport()">Generate Report</button>
+      </div>
+
+      <!-- Table -->
+      <div class="table-container">
+        <div id="reportContent">
+          <h3><span style="font-weight: bold;">Total Donations:</span> <span style="font-weight: normal;">150</span></h3>
+        <h3 class="spacing"><span style="font-weight: bold;">Total Donors:</span> <span style="font-weight: normal;">75</span></h3>
+        <h3 class="spacing"><span style="font-weight: bold;">Total Quantity Donated:</span> <span style="font-weight: normal;">567</span></h3>
+        <h3 class="spacing"><span style="font-weight: bold;">Most Donated Item:</span> <span style="font-weight: normal;">Rice</span></h3>
+        <h3 class="spacing"><span style="font-weight: bold;">Donation Date Range:</span> <span style="font-weight: normal;">January 1, 2025 - December 31, 2025</span></h3>
+        <h3 class="spacing"><span style="font-weight: bold;">Top Donor:</span> <span style="font-weight: normal;">John Doe (20 donations)</span></h3>
+        </div>
+      </div>
+	  <div>
+	  <button class="save-button" onclick="saveReport()">Save</button>
+      </div>
+  </div>
+  </div>
+
+  <script>
+  function requestReport() {
+    const dateRange = document.getElementById("dateRange").value;
+    const reportType = document.getElementById("reportType").value;
+    const reportContent = document.getElementById('reportContent');
+
+    let content = '';
+
+    if (reportType === "") { // Donation
+      content = `
+        <h3><span style="font-weight: bold;">Total Donations:</span> <span style="font-weight: normal;">150</span></h3>
+        <h3 class="spacing"><span style="font-weight: bold;">Total Donors:</span> <span style="font-weight: normal;">75</span></h3>
+        <h3 class="spacing"><span style="font-weight: bold;">Total Quantity Donated:</span> <span style="font-weight: normal;">567</span></h3>
+        <h3 class="spacing"><span style="font-weight: bold;">Most Donated Item:</span> <span style="font-weight: normal;">Rice</span></h3>
+        <h3 class="spacing"><span style="font-weight: bold;">Donation Date Range:</span> <span style="font-weight: normal;">January 1, 2025 - December 31, 2025</span></h3>
+        <h3 class="spacing"><span style="font-weight: bold;">Top Donor:</span> <span style="font-weight: normal;">John Doe (20 donations)</span></h3>
+      `;
+    } else if (reportType === "summary") { // Request
+      content = `
+        <h3><span style="font-weight: bold;">Total Requests:</span> <span style="font-weight: normal;">75</span></h3>
+        <h3 class="spacing"><span style="font-weight: bold;">Total Requesters:</span> <span style="font-weight: normal;">50</span></h3>
+        <h3 class="spacing"><span style="font-weight: bold;">Total Quantity Requested:</span> <span style="font-weight: normal;">220</span></h3>
+        <h3 class="spacing"><span style="font-weight: bold;">Most Requested Item:</span> <span style="font-weight: normal;">Fresh Fruits</span></h3>
+        <h3 class="spacing"><span style="font-weight: bold;">Request Date Range:</span> <span style="font-weight: normal;">January 1, 2025 - December 31, 2025</span></h3>
+        <h3 class="spacing"><span style="font-weight: bold;">Top Requester:</span> <span style="font-weight: normal;">Emily Johnson (10 requests)</span></h3>
+      `;
+    } else if (reportType === "detailed") { // Pickup
+      content = `
+        <h3><span style="font-weight: bold;">Total Pickups:</span> <span style="font-weight: normal;">100</span></h3>
+        <h3 class="spacing"><span style="font-weight: bold;">Total Pickup Locations:</span> <span style="font-weight: normal;">30</span></h3>
+        <h3 class="spacing"><span style="font-weight: bold;">Total Quantity Picked Up:</span> <span style="font-weight: normal;">439</span></h3>
+        <h3 class="spacing"><span style="font-weight: bold;">Most Picked Up Item:</span> <span style="font-weight: normal;">Canned Goods</span></h3>
+        <h3 class="spacing"><span style="font-weight: bold;">Pickup Date Range:</span> <span style="font-weight: normal;">January 1, 2025 - December 31, 2025</span></h3>
+        <h3 class="spacing"><span style="font-weight: bold;">Top Pickup Location:</span> <span style="font-weight: normal;">Shah Alam (25 pickups)</span></h3>
+      `;
+    }
+
+    // Update the report content
+    reportContent.innerHTML = content;
+  }
+  </script>
+
+</body>
+</html>

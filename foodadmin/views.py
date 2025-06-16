@@ -1,6 +1,8 @@
 # In foodadmin/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth import authenticate, login,logout
+from django.urls import reverse
 from django.contrib import messages
 from fooddonor.models import Profile, FoodDonation, DonationRequest
 from .models import AdminActivity
@@ -25,7 +27,7 @@ def login_type_selection(request):
         elif user_type == 'foodrecipient':
             return redirect(reverse('recipient_login'))
         elif user_type == 'foodadmin':
-            return redirect(reverse('admin_login'))
+            return redirect(reverse('adminlogin'))
         else:
             context['error'] = 'Invalid user type selected. Please try again.'
     
@@ -69,23 +71,27 @@ def recipient_login(request):
     return render(request, 'recipientlogin.html', {'title': 'Food Recipient Login'})
 
 def admin_login(request):
-    """
-    View for handling admin login.
-    """
     if request.method == 'POST':
-        # Process admin login form
         username = request.POST.get('username')
         password = request.POST.get('password')
-        
-        # Add your authentication logic here
-        # Similar to donor_login
-        
-        return render(request, 'adminlogin.html', {'error': 'Invalid credentials'})
-    
-    return render(request, 'adminlogin.html', {'title': 'Admin Login'})
 
+        user = authenticate(request, username=username, password=password)
 
-# Helper function to check if user is admin
+        if user is not None:
+            if is_admin(user):
+                login(request, user)
+                return redirect('foodadmin:admindashboard') 
+            else:
+                return render(request, 'adminlogin.html', {'error': 'You are not an admin.'})
+        else:
+            return render(request, 'adminlogin.html', {'error': 'Invalid credentials'})
+
+    return render(request, 'foodadmin/adminlogin.html', {'title': 'Admin Login'})
+
+def admin_logout(request):
+    logout(request)
+    return redirect('foodadmin:adminlogin')
+
 def is_admin(user):
     try:
         return user.profile.role == 'admin'
@@ -111,7 +117,7 @@ def admin_dashboard(request):
         'pending_requests': pending_requests,
         'recent_activity': recent_activity,
     }
-    return render(request, 'foodadmin/dashboard.html', context)
+    return render(request, 'foodadmin/admindashboard.html', context)
 
 @login_required
 @user_passes_test(is_admin)
@@ -121,7 +127,7 @@ def manage_users(request):
     context = {
         'users': users,
     }
-    return render(request, 'foodadmin/manage_users.html', context)
+    return render(request, 'foodadmin/adminusersmanagement.html', context)
 
 @login_required
 @user_passes_test(is_admin)
@@ -143,7 +149,7 @@ def user_detail(request, user_id):
         'donations': donations,
         'requests': requests,
     }
-    return render(request, 'foodadmin/user_detail.html', context)
+    return render(request, 'foodadmin/adminusersmanagements.html', context)
 
 @login_required
 @user_passes_test(is_admin)
@@ -153,7 +159,7 @@ def manage_donations(request):
     context = {
         'donations': donations,
     }
-    return render(request, 'foodadmin/manage_donations.html', context)
+    return render(request, 'foodadmin/admindonations.html', context)
 
 @login_required
 @user_passes_test(is_admin)
@@ -163,7 +169,7 @@ def manage_requests(request):
     context = {
         'requests': requests,
     }
-    return render(request, 'foodadmin/manage_requests.html', context)
+    return render(request, 'foodadmin/adminrequests.html', context)
 
 @login_required
 @user_passes_test(is_admin)
@@ -190,12 +196,25 @@ def approve_request(request, request_id):
         )
         
         messages.success(request, 'Request approved successfully!')
-        return redirect('foodadmin:manage_requests')
+        return redirect('foodadmin:adminrequests')
     
     context = {
         'donation_request': donation_request,
     }
     return render(request, 'foodadmin/confirm_approve.html', context)
+
+from django.contrib.auth.decorators import login_required, user_passes_test
+
+@login_required
+@user_passes_test(is_admin)
+def food_listings(request):
+    # You can fetch data from your model here, e.g., FoodDonation.objects.all()
+    context = {
+        'title': 'Manage Food Listings',
+        # 'food_listings': FoodDonation.objects.all()  # Uncomment if you have a model
+    }
+    return render(request, 'foodadmin/adminfoodlistings.html', context)
+
 
 @login_required
 @user_passes_test(is_admin)
@@ -217,7 +236,7 @@ def reject_request(request, request_id):
         )
         
         messages.success(request, 'Request rejected successfully!')
-        return redirect('foodadmin:manage_requests')
+        return redirect('foodadmin:adminrequests')
     
     context = {
         'donation_request': donation_request,
@@ -232,4 +251,4 @@ def analytics(request):
     context = {
         # Add analytics data to context
     }
-    return render(request, 'foodadmin/analytics.html', context)
+    return render(request, 'foodadmin/adminreports.html', context)
