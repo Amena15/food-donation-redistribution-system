@@ -347,7 +347,7 @@
     }
 
     .upload-input {
-      display: none;
+      display: inline-block;
     }
 
     .btn {
@@ -407,10 +407,12 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      flex-direction: row;
     }
 
     .quantity-input input {
-      flex: 1;
+      flex: 2;
+      min-width: 100px;
     }
 
     .unit-select {
@@ -591,7 +593,7 @@
           <div class="menu-icon">➕</div>
           <div class="menu-text">Add Donation</div>
         </a>
-        <a href="{% url 'fooddonor:food_listing' %}" class="menu-item">
+        <a href="{% url 'fooddonor:donation_list' %}" class="menu-item">
           <div class="menu-icon">📋</div>
           <div class="menu-text">Donation Listings</div>
         </a>
@@ -636,7 +638,7 @@
     <div id="errorMessage" class="error-message"></div>
 
     <div class="form-container">
-      <form id="foodListingForm" method="POST" action="{% url 'fooddonor:add_food' %}" enctype="multipart/form-data">
+      <form method="POST" enctype="multipart/form-data" action="{% url 'fooddonor:add_food' %}">
         {% csrf_token %}
         <!-- Basic Information -->
         <div class="form-section">
@@ -644,8 +646,8 @@
           
           <div class="form-group">
             <label class="form-label required" for="foodName">Food Item Name</label>
-            <input type="text" id="foodName" name="foodName" class="form-control" required 
-                   placeholder="e.g., Fresh Vegetables, Cooked Rice, Bread">
+            <input type="text" id="title" name="title" class="form-control" required 
+              placeholder="e.g., Fresh Vegetables, Cooked Rice, Bread">
             <div class="form-help">Enter a clear, descriptive name for your food item</div>
           </div>
 
@@ -696,9 +698,9 @@
             <div class="form-group">
               <label class="form-label required" for="quantity">Quantity</label>
               <div class="quantity-input">
-                <input type="number" id="quantity" name="quantity" class="form-control" 
-                       min="1" step="0.1" required placeholder="0">
-                <select id="unit" name="unit" class="form-control form-select unit-select" required>
+                <input type="number" id="quantity" name="quantity" class="form-control"
+                  value="1" min="1" step="0.1" required placeholder="e.g., 10, 2.5">
+                  <select id="unit" name="unit" class="form-control form-select unit-select" required>
                   <option value="kg">kg</option>
                   <option value="lbs">lbs</option>
                   <option value="pieces">pieces</option>
@@ -720,7 +722,7 @@
           <div class="form-row">
             <div class="form-group">
               <label class="form-label required" for="expiryDate">Expiry/Best Before Date</label>
-              <input type="datetime-local" id="expiryDate" name="expiryDate" class="form-control" required>
+              <input type="date" id="expiry_date" name="expiry_date" class="form-control" required>
               <div class="form-help">When does this food expire or need to be consumed by?</div>
             </div>
 
@@ -738,8 +740,8 @@
           
           <div class="form-group">
             <label class="form-label required" for="address">Pickup Address</label>
-            <textarea id="address" name="address" class="form-control" rows="3" required
-                      placeholder="Enter the full pickup address including street, city, state, and postal code"></textarea>
+            <textarea id="pickup_location" name="pickup_location" class="form-control" rows="3" required
+              placeholder="Enter the full pickup address..."></textarea>
           </div>
 
           <div class="form-row-three">
@@ -856,8 +858,7 @@
                 <strong>Click to upload images</strong> or drag and drop
               </div>
               <div class="form-help">Upload clear photos of your food items (max 5 images, 5MB each)</div>
-              <input type="file" id="imageInput" name="images" class="upload-input" 
-                     multiple accept="image/*" onchange="handleImageUpload(event)">
+              <input type="file" id="imageInput" name="image" accept="image/*">
             </div>
             <div class="preview-images" id="previewImages"></div>
           </div>

@@ -609,7 +609,7 @@
           <div class="menu-icon">➕</div>
           <div class="menu-text">Add Donation</div>
         </a>
-        <a href="{% url 'fooddonor:food_listing' %}" class="menu-item active">
+        <a href="{% url 'fooddonor:donation_list' %}" class="menu-item active">
           <div class="menu-icon">📋</div>
           <div class="menu-text">Donation Listings</div>
         </a>
@@ -723,11 +723,10 @@
               <div class="food-card-header">
                 <input type="checkbox" class="card-checkbox" value="{{ food.id }}" onchange="toggleBulkActions()">
                 {% if food.image %}
-                  <img src="{{ food.image.url }}" alt="{{ food.title }}">
+                  <img src="{{ food.image.url }}" alt="{{ food.title }}" style="width: 200px; height: 150px; border: red; object-fit: contain;">
                 {% else %}
-                  <img src="https://via.placeholder.com/280x180/f0f2f5/666?text=No+Image" alt="No image">
+                  <img src="https://via.placeholder.com/200x150?text=No+Image" alt="No image">
                 {% endif %}
-                <span class="status-tag status-{{ food.status }}">{{ food.status }}</span>
               </div>
               <div class="food-card-body">
                 <h3>{{ food.title }}</h3>
@@ -747,13 +746,13 @@
                   {% endif %}
                 </div>
                 <div class="button-group">
-                  <a href="#" class="btn btn-secondary btn-small">
+                  <a href="{% url 'fooddonor:edit_food' pk=food.pk %}" class="btn btn-secondary btn-small">
                     ✏️ Edit
                   </a>
-                  <a href="#" class="btn btn-danger btn-small"
+                  <a href="{% url 'fooddonor:delete_food' pk=food.pk %}" class="btn btn-danger btn-small"
                     data-id="{{ food.id }}"
                     data-title="{{ food.title|escape }}"
-                    onclick="confirmDeleteFromElement(this)">
+                    onclick="return confirm('Are you sure you want to delete this listing?');">
                     🗑️ Delete
                   </a>
                 </div>
@@ -914,6 +913,12 @@
         modal.style.display = 'none';
       }
     }
+
+    function deleteListing() {
+      const donationId = '{{ food.id }}';  // Make sure this variable is available in context
+      window.location.href = `/foodlisting/delete/${donationId}/`;
+    }
+
   </script>
 </body>
 </html>

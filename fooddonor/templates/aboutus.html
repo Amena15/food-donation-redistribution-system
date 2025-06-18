@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Share Food, Share Hope Donation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            color: #333;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #052f14;
+            padding: 15px 30px;
+            color: white;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: bold;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .navbar nav {
+            display: flex;
+        }
+
+        .hero {
+            position: relative;
+            background-image: url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            padding: 60px 20px;
+        }
+
+        .section-alt {
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section h2 {
+            font-size: 36px;
+            color: #052f14;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .section-alt h2 {
+            color: #0a6e31;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .content-text {
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .content-text p {
+            margin-bottom: 20px;
+        }
+
+        .content-image {
+            text-align: center;
+        }
+
+        .content-image img {
+            width: 100%;
+            max-width: 400px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .mission-vision {
+            background-color: #0a6e31;
+            color: white;
+            padding: 60px 20px;
+        }
+
+        .mission-vision h2 {
+            color: white;
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .mv-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+        }
+
+        .mv-item {
+            text-align: center;
+            padding: 30px;
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .mv-item h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .mv-item p {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .stats {
+            padding: 60px 20px;
+            background-color: #052f14;
+            color: white;
+        }
+
+        .stats h2 {
+            color: white;
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        .team {
+            padding: 60px 20px;
+        }
+
+        .team h2 {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .team-text {
+            text-align: center;
+            font-size: 16px;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto 40px;
+        }
+
+        .values {
+            background-color: #f9f9f9;
+            padding: 60px 20px;
+        }
+
+        .values h2 {
+            text-align: center;
+            margin-bottom: 50px;
+            color: #0a6e31;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .value-item {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .value-item h3 {
+            color: #0a6e31;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .value-item p {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .cta {
+            position: relative;
+            background-image: url('https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            padding: 80px 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta h2 {
+            color: white;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .cta p {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 40px;
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+            text-decoration: none;
+            font-size: 16px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+        }
+        
+        .btn:hover {
+            background-color: white;
+            color: #333;
+        }
+
+        footer {
+            background-color: #f5f5f5;
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+            
+            .content-grid,
+            .mv-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .values-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section h2 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">Share Food, Share Hope</div>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">About Us</a>
+            <a href="#">Contact Us</a>
+            <a href="{% url 'fooddonor:chooselogin' %}">Login</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>ABOUT US</h1>
+            <p>Connecting Communities Through Food Sharing</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <h2>OUR STORY</h2>
+            <div class="content-grid">
+                <div class="content-text">
+                    <p>Share Food, Share Hope was born from a simple yet powerful observation: while millions of people struggle with food insecurity, tons of perfectly good food go to waste every day. We saw an opportunity to bridge this gap and create meaningful connections within our communities.</p>
+                    <p>Founded by a group of passionate individuals who believe that access to nutritious food is a basic human right, our platform serves as a bridge between those who have surplus food and those who need it most. We've built more than just a donation platform – we've created a community of caring individuals working together to combat hunger and reduce waste.</p>
+                </div>
+                <div class="content-image">
+                    <img src="https://images.unsplash.com/photo-1593113616828-6f22bca04804?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Food sharing community">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mission-vision">
+        <div class="container">
+            <h2>MISSION & VISION</h2>
+            <div class="mv-grid">
+                <div class="mv-item">
+                    <h3>OUR MISSION</h3>
+                    <p>To eliminate food waste and hunger by creating a seamless platform that connects food donors with those in need, fostering community spirit and environmental responsibility.</p>
+                </div>
+                <div class="mv-item">
+                    <h3>OUR VISION</h3>
+                    <p>A world where no one goes hungry while good food goes to waste – where communities are strengthened through shared resources and mutual care.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="container">
+            <h2>OUR IMPACT</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">10,000+</div>
+                    <div class="stat-label">Meals Donated</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">Active Donors</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">1,200+</div>
+                    <div class="stat-label">Families Helped</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Communities Served</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section section-alt">
+        <div class="container">
+            <h2>HOW WE WORK</h2>
+            <div class="content-grid">
+                <div class="content-image">
+                    <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Community volunteers">
+                </div>
+                <div class="content-text">
+                    <p>Our platform operates on the principle of community-driven food sharing. Donors – whether individuals, restaurants, grocery stores, or event organizers – can easily list surplus food through our user-friendly interface.</p>
+                    <p>Recipients in need can browse available donations in their area and connect directly with donors. We facilitate safe, respectful exchanges that maintain the dignity of all parties involved while ensuring food safety standards are met.</p>
+                    <p>Through our verification system and community guidelines, we've created a trusted environment where generosity flourishes and hunger is addressed at the grassroots level.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="values">
+        <div class="container">
+            <h2>OUR VALUES</h2>
+            <div class="values-grid">
+                <div class="value-item">
+                    <h3>Community First</h3>
+                    <p>We believe in the power of local communities to solve local problems through connection and collaboration.</p>
+                </div>
+                <div class="value-item">
+                    <h3>Dignity & Respect</h3>
+                    <p>Every interaction on our platform is built on mutual respect, ensuring dignity for both donors and recipients.</p>
+                </div>
+                <div class="value-item">
+                    <h3>Environmental Stewardship</h3>
+                    <p>Reducing food waste is crucial for environmental sustainability and resource conservation.</p>
+                </div>
+                <div class="value-item">
+                    <h3>Transparency</h3>
+                    <p>We maintain open communication about our processes, impact, and community guidelines.</p>
+                </div>
+                <div class="value-item">
+                    <h3>Accessibility</h3>
+                    <p>Our platform is designed to be accessible to everyone, regardless of technical expertise or background.</p>
+                </div>
+                <div class="value-item">
+                    <h3>Safety First</h3>
+                    <p>Food safety and user security are paramount in everything we do.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="team">
+        <div class="container">
+            <h2>OUR TEAM</h2>
+            <div class="team-text">
+                <p>Share Food, Share Hope is powered by a dedicated team of volunteers, developers, community organizers, and food safety experts who share a common passion for social justice and environmental sustainability.</p>
+                <p>Our diverse backgrounds in technology, nonprofit work, nutrition, and community development allow us to approach food insecurity from multiple angles, creating comprehensive solutions that address both immediate needs and systemic issues.</p>
+                <p>We work closely with local food banks, community centers, and social services to ensure our platform complements existing efforts and maximizes impact for those we serve.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="cta-content">
+            <h2>JOIN OUR MOVEMENT</h2>
+            <p>Together, we can create a world where no good food goes to waste and no one goes hungry.</p>
+            <a href="{% url 'fooddonor:register' %}" class="btn">GET STARTED TODAY</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>Share Food, Share Hope Donation - Building stronger communities through food sharing</p>
+    </footer>
+</body>
+</html>

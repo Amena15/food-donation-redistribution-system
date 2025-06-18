@@ -9,7 +9,7 @@ class FoodListing(models.Model):
     location = models.CharField(max_length=255)
     expiry_date = models.DateField()
     pickup_date = models.DateField()
-    image = models.ImageField(upload_to='food_images/', blank=True, null=True)
+    image = models.ImageField(upload_to='', blank=True, null=True)
     status = models.CharField(max_length=20, choices=[
         ('available', 'Available'),
         ('pending', 'Pending'),
@@ -56,6 +56,7 @@ class FoodDonation(models.Model):
     pickup_location = models.CharField(max_length=255)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='available')
     created_at = models.DateTimeField(auto_now_add=True)
+    image = models.ImageField(upload_to='', null=True, blank=True)
     
     def __str__(self):
         return f"{self.title} by {self.donor.user.username}"
@@ -98,3 +99,11 @@ class Notification(models.Model):
         return f"Notification for {self.user.username} - {'Read' if self.read else 'Unread'}"
 
 
+class UserSettings(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    email_notifications = models.BooleanField(default=True)
+    sms_notifications = models.BooleanField(default=True)
+    push_notifications = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s settings"

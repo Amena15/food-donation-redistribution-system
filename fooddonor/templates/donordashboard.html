@@ -390,7 +390,7 @@
 <div class="menu-icon">➕</div>
 <div class="menu-text">Add Donation</div>
 </a>
-<a href="{% url 'fooddonor:food_listing' %}" class="menu-item">
+<a href="{% url 'fooddonor:donation_list' %}" class="menu-item">
 <div class="menu-icon">📋</div>
 <div class="menu-text">Donation Listings</div>
 </a>
@@ -508,17 +508,26 @@
   </style>
 <h2>📦 Active Listings</h2>
 <table>
-<thead><tr><th>Item</th><th>Quantity</th><th>Expiry</th><th>Status</th></tr></thead>
+<thead>
+  <tr>
+    <th>#</th>  <!-- forloop.counter -->
+    <th>Item</th>
+    <th>Quantity</th>
+    <th>Expiry</th>
+    <th>Status</th>
+  </tr>
+</thead>
 <tbody>
 {% for item in active_listings_data %}
 <tr>
-  <td>{{ item.name }}</td>
+  <td>{{ forloop.counter }}</td>
+  <td>{{ item.title }}</td>
   <td>{{ item.quantity }}</td>
-  <td>{{ item.expiry }}</td>
+  <td>{{ item.expiry_date }}</td>
   <td>{{ item.status }}</td>
 </tr>
 {% empty %}
-<tr><td colspan="4">No active listings found.</td></tr>
+<tr><td colspan="5">No active listings found.</td></tr>
 {% endfor %}
 </tbody>
 </table>

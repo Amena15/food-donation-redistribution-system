@@ -17,6 +17,7 @@ from django.conf import settings
 from .models import FoodListing
 from .forms import FoodDonationForm
 from django.utils import timezone
+from datetime import timedelta
 import json
 from django.http import JsonResponse
 from .models import Notification
@@ -35,6 +36,8 @@ from .decorators.base_donation_handler import BaseDonationHandler
 from .decorators.donation_logger import DonationLogger
 from .decorators.email_notifier import EmailNotifier
 from .singleton.singleton import NotificationManager
+from .models import UserSettings
+from django.core.paginator import Paginator
 
 
 def home(request):
@@ -67,7 +70,7 @@ def register_view(request):
             elif role == 'recipient':
                 return redirect('foodrecipient:recipient_dashboard')
             elif role == 'admin':
-                return redirect('foodadmin:admin_dashboard')
+                return redirect('foodadmin:admindashboard')
             else:
                 return redirect('home')  # fallback
         else:
@@ -256,11 +259,6 @@ def donor_dashboard(request):
 
     return render(request, 'donordashboard.html', context)
 
-@login_required
-@user_passes_test(is_donor)
-def food_listing(request):
-    donations = FoodDonation.objects.filter(donor=request.user.profile).order_by('-created_at')
-    return render(request, 'foodlisting.html', {'donations': donations})
 
 def is_recipient(user):
     try:
@@ -269,10 +267,31 @@ def is_recipient(user):
         return False
 
 # Donation list view
+@login_required
+@user_passes_test(is_donor)
 def donation_list(request):
-    """View all available donations"""
-    donations = FoodDonation.objects.filter(status='available').order_by('-created_at')
-    return render(request, 'donation/donation_list.html', {'donations': donations})
+    donor = request.user.profile
+    food_listings = FoodDonation.objects.filter(donor=donor).order_by('-created_at')
+    
+    # Pagination
+    paginator = Paginator(food_listings, 10)  # Show 10 listings per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Stats
+    total = food_listings.count()
+    active = food_listings.filter(status='available').count()
+    pending = food_listings.filter(status='pending').count()
+    delivered = food_listings.filter(status='delivered').count()
+
+    return render(request, 'donationlist.html', {
+        'food_listings': page_obj,
+        'total_listings': total,
+        'active_listings': active,
+        'pending_listings': pending,
+        'delivered_listings': delivered
+    })
+
 
 # Donation detail view
 def donation_detail(request, pk):
@@ -299,7 +318,7 @@ def donation_detail(request, pk):
         'donation': donation,
         'request_form': request_form
     }
-    return render(request, 'donation/donation_detail.html', context)
+    return render(request, 'donation/donationdetail.html', context)
 
 def assign_donation(request, donation_id):
     donation = get_object_or_404(FoodDonation, pk=donation_id)
@@ -322,7 +341,7 @@ def request_donation(request, pk):
 
     if user_profile.role != 'recipient':
         messages.error(request, "Only recipients can request donations.")
-        return redirect('donation:donation_detail', pk=pk)
+        return redirect('fooddonor:donation_detail', pk=pk)
 
     if request.method == 'POST':
         form = DonationRequestForm(request.POST)
@@ -333,86 +352,15 @@ def request_donation(request, pk):
             donation_request.status = 'pending'
             donation_request.save()
             messages.success(request, "Your request has been submitted.")
-            return redirect('donation:donation_detail', pk=pk)
+            return redirect('fooddonor:donationdetail', pk=pk)
     else:
         form = DonationRequestForm()
 
     return render(request, 'donation/request_form.html', {'form': form, 'donation': donation})
 
-# Create donation view
-@login_required
-@user_passes_test(is_donor)
-def donation_create(request):
-    """Create a new donation"""
-    if request.method == 'POST':
-        form = FoodDonationForm(request.POST)
-        if form.is_valid():
-            donation = form.save(commit=False)
-            donation.donor = request.user.profile
-            donation.save()
-
-            # Call the decorated handler after saving
-            handler = BaseDonationHandler()
-            handler = DonationLogger(handler)
-            handler = EmailNotifier(handler)
-            handler.handle(donation)
-
-            messages.success(request, "Your donation has been posted successfully!")
-            return redirect('donation:donation_detail', pk=donation.pk)
-    else:
-        form = FoodDonationForm()
-    
-    return render(request, 'donation/donation_form.html', {'form': form, 'action': 'Create'})
-
-
 def donation_created(request):
     manager = NotificationManager()
     manager.send_notification(request.user, "Your donation was successfully posted!")
-
-
-# Edit donation view
-@login_required
-@user_passes_test(is_donor)
-def donation_edit(request, pk):
-    """Edit an existing donation"""
-    donation = get_object_or_404(FoodDonation, pk=pk, donor__user=request.user)
-    
-    if donation.status != 'available':
-        messages.error(request, "You cannot edit a donation that has been claimed or delivered.")
-        return redirect('donation:donation_detail', pk=donation.pk)
-    
-    if request.method == 'POST':
-        form = FoodDonationForm(request.POST, instance=donation)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Your donation has been updated successfully!")
-            return redirect('donation:donation_detail', pk=donation.pk)
-    else:
-        form = FoodDonationForm(instance=donation)
-    
-    return render(request, 'donation/donationform.html', {
-        'form': form, 
-        'action': 'Edit',
-        'donation': donation
-    })
-
-# Delete donation view
-@login_required
-@user_passes_test(is_donor)
-def donation_delete(request, pk):
-    """Delete an existing donation"""
-    donation = get_object_or_404(FoodDonation, pk=pk, donor__user=request.user)
-    
-    if donation.status != 'available':
-        messages.error(request, "You cannot delete a donation that has been claimed or delivered.")
-        return redirect('donation:donation_detail', pk=donation.pk)
-    
-    if request.method == 'POST':
-        donation.delete()
-        messages.success(request, "Your donation has been deleted successfully!")
-        return redirect('donor_dashboard')
-    
-    return render(request, 'donation/donationconfirmdelete.html', {'donation': donation})
 
 # Request list view
 @login_required
@@ -504,41 +452,42 @@ def update_request_status(request, pk, status):
 @login_required
 def add_food(request):
     if request.method == 'POST':
-        form = FoodDonationForm(request.POST)
+        form = FoodDonationForm(request.POST, request.FILES)
         if form.is_valid():
             donation = form.save(commit=False)
-            donation.donor = request.user
+            donation.donor = request.user.profile
             donation.save()
 
-            #Observer Pattern: Notify recipients of new food donation
-            subject = Subject()
-            subject.attach(RecipientNotifier())
-            subject.notify(donation)
+            # Notify, log, whatever...
             messages.success(request, "Food donation listing added successfully!")
-            return redirect('fooddonor:food_listing')  # or your desired redirect
+            return redirect('fooddonor:donation_list')
     else:
         form = FoodDonationForm()
     
     return render(request, 'addfoodlisting.html', {'form': form})
 
-
+@login_required
+@user_passes_test(is_donor)
 def edit_food(request, pk):
-    food = get_object_or_404(FoodListing, pk=pk)
+    food = get_object_or_404(FoodDonation, pk=pk, donor=request.user.profile)
     if request.method == 'POST':
         form = FoodDonationForm(request.POST, request.FILES, instance=food)
         if form.is_valid():
             form.save()
-            return redirect('fooddonor:food_listing')
+            messages.success(request, "Donation updated successfully!")
+            return redirect('fooddonor:donation_list')
     else:
         form = FoodDonationForm(instance=food)
-    return render(request, 'editfoodlisting.html', {'form': form})
+    return render(request, 'editfoodlisting.html', {'form': form, 'food': food})
 
+@login_required
+@user_passes_test(is_donor)
 def delete_food(request, pk):
-    food = get_object_or_404(FoodListing, pk=pk)
-    if request.method == 'POST':
-        food.delete()
-        return redirect('fooddonor:food_listing')
-    return render(request, 'confirm_delete.html', {'food': food})
+    food = get_object_or_404(FoodDonation, pk=pk, donor=request.user.profile)
+    food.delete()
+    messages.success(request, "Donation deleted successfully.")
+    return redirect('fooddonor:donation_list')
+
 
 def pickup_schedule(request):
     # Replace with your actual queryset
@@ -680,10 +629,26 @@ def settings(request):
     }
     return render(request, 'donorsettings.html', context)
 
+
+def get_user_settings(user):
+    settings, created = UserSettings.objects.get_or_create(user=user)
+    return settings
+
 @login_required
 def notifications_view(request):
-    notifications = Notification.objects.filter(user=request.user).order_by('-timestamp')
-    return render(request, 'notifications.html', {'notifications': notifications})
+    user = request.user
+    notifications = Notification.objects.filter(user=user).order_by('-date')
+    stats = {
+        'unread_count': notifications.filter(read=False).count(),
+        'urgent_count': notifications.filter(urgent=True).count(),
+        'total_week': notifications.filter(date__gte=timezone.now() - timedelta(days=7)).count(),
+    }
+    user_settings = get_user_settings(user)
+    return render(request, 'notifications.html', {
+        'notifications': notifications,
+        'stats': stats,
+        'user_settings': user_settings,
+    })
 
 @login_required
 def mark_all_notifications_read(request):

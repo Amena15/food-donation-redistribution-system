@@ -50,13 +50,14 @@ class SignUpForm(UserCreationForm):
 class FoodDonationForm(forms.ModelForm):
     class Meta:
         model = FoodDonation
-        fields = ['title', 'description', 'quantity', 'expiry_date', 'pickup_location']
+        fields = ['title', 'description', 'quantity', 'expiry_date', 'pickup_location', 'image']
         widgets = {
             'expiry_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
             'quantity': forms.TextInput(attrs={'class': 'form-control'}),
             'pickup_location': forms.TextInput(attrs={'class': 'form-control'}),
+            
         }
 
 # Donation Request Form
