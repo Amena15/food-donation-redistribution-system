@@ -95,6 +95,15 @@ class FoodDonation(models.Model):
         ('others', 'Other'),
     ]
 
+    UNIT_CHOICES = [
+        ('kg', 'Kilograms'),
+        ('lbs', 'Pounds'),
+        ('pieces', 'Pieces'),
+        ('portions', 'Portions'),
+        ('litres', 'Litres'),
+        ('packs', 'Packs'),
+    ]
+
     DIETARY_CHOICES = [
         ('halal', 'Halal'),
         ('vegetarian', 'Vegetarian'),
@@ -115,7 +124,8 @@ class FoodDonation(models.Model):
     donor = models.ForeignKey('fooddonor.Profile', on_delete=models.CASCADE, related_name='donations')
     title = models.CharField(max_length=100)
     description = models.TextField()
-    quantity = models.CharField(max_length=50)
+    quantity_amount = models.FloatField(default=1.0)
+    quantity_unit = models.CharField(max_length=10, choices=UNIT_CHOICES, default='kg')
     category = models.CharField(max_length=100, choices=CATEGORY_CHOICES)
     dietary_info = models.TextField(blank=True, null=True)
     known_allergens = models.TextField(blank=True, null=True)

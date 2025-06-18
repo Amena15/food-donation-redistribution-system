@@ -731,7 +731,7 @@
               <div class="food-card-body">
                 <h3>{{ food.title }}</h3>
                 <div class="food-details">
-                  <p><strong>Quantity:</strong> {{ food.quantity }} {{ food.unit|default:"kg" }}</p>
+                  <p><strong>Quantity:</strong> {{ food.quantity_amount }} {{ food.quantity_unit }}</p>
                   <p><strong>Category:</strong> {{ food.category|default:"General" }}</p>
                   <p class="{% if food.expiry_date|timeuntil|slice:':1' == '-' %}expiry-warning{% elif food.expiry_date|timeuntil|slice:':2' == '1 ' or food.expiry_date|timeuntil|slice:':2' == '2 ' %}expiry-soon{% endif %}">
                     <strong>Expires:</strong> {{ food.expiry_date|date:"M d, Y" }}

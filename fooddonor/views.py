@@ -37,6 +37,7 @@ from .decorators.email_notifier import EmailNotifier
 from .singleton.singleton import NotificationManager
 from .models import UserSettings
 from django.core.paginator import Paginator
+from collections import defaultdict
 
 
 def home(request):
@@ -205,7 +206,7 @@ def donor_dashboard(request):
     total_donated = FoodDonation.objects.filter(
         donor=profile,
         status='delivered'
-    ).aggregate(total=Sum('quantity'))['total'] or 0
+    ).aggregate(total=Sum('quantity_amount'))['total'] or 0
 
     # 3. Upcoming Pickups
     upcoming_pickups = DonationRequest.objects.filter(
@@ -222,14 +223,14 @@ def donor_dashboard(request):
         FoodDonation.objects.filter(donor=profile, status='delivered')
         .annotate(month=TruncMonth('created_at'))
         .values('month')
-        .annotate(total=Sum('quantity'))
+        .annotate(total=Sum('quantity_amount'))
         .order_by('month')
     )
 
     donated_by_category = (
         FoodDonation.objects.filter(donor=profile, status='delivered')
         .values('title')
-        .annotate(total=Sum('quantity'))
+        .annotate(total=Sum('quantity_amount'))
         .order_by('-total')
     )
 
@@ -460,6 +461,8 @@ def add_food(request):
             # Notify, log, whatever...
             messages.success(request, "Food donation listing added successfully!")
             return redirect('fooddonor:donation_list')
+        else:
+            messages.error(request, "Please correct the form errors below.")
     else:
         form = FoodDonationForm()
     
@@ -514,6 +517,11 @@ def submit_feedback(request):
 def donation_history(request):
     donations = FoodDonation.objects.filter(donor__user=request.user)
 
+    # Group total quantity_amount by unit
+    unit_totals = defaultdict(float)
+    for d in donations:
+        if d.quantity_amount and d.quantity_unit:
+            unit_totals[d.quantity_unit] += d.quantity_amount
 
     # Pagination
     paginator = Paginator(donations, 10)  # Show 10 donations per page
@@ -522,7 +530,11 @@ def donation_history(request):
 
     # Sample logic for statistics (customize as needed)
     total_donations = donations.count()
-    total_weight = sum([float(d.quantity.replace("kg", "").strip()) for d in donations if "kg" in d.quantity])
+    total_weight = sum(
+    float(d.quantity_amount)
+        for d in donations
+        if d.quantity_unit == "kg"
+    )
     estimated_meals = total_weight * 4  # e.g., 1kg = 4 meals
     total_impact = estimated_meals // 2  # example assumption
 

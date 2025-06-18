@@ -51,7 +51,7 @@ class FoodDonationForm(forms.ModelForm):
     class Meta:
         model = FoodDonation
         fields = [
-            'title', 'description', 'quantity', 'expiry_date', 
+            'title', 'description', 'quantity_amount', 'quantity_unit', 'expiry_date', 
             'pickup_location', 'image', 'category', 
             'dietary_info', 'known_allergens'
         ]
@@ -59,7 +59,8 @@ class FoodDonationForm(forms.ModelForm):
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
-            'quantity': forms.TextInput(attrs={'class': 'form-control'}),
+            'quantity_amount': forms.NumberInput(attrs={'class': 'form-control'}),
+            'quantity_unit': forms.Select(attrs={'class': 'form-select'}),
             'expiry_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'pickup_location': forms.TextInput(attrs={'class': 'form-control'}),
             'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),

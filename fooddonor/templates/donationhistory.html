@@ -629,6 +629,7 @@
         <div class="icon">⚖️</div>
         <h3 id="totalWeight">{{total_weight}} kg</h3>
         <p>Total Weight Donated</p>
+        <p>{{ total_weight_by_unit }}</p>
       </div>
       <div class="summary-card">
         <div class="icon">🍽️</div>
@@ -669,7 +670,7 @@
                 <td>{{ donation.created_at|date:"M d, Y" }}</td>
                 <td><strong>{{ donation.title }}</strong></td>
                 <td>{{ donation.category }}</td>
-                <td>{{ donation.quantity }}</td>
+                <td>{{ donation.quantity_amount }} {{ donation.quantity_unit }}</td>
                 <td>-</td>  <!-- Placeholder for recipient -->
                 <td>
                   {% if donation.status == "available" %}
