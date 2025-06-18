@@ -816,10 +816,10 @@
             <div class="form-group">
               <label for="advance_notice">Minimum Advance Notice Required</label>
               <select id="advance_notice" name="advance_notice" class="form-control">
-                <option value="2hours" {% if user.profile.advance_notice == '2hours' %}selected{% endif %}>2 Hours</option>
-                <option value="4hours" {% if user.profile.advance_notice == '4hours' %}selected{% endif %}>4 Hours</option>
-                <option value="1day" {% if user.profile.advance_notice == '1day' %}selected{% endif %}>1 Day</option>
-                <option value="2days" {% if user.profile.advance_notice == '2days' %}selected{% endif %}>2 Days</option>
+                <option value="1" {% if user.profile.advance_notice == '1' %}selected{% endif %}>1 Day</option>
+                <option value="2" {% if user.profile.advance_notice == '2' %}selected{% endif %}>2 Days</option>
+                <option value="3" {% if user.profile.advance_notice == '3' %}selected{% endif %}>3 Days</option>
+                <option value="7" {% if user.profile.advance_notice == '7' %}selected{% endif %}>1 Week</option>
               </select>
             </div>
             

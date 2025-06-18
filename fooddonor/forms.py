@@ -50,15 +50,24 @@ class SignUpForm(UserCreationForm):
 class FoodDonationForm(forms.ModelForm):
     class Meta:
         model = FoodDonation
-        fields = ['title', 'description', 'quantity', 'expiry_date', 'pickup_location', 'image']
+        fields = [
+            'title', 'description', 'quantity', 'expiry_date', 
+            'pickup_location', 'image', 'category', 
+            'dietary_info', 'known_allergens'
+        ]
+        
         widgets = {
-            'expiry_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
             'quantity': forms.TextInput(attrs={'class': 'form-control'}),
+            'expiry_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'pickup_location': forms.TextInput(attrs={'class': 'form-control'}),
-            
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'category': forms.Select(attrs={'class': 'form-select'}),
+            'dietary_info': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'known_allergens': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
         }
+
 
 # Donation Request Form
 class DonationRequestForm(forms.ModelForm):

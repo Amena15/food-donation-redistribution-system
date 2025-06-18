@@ -572,9 +572,6 @@
         <p>Track all your past donations and their impact</p>
       </div>
       <div class="header-actions">
-        <button class="btn btn-outline" onclick="exportHistory()">
-          📄 Export Report
-        </button>
         <a href="{% url 'fooddonor:add_food' %}" class="btn btn-primary">
           ➕ New Donation
         </a>
@@ -663,22 +660,30 @@
               <th>Recipient</th>
               <th>Status</th>
               <th>Impact</th>
-              <th>Actions</th>
             </tr>
           </thead>
           <tbody id="historyTableBody">
             <!-- Table content will be populated by JavaScript -->
              {% for donation in donations %}
               <tr>
-                <td>{{ donation.date|date:"M d, Y" }}</td>
-                <td><strong>{{ donation.food_item }}</strong></td>
+                <td>{{ donation.created_at|date:"M d, Y" }}</td>
+                <td><strong>{{ donation.title }}</strong></td>
                 <td>{{ donation.category }}</td>
-                <td>{{ donation.quantity }} kg</td>
-                <td>{{ donation.recipient.name }}</td>
-                <td><span class="status-badge status-{{ donation.status }}">{{ donation.status }}</span></td>
-                <td>{{ donation.impact }} meals</td>
+                <td>{{ donation.quantity }}</td>
+                <td>-</td>  <!-- Placeholder for recipient -->
                 <td>
-                  <a class="btn btn-outline" href="{% url 'fooddonor:donation_detail' donation.id %}">👁️ View</a>
+                  {% if donation.status == "available" %}
+                    <span class="status-badge status-pending">Available</span>
+                  {% elif donation.status == "claimed" %}
+                    <span class="status-badge status-in-progress">Claimed</span>
+                  {% elif donation.status == "delivered" %}
+                    <span class="status-badge status-completed">Delivered</span>
+                  {% elif donation.status == "expired" %}
+                    <span class="status-badge status-cancelled">Expired</span>
+                  {% endif %}
+                </td>
+                <td>-</td>  <!-- Impact (can be replaced with real logic) -->
+                <td>
                 </td>
               </tr>
             {% empty %}
@@ -689,13 +694,19 @@
       </div>
 
       <div class="pagination">
-        <button onclick="changePage(-1)" id="prevBtn">Previous</button>
-        <button onclick="goToPage(1)" class="active">1</button>
-        <button onclick="goToPage(2)">2</button>
-        <button onclick="goToPage(3)">3</button>
-        <button onclick="goToPage(4)">4</button>
-        <button onclick="goToPage(5)">5</button>
-        <button onclick="changePage(1)" id="nextBtn">Next</button>
+        <span class="page-links">
+          {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a>
+          {% endif %}
+
+          <span class="page-current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+          </span>
+
+          {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next &raquo;</a>
+          {% endif %}
+        </span>
       </div>
     </div>
   </div>

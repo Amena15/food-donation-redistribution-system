@@ -29,9 +29,8 @@ from .strategies.context import DonationContext
 from .strategies.nearest_recipient import NearestRecipientStrategy
 from .strategies.urgent_needs import UrgentNeedsStrategy
 from .strategies.first_come import FirstComeFirstServeStrategy
-from recipient.models import Recipient
+from recipient.models import RecipientProfile
 from .observers.subject import Subject
-from .observers.recipient_notifier import RecipientNotifier
 from .decorators.base_donation_handler import BaseDonationHandler
 from .decorators.donation_logger import DonationLogger
 from .decorators.email_notifier import EmailNotifier
@@ -105,7 +104,7 @@ def choose_login(request):
         if user_type == 'fooddonor':
             return redirect('fooddonor:donorlogin')  
         elif user_type == 'foodrecipient':
-            return redirect('foodrecipient:recipientlogin')
+            return redirect('recipient:recipientlogin')
         elif user_type == 'foodadmin':
             return redirect('foodadmin:adminlogin')
         else:
@@ -514,6 +513,12 @@ def submit_feedback(request):
 @login_required
 def donation_history(request):
     donations = FoodDonation.objects.filter(donor__user=request.user)
+
+
+    # Pagination
+    paginator = Paginator(donations, 10)  # Show 10 donations per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     # Sample logic for statistics (customize as needed)
     total_donations = donations.count()
