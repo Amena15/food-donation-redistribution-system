@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .forms import RecipientRegistrationForm  # Assuming you've created this form
+from .forms import RecipientSignUpForm  # Assuming you've created this form
 from django.contrib.auth import login, authenticate
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -69,7 +69,7 @@ def recipient_login(request):
         if user is not None:
             # Log the user in
             login(request, user)
-            return redirect('foodrecipient:recipient_dashboard')  # Redirect to the recipient dashboard
+            return redirect('recipient:recipient_dashboard')  # Redirect to the recipient dashboard
         else:
             return render(request, 'recipientlogin.html', {'error': 'Invalid credentials'})
     
@@ -91,40 +91,38 @@ def admin_login(request):
     
     return render(request, 'adminlogin.html', {'title': 'Admin Login'})
 
-def recipient_register(request):
+def register_view(request):
     if request.method == 'POST':
-        print("POST request received")
-        form = RecipientRegistrationForm(request.POST)
+        form = RecipientSignUpForm(request.POST)
         if form.is_valid():
-            print("Form is valid")
-            user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password1'])
-            user.save()
-
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password1']
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                print("User authenticated")
-                login(request, user)
-                messages.success(request, "Registration successful!")
-                return redirect('foodrecipient:recipient_dashboard')
-            else:
-                print("Authentication failed")
-                messages.error(request, "Authentication failed after registration!")
-                return redirect('foodrecipient:recipientregister')
+            user = form.save()
+            
+            # Log the user in
+            login(request, user)
+            
+            # Send welcome notification
+            notification_manager = NotificationManager()
+            notification_manager.send_notification(
+                user,
+                "Welcome to our food donation system! Your recipient account has been created successfully."
+            )
+            
+            messages.success(request, 'Your recipient account was created successfully!')
+            return redirect('recipient:recipient_dashboard')
+        
         else:
-            print("Form errors:", form.errors)
-            messages.error(request, "Please correct the errors below.")
-            return render(request, 'recipientregister.html', {'form': form})
+            # Add error messages for each field
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{form.fields[field].label}: {error}")
     else:
-        form = RecipientRegistrationForm()
+        form = RecipientSignUpForm()
+    
     return render(request, 'recipientregister.html', {'form': form})
-
 
 @login_required
 def recipient_dashboard(request):
-    return render(request, 'recipientdashboard.html', {'title': 'My Dashboard'})
+    return render(request, 'recipientdashboard.html')
 
 def recipient_logout(request):
     """
@@ -135,3 +133,9 @@ def recipient_logout(request):
 
 def home(request):
     return render(request, 'fooddonor/home.html')
+
+
+class NotificationManager:
+    def send_notification(self, user, message):
+        print(f"[NOTIFICATION] To: {user.username} — {message}")
+        # Later: send email or SMS here
