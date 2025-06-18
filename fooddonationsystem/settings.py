@@ -45,6 +45,11 @@ INSTALLED_APPS = [
 LOGIN_URL = '/donor/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
 
+MEDIA_URL = '/donation_image/'
+MEDIA_ROOT = BASE_DIR / 'donation_image'
+
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
