@@ -1,0 +1,497 @@
+{% extends 'base.html' %}
+
+{% block title %}Browse Available Food | Share Food, Share Hope{% endblock %}
+
+{% block page_title %}Browse Available Food{% endblock %}
+{% block page_subtitle %}Find fresh food donations matched to your needs{% endblock %}
+
+{% block extra_css %}
+<style>
+    .food-browser-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 30px;
+        align-items: center;
+    }
+    
+    .search-box {
+        flex: 1;
+        min-width: 250px;
+        position: relative;
+    }
+    
+    .search-box input {
+        width: 100%;
+        padding: 10px 15px 10px 40px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+        transition: all 0.3s;
+    }
+    
+    .search-box input:focus {
+        border-color: #4a90e2;
+        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+        outline: none;
+    }
+    
+    .search-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #777;
+    }
+    
+    .filter-select, .sort-select {
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+        background-color: white;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .filter-select:focus, .sort-select:focus {
+        border-color: #4a90e2;
+        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+        outline: none;
+    }
+    
+    .clear-btn {
+        padding: 10px 15px;
+        background-color: #f5f5f5;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: all 0.3s;
+    }
+    
+    .clear-btn:hover {
+        background-color: #e9ecef;
+    }
+    
+    .food-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+    }
+    
+    .food-card {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+        background: white;
+    }
+    
+    .food-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .match-score {
+        padding: 8px 15px;
+        background-color: #f8f9fa;
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .score-value {
+        font-weight: bold;
+    }
+    
+    .score-high { color: #28a745; }
+    .score-medium { color: #ffc107; }
+    .score-low { color: #dc3545; }
+    
+    .food-image {
+        width: 100%;
+        height: 200px;
+        background-color: #f5f5f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .food-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s;
+    }
+    
+    .food-card:hover .food-image img {
+        transform: scale(1.05);
+    }
+    
+    .category-icon {
+        font-size: 3rem;
+        color: #6c757d;
+    }
+    
+    .food-content {
+        padding: 20px;
+    }
+    
+    .food-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #333;
+    }
+    
+    .food-description {
+        color: #666;
+        margin-bottom: 15px;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+    
+    .food-meta {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-size: 14px;
+        color: #555;
+    }
+    
+    .food-meta span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .badge {
+        background-color: #e9ecef;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        color: #495057;
+        font-weight: 500;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 15px;
+        border-radius: 6px;
+        font-weight: 500;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        border: none;
+        text-decoration: none;
+        font-size: 14px;
+    }
+    
+    .btn-primary {
+        background-color: #28a745;
+        color: white;
+        flex: 1;
+    }
+    
+    .btn-primary:hover {
+        background-color: #218838;
+        transform: translateY(-2px);
+    }
+    
+    .btn-primary:active {
+        transform: translateY(0);
+    }
+    
+    .btn-secondary {
+        background-color: #17a2b8;
+        color: white;
+    }
+    
+    .btn-secondary:hover {
+        background-color: #138496;
+        transform: translateY(-2px);
+    }
+    
+    .btn-icon {
+        margin-right: 6px;
+    }
+    
+    .no-results {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 60px 20px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+    }
+    
+    .no-results h3 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 20px;
+    }
+    
+    .no-results p {
+        color: #666;
+        margin-bottom: 20px;
+    }
+    
+    .no-results .btn {
+        margin: 0 auto;
+    }
+    
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-top: 30px;
+    }
+    
+    .page-btn {
+        padding: 8px 16px;
+        background-color: #f8f9fa;
+        color: #495057;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-weight: 500;
+    }
+    
+    .page-btn:hover {
+        background-color: #e9ecef;
+    }
+    
+    .page-btn.active {
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+    
+    .page-btn:disabled {
+        background-color: #e9ecef;
+        color: #adb5bd;
+        cursor: not-allowed;
+    }
+    
+    .page-info {
+        color: #495057;
+        margin: 0 15px;
+    }
+    
+    @media (max-width: 768px) {
+        .controls {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .food-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="food-browser-container">
+    <div class="controls">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search food items..." 
+                   value="{{ search_query|default:'' }}" aria-label="Search food donations">
+            <span class="search-icon">🔍</span>
+        </div>
+        <select id="categoryFilter" class="filter-select" aria-label="Filter by category">
+            <option value="">All Categories</option>
+            {% for value, label in food_item_categories %}
+            <option value="{{ value }}" {% if category_filter == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <select id="sortSelect" class="sort-select" aria-label="Sort by">
+            <option value="match_score" {% if sort_by == 'match_score' %}selected{% endif %}>Best Match</option>
+            <option value="expiry" {% if sort_by == 'expiry' %}selected{% endif %}>Expiring Soon</option>
+            <option value="distance" {% if sort_by == 'distance' %}selected{% endif %}>Nearest First</option>
+            <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest First</option>
+        </select>
+        <button id="clearBtn" class="clear-btn">Clear All</button>
+    </div>
+
+    <div id="foodGrid" class="food-grid">
+        {% for item in page_obj %}
+        <div class="food-card" tabindex="0">
+            <div class="match-score">
+                <span>Match Score:</span>
+                {% with score=item.match_score|default:0 %}
+                <span class="score-value 
+                    {% if score >= 75 %}score-high
+                    {% elif score >= 50 %}score-medium
+                    {% else %}score-low{% endif %}">
+                    {{ score }}%
+                </span>
+                {% endwith %}
+            </div>
+            
+            <div class="food-image">
+                {% if item.object.image and item.object.image.url %}
+                <img src="{{ item.object.image.url }}" 
+                     alt="{{ item.object.title }} - {{ item.category }}"
+                     loading="lazy">
+                {% else %}
+                <div class="category-icon">{{ item.object.get_category_emoji }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="food-content">
+                <h3 class="food-title">{{ item.object.title }}</h3>
+                <p class="food-description">{{ item.object.description|truncatechars:100 }}</p>
+                
+                <div class="food-meta">
+                    <span class="badge">{{ item.category }}</span>
+                    <span>{{ item.quantity }} {{ item.unit }}</span>
+                </div>
+                
+                <div class="food-meta">
+                    <span>📅 {{ item.expiration_date|date:"M d" }}</span>
+                    <span>
+                        {% if item.distance != 'N/A' %}
+                        📍 {{ item.distance|floatformat:1 }} mi
+                        {% else %}
+                        📍 Location not available
+                        {% endif %}
+                    </span>
+                </div>
+                
+                <div class="food-meta">
+                    <span>👤 {{ item.object.donor.user.get_full_name|default:item.object.donor.user.username }}</span>
+                    <span>⏰ {{ item.pickup_time_window }}</span>
+                </div>
+                
+                <div class="action-buttons">
+                    <a href="{% url 'recipient:request_donation' item.object.id %}" 
+                       class="btn btn-primary"
+                       aria-label="Request {{ item.object.title }}">
+                        <span class="btn-icon">✉️</span> Request
+                    </a>
+                    <a href="{% url 'recipient:donation_detail' item.object.id %}" 
+                       class="btn btn-secondary"
+                       aria-label="View details of {{ item.object.title }}">
+                        Details
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div id="noResults" class="no-results">
+            <h3>No food items found</h3>
+            <p>Try adjusting your search criteria or check back later for new donations.</p>
+            <button id="clearFiltersBtn" class="btn btn-primary">
+                Clear All Filters
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" 
+               class="page-btn" aria-label="First page">« First</a>
+            <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" 
+               class="page-btn" aria-label="Previous page">‹ Previous</a>
+        {% else %}
+            <button class="page-btn" disabled>« First</button>
+            <button class="page-btn" disabled>‹ Previous</button>
+        {% endif %}
+        
+        <span class="page-info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" 
+               class="page-btn" aria-label="Next page">Next ›</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" 
+               class="page-btn" aria-label="Last page">Last »</a>
+        {% else %}
+            <button class="page-btn" disabled>Next ›</button>
+            <button class="page-btn" disabled>Last »</button>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get DOM elements
+        const searchInput = document.getElementById('searchInput');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const sortSelect = document.getElementById('sortSelect');
+        const clearBtn = document.getElementById('clearBtn');
+        const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+        
+        // Function to update URL with current filters
+        function updateURL() {
+            const params = new URLSearchParams();
+            
+            if (searchInput.value) params.set('search', searchInput.value);
+            if (categoryFilter.value) params.set('category', categoryFilter.value);
+            if (sortSelect.value !== 'match_score') params.set('sort', sortSelect.value);
+            
+            window.location.search = params.toString();
+        }
+        
+        // Event listeners
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') updateURL();
+        });
+        
+        categoryFilter.addEventListener('change', updateURL);
+        sortSelect.addEventListener('change', updateURL);
+        
+        clearBtn.addEventListener('click', function() {
+            window.location.search = '';
+        });
+        
+        if (clearFiltersBtn) {
+            clearFiltersBtn.addEventListener('click', function() {
+                window.location.search = '';
+            });
+        }
+        
+        // Accessibility enhancements
+        document.querySelectorAll('.food-card').forEach(card => {
+            card.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const link = this.querySelector('a.btn-primary');
+                    if (link) link.click();
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

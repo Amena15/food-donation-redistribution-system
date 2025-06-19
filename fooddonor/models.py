@@ -119,6 +119,7 @@ class FoodDonation(models.Model):
         ('soy', 'Soy'),
         ('shellfish', 'Shellfish'),
     ]
+    
 
     # Use string reference to avoid circular imports
     donor = models.ForeignKey('fooddonor.Profile', on_delete=models.CASCADE, related_name='donations')

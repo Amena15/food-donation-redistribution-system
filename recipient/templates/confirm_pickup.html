@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Confirm Pickup | Share Food, Share Hope{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Confirm Pickup Completion
+                    </h3>
+                </div>
+                
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <h5 class="alert-heading">Important!</h5>
+                        <p>Please confirm only after you have physically received the donation.</p>
+                    </div>
+                    
+                    <div class="request-details mb-4">
+                        <h5>Pickup Details</h5>
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <strong>Request ID:</strong> #{{ pickup.request.id }}
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Food Item:</strong> {{ pickup.request.donation.title }}
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Scheduled Time:</strong> {{ pickup.scheduled_time|date:"M d, Y h:i A" }}
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Donor:</strong> {{ pickup.request.donation.donor.user.get_full_name }}
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <div class="form-check">
+                                {{ form.confirmation }}
+                                <label class="form-check-label" for="{{ form.confirmation.id_for_label }}">
+                                    I confirm I have received this donation
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'recipient:pickup_detail' pickup.id %}" 
+                               class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Back to Details
+                            </a>
+                            
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-check-circle me-2"></i>
+                                Confirm Receipt
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+
+{% block title %}Request Details | Share Food, Share Hope{% endblock %}
+
+{% block extra_css %}
+<style>
+    .status-header {
+        border-left: 4px solid;
+        padding-left: 1rem;
+    }
+    .status-approved {
+        border-color: #28a745;
+        background-color: rgba(40, 167, 69, 0.1);
+    }
+    .status-pending {
+        border-color: #ffc107;
+        background-color: rgba(255, 193, 7, 0.1);
+    }
+    .status-rejected {
+        border-color: #dc3545;
+        background-color: rgba(220, 53, 69, 0.1);
+    }
+    .status-completed {
+        border-color: #17a2b8;
+        background-color: rgba(23, 162, 184, 0.1);
+    }
+    .status-cancelled {
+        border-color: #6c757d;
+        background-color: rgba(108, 117, 125, 0.1);
+    }
+    .status-badge {
+        font-size: 0.9rem;
+        padding: 0.35rem 0.75rem;
+    }
+    .info-card {
+        border-left: 3px solid #6c757d;
+    }
+    .info-card .card-header {
+        background-color: #f8f9fa;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card mt-4">
+        <!-- Card Header with Status -->
+        <div class="card-header d-flex justify-content-between align-items-center 
+                    {% if donation_request.status == 'approved' %}bg-success text-white
+                    {% elif donation_request.status == 'pending' %}bg-warning text-dark
+                    {% elif donation_request.status == 'rejected' %}bg-danger text-white
+                    {% elif donation_request.status == 'completed' %}bg-info text-white
+                    {% else %}bg-secondary text-white{% endif %}">
+            <div>
+                <h2 class="h4 mb-0">Request #{{ donation_request.id }}</h2>
+                <small class="d-block mt-1">Created: {{ donation_request.requested_at|date:"M d, Y" }}</small>
+            </div>
+            <span class="badge status-badge 
+                        {% if donation_request.status == 'approved' %}bg-white text-success
+                        {% elif donation_request.status == 'pending' %}bg-white text-warning
+                        {% elif donation_request.status == 'rejected' %}bg-white text-danger
+                        {% elif donation_request.status == 'completed' %}bg-white text-info
+                        {% else %}bg-white text-secondary{% endif %}">
+                {{ donation_request.get_status_display|upper }}
+            </span>
+        </div>
+
+        <div class="card-body">
+            <!-- Status Summary -->
+            <div class="alert status-header mb-4
+                        {% if donation_request.status == 'approved' %}status-approved
+                        {% elif donation_request.status == 'pending' %}status-pending
+                        {% elif donation_request.status == 'rejected' %}status-rejected
+                        {% elif donation_request.status == 'completed' %}status-completed
+                        {% else %}status-cancelled{% endif %}">
+                <div class="d-flex align-items-center">
+                    <i class="fas 
+                            {% if donation_request.status == 'approved' %}fa-check-circle text-success
+                            {% elif donation_request.status == 'pending' %}fa-hourglass-half text-warning
+                            {% elif donation_request.status == 'rejected' %}fa-times-circle text-danger
+                            {% elif donation_request.status == 'completed' %}fa-clipboard-check text-info
+                            {% else %}fa-info-circle text-secondary{% endif %} 
+                            me-3 fa-2x"></i>
+                    <div>
+                        <h5 class="mb-1">
+                            {% if donation_request.status == 'approved' %}
+                                Request Approved
+                            {% elif donation_request.status == 'pending' %}
+                                Request Pending
+                            {% elif donation_request.status == 'rejected' %}
+                                Request Rejected
+                            {% elif donation_request.status == 'completed' %}
+                                Request Completed
+                            {% else %}
+                                Request Status
+                            {% endif %}
+                        </h5>
+                        <p class="mb-0">
+                            {% if donation_request.status == 'approved' %}
+                                The donor has approved your request. Please schedule pickup.
+                            {% elif donation_request.status == 'pending' %}
+                                Your request is under review by the donor.
+                            {% elif donation_request.status == 'rejected' %}
+                                The donor was unable to fulfill this request.
+                            {% elif donation_request.status == 'completed' %}
+                                This donation was successfully received.
+                            {% else %}
+                                Current request status.
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Left Column - Request Info -->
+                <div class="col-md-6">
+                    <div class="card info-card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Request Details</h5>
+                        </div>
+                        <div class="card-body">
+                            <dl class="row">
+                                <dt class="col-sm-5">Requested On:</dt>
+                                <dd class="col-sm-7">{{ donation_request.requested_at|date:"M d, Y H:i" }}</dd>
+
+                                <dt class="col-sm-5">Status:</dt>
+                                <dd class="col-sm-7">
+                                    <span class="badge status-badge 
+                                                {% if donation_request.status == 'approved' %}bg-success
+                                                {% elif donation_request.status == 'pending' %}bg-warning
+                                                {% elif donation_request.status == 'rejected' %}bg-danger
+                                                {% elif donation_request.status == 'completed' %}bg-info
+                                                {% else %}bg-secondary{% endif %}">
+                                        {{ donation_request.get_status_display }}
+                                    </span>
+                                </dd>
+
+                                <dt class="col-sm-5">Pickup Scheduled:</dt>
+                                <dd class="col-sm-7">
+                                    {% if donation_request.pickup_date %}
+                                        {{ donation_request.pickup_date|date:"M d, Y H:i" }}
+                                    {% else %}
+                                        <span class="text-muted">Not scheduled</span>
+                                    {% endif %}
+                                </dd>
+
+                                <dt class="col-sm-5">Your Message:</dt>
+                                <dd class="col-sm-7">{{ donation_request.message|default:"No message provided" }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column - Donation Info -->
+                <div class="col-md-6">
+                    <div class="card info-card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Donation Details</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex mb-3">
+                                {% if donation_request.donation.image %}
+                                <img src="{{ donation_request.donation.image.url }}" 
+                                     class="img-thumbnail me-3" 
+                                     style="width: 100px; height: 100px; object-fit: cover;"
+                                     alt="{{ donation_request.donation.title }}">
+                                {% endif %}
+                                <div>
+                                    <h6>{{ donation_request.donation.title }}</h6>
+                                    <p class="text-muted small mb-1">{{ donation_request.donation.get_category_display }}</p>
+                                    <p class="small">{{ donation_request.donation.description|truncatewords:15 }}</p>
+                                </div>
+                            </div>
+
+                            <dl class="row mb-0">
+                                <dt class="col-sm-5">Quantity:</dt>
+                                <dd class="col-sm-7">{{ donation_request.donation.quantity_amount }} {{ donation_request.donation.get_quantity_unit_display }}</dd>
+
+                                <dt class="col-sm-5">Expires:</dt>
+                                <dd class="col-sm-7">{{ donation_request.donation.expiry_date|date:"M d, Y" }}</dd>
+
+                                <dt class="col-sm-5">Donor:</dt>
+                                <dd class="col-sm-7">{{ donation_request.donation.donor.user.get_full_name }}</dd>
+
+                                <dt class="col-sm-5">Pickup Location:</dt>
+                                <dd class="col-sm-7">{{ donation_request.donation.pickup_location|default:"Not specified" }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{% url 'recipient:my_requests' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i> Back to My Requests
+                </a>
+
+                <div>
+                    {% if donation_request.status == 'approved' and not donation_request.pickup_date %}
+                    <a href="{% url 'recipient:schedule_pickup' donation_request.id %}" 
+                       class="btn btn-primary me-2">
+                        <i class="fas fa-calendar-plus me-2"></i> Schedule Pickup
+                    </a>
+                    {% endif %}
+
+                    {% if donation_request.status == 'pending' %}
+                    <form method="post" action="{% url 'recipient:cancel_request' donation_request.id %}" 
+                          class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-times me-2"></i> Cancel Request
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Feedback Section -->
+            {% if donation_request.feedback or donation_request.rating %}
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Your Feedback</h5>
+                </div>
+                <div class="card-body">
+                    {% if donation_request.feedback %}
+                    <p>{{ donation_request.feedback }}</p>
+                    {% endif %}
+                    {% if donation_request.rating %}
+                    <div class="rating-display">
+                        <span class="fw-bold">Rating:</span>
+                        {% for i in "12345" %}
+                        <i class="fas fa-star{% if forloop.counter > donation_request.rating %}-o{% endif %} 
+                                  text-warning"></i>
+                        {% endfor %}
+                        ({{ donation_request.rating }}/5)
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

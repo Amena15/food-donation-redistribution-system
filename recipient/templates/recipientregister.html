@@ -6,449 +6,95 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Food Recipient</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         :root {
             --dark-blue: #0d47a1;
             --medium-blue: #1976d2;
             --light-blue: #42a5f5;
             --very-light-blue: #e3f2fd;
-            --success-green: #28a745;
-            --warning-orange: #ffc107;
-            --danger-red: #dc3545;
-        }
-
-        * {
-            box-sizing: border-box;
         }
 
         body {
-            background: linear-gradient(135deg, var(--very-light-blue) 0%, #f8f9fa 100%);
-            min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 20px 0;
+            background-color: var(--very-light-blue);
+            padding-top: 20px;
         }
 
         .register-container {
-            max-width: 550px;
+            max-width: 500px;
             margin: 0 auto;
             background-color: white;
-            padding: 40px 35px;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(13, 71, 161, 0.15);
-            border-top: 4px solid var(--dark-blue);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .register-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--dark-blue), var(--medium-blue), var(--light-blue));
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            border-top: 5px solid var(--dark-blue);
         }
 
         .logo {
             text-align: center;
-            margin-bottom: 30px;
-            color: var(--dark-blue);
-        }
-
-        .logo h2 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-        }
-
-        .logo p {
-            color: #6c757d;
-            font-size: 0.95rem;
-            margin-bottom: 0;
-        }
-
-        .logo i {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            color: var(--medium-blue);
-        }
-
-        .form-section {
             margin-bottom: 25px;
-        }
-
-        .section-title {
             color: var(--dark-blue);
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid var(--very-light-blue);
-            display: flex;
-            align-items: center;
         }
 
-        .section-title i {
-            margin-right: 8px;
-            color: var(--medium-blue);
+        label {
+            color: var(--dark-blue);
+            font-weight: 500;
         }
 
         .form-group {
-            margin-bottom: 20px;
-            position: relative;
+            margin-bottom: 15px;
         }
 
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .form-group label {
-            color: var(--dark-blue);
-            font-weight: 500;
-            margin-bottom: 8px;
-            display: block;
-            font-size: 0.9rem;
-        }
-
-        .required {
-            color: var(--danger-red);
-        }
-
-        .form-control, .form-select {
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            padding: 12px 15px;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            background-color: #f8f9fa;
-        }
-
-        .form-control:focus, .form-select:focus {
+        .form-control:focus {
             border-color: var(--medium-blue);
-            box-shadow: 0 0 0 0.25rem rgba(25, 118, 210, 0.15);
-            background-color: white;
-            outline: none;
-        }
-
-        .form-control:valid, .form-select:valid {
-            border-color: var(--success-green);
-        }
-
-        .form-control.is-invalid, .form-select.is-invalid {
-            border-color: var(--danger-red);
-        }
-
-        .input-group {
-            position: relative;
-        }
-
-        .input-icon {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #6c757d;
-            transition: color 0.3s ease;
-            z-index: 5;
-        }
-
-        .form-group:focus-within .input-icon {
-            color: var(--medium-blue);
-        }
-
-        .password-toggle {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #6c757d;
-            transition: color 0.3s ease;
-            z-index: 10;
-        }
-
-        .password-toggle:hover {
-            color: var(--medium-blue);
-        }
-
-        .password-strength {
-            margin-top: 5px;
-            height: 4px;
-            background-color: #e9ecef;
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .password-strength-bar {
-            height: 100%;
-            width: 0%;
-            transition: all 0.3s ease;
-            border-radius: 2px;
-        }
-
-        .strength-weak { background-color: var(--danger-red); }
-        .strength-fair { background-color: var(--warning-orange); }
-        .strength-good { background-color: var(--light-blue); }
-        .strength-strong { background-color: var(--success-green); }
-
-        .password-requirements {
-            font-size: 0.8rem;
-            color: #6c757d;
-            margin-top: 5px;
-        }
-
-        .requirement {
-            display: flex;
-            align-items: center;
-            margin-bottom: 2px;
-        }
-
-        .requirement i {
-            margin-right: 5px;
-            font-size: 0.7rem;
-        }
-
-        .requirement.valid {
-            color: var(--success-green);
+            box-shadow: 0 0 0 0.25rem rgba(25, 118, 210, 0.25);
         }
 
         .btn-register {
             width: 100%;
-            background: linear-gradient(135deg, var(--dark-blue), var(--medium-blue));
+            background-color: var(--dark-blue);
             border: none;
             color: white;
-            padding: 14px 20px;
-            font-size: 1rem;
-            font-weight: 500;
-            border-radius: 8px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            transition: background-color 0.3s;
         }
 
         .btn-register:hover {
-            background: linear-gradient(135deg, var(--medium-blue), var(--light-blue));
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
-        }
-
-        .btn-register:active {
-            transform: translateY(0);
-        }
-
-        .btn-register:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .loading-spinner {
-            display: none;
-            width: 20px;
-            height: 20px;
-            border: 2px solid transparent;
-            border-top: 2px solid white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 8px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            background-color: var(--medium-blue);
         }
 
         .login-link {
             text-align: center;
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 1px solid #e9ecef;
+            margin-top: 20px;
         }
 
         .login-link a {
             color: var(--medium-blue);
             text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
         }
 
         .login-link a:hover {
-            color: var(--dark-blue);
             text-decoration: underline;
         }
 
-        .text-danger {
-            color: var(--danger-red) !important;
-            font-size: 0.85rem;
-            margin-top: 5px;
-            display: flex;
-            align-items: center;
-        }
-
-        .text-danger i {
-            margin-right: 5px;
-            font-size: 0.8rem;
-        }
-
-        .alert {
-            border-radius: 8px;
-            border: none;
-            padding: 12px 15px;
-            margin-bottom: 20px;
-            animation: slideIn 0.3s ease;
-        }
-
-        .alert-success {
-            background-color: #eafaf1;
-            color: #155724;
-            border-left: 4px solid var(--success-green);
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .terms-checkbox {
-            display: flex;
-            align-items: flex-start;
-            margin: 20px 0;
-            padding: 15px;
-            background-color: var(--very-light-blue);
-            border-radius: 8px;
-            border-left: 4px solid var(--medium-blue);
-        }
-
-        .terms-checkbox input[type="checkbox"] {
-            margin-right: 10px;
-            margin-top: 2px;
-            transform: scale(1.2);
-        }
-
-        .terms-checkbox label {
+        #location-status {
+            margin-top: 10px;
             font-size: 0.9rem;
-            line-height: 1.4;
-            margin-bottom: 0;
-            cursor: pointer;
+            color: var(--dark-blue);
         }
 
-        .terms-checkbox a {
-            color: var(--medium-blue);
-            text-decoration: none;
+        .location-icon {
+            margin-right: 5px;
         }
 
-        .terms-checkbox a:hover {
-            text-decoration: underline;
-        }
-
-        /* Progress indicator */
-        .progress-indicator {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 30px;
-            padding: 0 20px;
-        }
-
-        .progress-step {
-            flex: 1;
+        .description-text {
+            margin-bottom: 25px;
+            color: var(--dark-blue);
+            font-size: 1rem;
             text-align: center;
-            position: relative;
-        }
-
-        .progress-step::before {
-            content: '';
-            position: absolute;
-            top: 12px;
-            left: 50%;
-            right: -50%;
-            height: 2px;
-            background-color: #e9ecef;
-            z-index: 1;
-        }
-
-        .progress-step:last-child::before {
-            display: none;
-        }
-
-        .progress-step.active {
-            color: var(--medium-blue);
-        }
-
-        .progress-step.active::before {
-            background-color: var(--medium-blue);
-        }
-
-        .step-circle {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background-color: #e9ecef;
-            color: #6c757d;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            font-weight: 600;
-            position: relative;
-            z-index: 2;
-            margin-bottom: 5px;
-        }
-
-        .progress-step.active .step-circle {
-            background-color: var(--medium-blue);
-            color: white;
-        }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .register-container {
-                padding: 30px 25px;
-                margin: 10px;
-            }
-            
-            .form-row {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-            
-            .logo h2 {
-                font-size: 1.6rem;
-            }
-
-            .progress-indicator {
-                padding: 0 10px;
-            }
-        }
-
-        /* Accessibility improvements */
-        .form-control:focus, .form-select:focus {
-            outline: 2px solid var(--medium-blue);
-            outline-offset: 2px;
-        }
-
-        .btn-register:focus {
-            outline: 2px solid var(--medium-blue);
-            outline-offset: 2px;
-        }
-
-        .submitting {
-            pointer-events: none;
-        }
-
-        .submitting .loading-spinner {
-            display: inline-block;
         }
     </style>
 </head>
@@ -456,438 +102,155 @@
     <div class="container">
         <div class="register-container">
             <div class="logo">
-                <i class="fas fa-hand-holding-heart"></i>
                 <h2>Food Recipient Registration</h2>
-                <p>Join our community and access food assistance</p>
+                <p>Register to receive food donations</p>
             </div>
 
-            <!-- Progress Indicator -->
-            <div class="progress-indicator">
-                <div class="progress-step active">
-                    <div class="step-circle">1</div>
-                    <div>Personal Info</div>
-                </div>
-                <div class="progress-step">
-                    <div class="step-circle">2</div>
-                    <div>Account Setup</div>
-                </div>
-                <div class="progress-step">
-                    <div class="step-circle">3</div>
-                    <div>Complete</div>
-                </div>
+            <div class="description-text">
+                <p>Please provide accurate information to help us match you with suitable food donations.</p>
             </div>
 
-            <form method="post" id="registrationForm" novalidate>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post">
                 {% csrf_token %}
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-                <!-- Personal Information Section -->
-                <div class="form-section">
-                    <div class="section-title">
-                        <i class="fas fa-user"></i>
-                        Personal Information
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="first_name">First Name <span class="required">*</span></label>
-                            <div class="input-group">
-                                <input type="text" name="first_name" id="first_name" class="form-control" required 
-                                       autocomplete="given-name" placeholder="Enter your first name">
-                                <i class="fas fa-user input-icon"></i>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="last_name">Last Name <span class="required">*</span></label>
-                            <div class="input-group">
-                                <input type="text" name="last_name" id="last_name" class="form-control" required 
-                                       autocomplete="family-name" placeholder="Enter your last name">
-                                <i class="fas fa-user input-icon"></i>
-                            </div>
-                        </div>
-                    </div>
-
+                
+                {% for field in form.visible_fields %}
                     <div class="form-group">
-                        <label for="email">Email Address <span class="required">*</span></label>
-                        <div class="input-group">
-                            <input type="email" name="email" id="email" class="form-control" required 
-                                   autocomplete="email" placeholder="Enter your email address">
-                            <i class="fas fa-envelope input-icon"></i>
-                        </div>
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {% endif %}
+                        {% if field.errors %}
+                            <div class="text-danger">{{ field.errors|striptags }}</div>
+                        {% endif %}
                     </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="phone">Phone Number <span class="required">*</span></label>
-                            <div class="input-group">
-                                <input type="tel" name="phone_number" id="phon_number" class="form-control" required 
-                                       autocomplete="tel" placeholder="+60 12-345 6789">
-                                <i class="fas fa-phone input-icon"></i>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="date_of_birth">Date of Birth</label>
-                            <div class="input-group">
-                                <input type="date" name="date_of_birth" id="date_of_birth" class="form-control">
-                                <i class="fas fa-calendar input-icon"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Address Information Section -->
-                <div class="form-section">
-                    <div class="section-title">
-                        <i class="fas fa-map-marker-alt"></i>
-                        Address Information
-                    </div>
-
-                    <div class="form-group">
-                        <label for="address">Full Address <span class="required">*</span></label>
-                        <div class="input-group">
-                            <textarea name="address" id="address" class="form-control" rows="3" required 
-                                      placeholder="Enter your complete address"></textarea>
-                            <i class="fas fa-home input-icon" style="top: 20px;"></i>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="city">City <span class="required">*</span></label>
-                            <div class="input-group">
-                                <input type="text" name="city" id="city" class="form-control" required 
-                                       placeholder="Enter your city">
-                                <i class="fas fa-city input-icon"></i>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="postal_code">Postal Code <span class="required">*</span></label>
-                            <div class="input-group">
-                                <input type="text" name="postal_code" id="postal_code" class="form-control" required 
-                                       placeholder="75000" pattern="[0-9]{5}">
-                                <i class="fas fa-mail-bulk input-icon"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="state">State <span class="required">*</span></label>
-                        <select name="state" id="state" class="form-select" required>
-                            <option value="">Select your state</option>
-                            <option value="Johor">Johor</option>
-                            <option value="Kedah">Kedah</option>
-                            <option value="Kelantan">Kelantan</option>
-                            <option value="Kuala Lumpur">Kuala Lumpur</option>
-                            <option value="Labuan">Labuan</option>
-                            <option value="Melaka">Melaka</option>
-                            <option value="Negeri Sembilan">Negeri Sembilan</option>
-                            <option value="Pahang">Pahang</option>
-                            <option value="Penang">Penang</option>
-                            <option value="Perak">Perak</option>
-                            <option value="Perlis">Perlis</option>
-                            <option value="Putrajaya">Putrajaya</option>
-                            <option value="Sabah">Sabah</option>
-                            <option value="Sarawak">Sarawak</option>
-                            <option value="Selangor">Selangor</option>
-                            <option value="Terengganu">Terengganu</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Household Information Section -->
-                <div class="form-section">
-                    <div class="section-title">
-                        <i class="fas fa-users"></i>
-                        Household Information
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="household_size">Household Size <span class="required">*</span></label>
-                            <select name="household_size" id="household_size" class="form-select" required>
-                                <option value="">Select size</option>
-                                <option value="1">1 person</option>
-                                <option value="2">2 people</option>
-                                <option value="3">3 people</option>
-                                <option value="4">4 people</option>
-                                <option value="5">5 people</option>
-                                <option value="6+">6+ people</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="monthly_income">Monthly Household Income</label>
-                            <select name="monthly_income" id="monthly_income" class="form-select">
-                                <option value="">Select range</option>
-                                <option value="below_1000">Below RM 1,000</option>
-                                <option value="1000_2000">RM 1,000 - RM 2,000</option>
-                                <option value="2000_3000">RM 2,000 - RM 3,000</option>
-                                <option value="3000_4000">RM 3,000 - RM 4,000</option>
-                                <option value="above_4000">Above RM 4,000</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="special_needs">Special Dietary Requirements or Allergies</label>
-                        <textarea name="special_needs" id="special_needs" class="form-control" rows="3" 
-                                  placeholder="Please describe any dietary restrictions, allergies, or special needs"></textarea>
-                    </div>
-                </div>
-
-                <!-- Account Setup Section -->
-                <div class="form-section">
-                    <div class="section-title">
-                        <i class="fas fa-key"></i>
-                        Account Setup
-                    </div>
-
-                    <div class="form-group">
-                        <label for="preferred_notification_method">Preferred Notification Method <span class="required">*</span></label>
-                            <select name="preferred_notification_method" id="preferred_notification_method" class="form-select" required>
-                                <option value="">Select a method</option>
-                                <option value="email">Email</option>
-                                <option value="sms">SMS</option>
-                                <option value="both">Both</option>
-                            </select>
-                    </div>
-
-
-                    <div class="form-group">
-                        <label for="username">Username <span class="required">*</span></label>
-                        <div class="input-group">
-                            <input type="text" name="username" id="username" class="form-control" required 
-                                   autocomplete="username" placeholder="Choose a unique username">
-                            <i class="fas fa-at input-icon"></i>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password1">Password <span class="required">*</span></label>
-                        <div class="input-group">
-                            <input type="password" name="password1" id="password1" class="form-control" required 
-                                   autocomplete="new-password" placeholder="Create a strong password">
-                            <i class="fas fa-eye password-toggle" onclick="togglePassword('password1', this)" id="toggleIcon1"></i>
-                        </div>
-                        <div class="password-strength">
-                            <div class="password-strength-bar" id="strengthBar"></div>
-                        </div>
-                        <div class="password-requirements" id="passwordRequirements">
-                            <div class="requirement" id="length">
-                                <i class="fas fa-times"></i> At least 8 characters
-                            </div>
-                            <div class="requirement" id="lowercase">
-                                <i class="fas fa-times"></i> One lowercase letter
-                            </div>
-                            <div class="requirement" id="uppercase">
-                                <i class="fas fa-times"></i> One uppercase letter
-                            </div>
-                            <div class="requirement" id="number">
-                                <i class="fas fa-times"></i> One number
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password2">Confirm Password <span class="required">*</span></label>
-                        <div class="input-group">
-                            <input type="password" name="password2" id="password2" class="form-control" required 
-                                   autocomplete="new-password" placeholder="Confirm your password">
-                            <i class="fas fa-eye password-toggle" onclick="togglePassword('password2', this)" id="toggleIcon2"></i>
-                        </div>
-                        <div class="text-danger" id="passwordMatch" style="display: none;">
-                            <i class="fas fa-exclamation-triangle"></i> Passwords do not match
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Terms and Conditions -->
-                <div class="terms-checkbox">
-                    <input type="checkbox" id="terms_accepted" name="terms_accepted" required>
-                    <label for="terms_accepted">
-                        I agree to the <a href="#" onclick="showTerms()">Terms and Conditions</a> and 
-                        <a href="#" onclick="showPrivacy()">Privacy Policy</a>. I understand that this information 
-                        will be used to determine my eligibility for food assistance programs.
-                    </label>
-                </div>
-
-                <!-- Form Errors Display -->
-                {% for field in form %}
-                    {% if field.errors %}
-                        <div class="text-danger">
-                            <i class="fas fa-exclamation-circle"></i>
-                            {{ field.label }}: {{ field.errors|striptags }}
-                        </div>
-                    {% endif %}
                 {% endfor %}
 
-                <button type="submit" class="btn-register mt-3" id="registerBtn">
-                    <span class="loading-spinner"></span>
-                    <span class="btn-text">Create Account</span>
-                </button>
+                <!-- Hidden fields -->
+                {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                {% endfor %}
+
+                <div id="location-status" class="text-muted">
+                    <i class="bi bi-geo-alt-fill location-icon"></i>
+                    <span id="location-text">We'll use your location to match you with nearby donors</span>
+                </div>
+
+                <button type="submit" class="btn-register mt-3">Register</button>
             </form>
 
             <div class="login-link">
-                Already have an account? <a href="{% url 'recipient:recipientlogin' %}">Sign In</a>
+                Already have an account? <a href="{% url 'recipient:recipientlogin' %}">Log In</a>
             </div>
         </div>
     </div>
 
-    <script>
-        // Password toggle functionality
-        function togglePassword(inputId, icon) {
-            const passwordInput = document.getElementById(inputId);
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
-        }
+   <!-- Add Mapbox and geolocation scripts -->
+   <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
+   <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+   <script src="{% static 'js/geolocation.js' %}"></script>  <!-- Example of using static JS file -->
+   <script>
+       // CSRF token setup for AJAX requests
+       function getCookie(name) {
+           let cookieValue = null;
+           if (document.cookie && document.cookie !== '') {
+               const cookies = document.cookie.split(';');
+               for (let i = 0; i < cookies.length; i++) {
+                   const cookie = cookies[i].trim();
+                   if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                       cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                       break;
+                   }
+               }
+           }
+           return cookieValue;
+       }
+       const csrftoken = getCookie('csrftoken');
 
-        // Password strength checker
-        function checkPasswordStrength(password) {
-            let strength = 0;
-            const requirements = {
-                length: password.length >= 8,
-                lowercase: /[a-z]/.test(password),
-                uppercase: /[A-Z]/.test(password),
-                number: /\d/.test(password)
-            };
+       document.addEventListener('DOMContentLoaded', function() {
+           // Form submission handler
+           const form = document.getElementById('registrationForm');
+           if (form) {
+               form.addEventListener('submit', function(e) {
+                   // You can add additional form validation here if needed
+               });
+           }
 
-            // Update requirement indicators
-            Object.keys(requirements).forEach(req => {
-                const element = document.getElementById(req);
-                const icon = element.querySelector('i');
-                if (requirements[req]) {
-                    element.classList.add('valid');
-                    icon.classList.remove('fa-times');
-                    icon.classList.add('fa-check');
-                    strength++;
-                } else {
-                    element.classList.remove('valid');
-                    icon.classList.remove('fa-check');
-                    icon.classList.add('fa-times');
-                }
-            });
-
-            // Update strength bar
-            const strengthBar = document.getElementById('strengthBar');
-            const strengthClasses = ['strength-weak', 'strength-fair', 'strength-good', 'strength-strong'];
-            
-            strengthBar.className = 'password-strength-bar';
-            strengthBar.style.width = (strength * 25) + '%';
-            
-            if (strength > 0) {
-                strengthBar.classList.add(strengthClasses[strength - 1]);
-            }
-
-            return strength;
-        }
-
-        // Password confirmation checker
-        function checkPasswordMatch() {
-            const password1 = document.getElementById('password1').value;
-            const password2 = document.getElementById('password2').value;
-            const matchIndicator = document.getElementById('passwordMatch');
-
-            if (password2.length > 0) {
-                if (password1 === password2) {
-                    matchIndicator.style.display = 'none';
-                    document.getElementById('password2').classList.add('is-valid');
-                    document.getElementById('password2').classList.remove('is-invalid');
-                } else {
-                    matchIndicator.style.display = 'block';
-                    document.getElementById('password2').classList.add('is-invalid');
-                    document.getElementById('password2').classList.remove('is-valid');
-                }
-            }
-        }
-
-        // Form validation
-        document.getElementById('registrationForm').addEventListener('input', function(e) {
-            const input = e.target;
-            
-            if (input.id === 'password1') {
-                checkPasswordStrength(input.value);
-                checkPasswordMatch();
-            } else if (input.id === 'password2') {
-                checkPasswordMatch();
-            } else if (input.checkValidity()) {
-                input.classList.add('is-valid');
-                input.classList.remove('is-invalid');
-            } else {
-                input.classList.add('is-invalid');
-                input.classList.remove('is-valid');
-            }
-        });
-
-        // Form submission with loading state
-        document.getElementById('registrationForm').addEventListener('submit', function(e) {
-            const registerBtn = document.getElementById('registerBtn');
-            const btnText = registerBtn.querySelector('.btn-text');
-            
-            // Validate form before submission
-            if (!this.checkValidity()) {
-                e.preventDefault();
-                return;
-            }
-
-            // Add loading state
-            registerBtn.classList.add('submitting');
-            registerBtn.disabled = true;
-            btnText.textContent = 'Creating Account...';
-            
-            // Update progress indicator
-            const steps = document.querySelectorAll('.progress-step');
-            steps[1].classList.add('active');
-            
-            setTimeout(() => {
-                steps[2].classList.add('active');
-            }, 1000);
-        });
-
-        // Terms and Privacy functions
-        function showTerms() {
-            alert('Terms and Conditions would be displayed in a modal or separate page.');
-        }
-
-        function showPrivacy() {
-            alert('Privacy Policy would be displayed in a modal or separate page.');
-        }
-
-            // Phone number formatting
-            document.getElementById('phone').addEventListener('input', function(e) {
-                let value = e.target.value.replace(/\D/g, '');
-                if (value.startsWith('60')) {
-                    value = value.substring(2);
-                }
-                // Format as +60 XX-XXX XXXX or similar
-                let formatted = '+60 ';
-                if (value.length > 2) {
-                    formatted += value.substring(0, 2) + '-';
-                    if (value.length > 5) {
-                        formatted += value.substring(2, 5) + ' ' + value.substring(5, 9);
-                    } else if (value.length > 2) {
-                        formatted += value.substring(2);
-                    }
-                } else {
-                    formatted += value;
-                }
-                e.target.value = formatted.trim();
-            });
-        </script>
-    </body>
+           // Geolocation functionality
+           if (navigator.geolocation) {
+               navigator.geolocation.getCurrentPosition(
+                   function(position) {
+                       // Update UI
+                       const locationText = document.getElementById('location-text');
+                       if (locationText) {
+                           locationText.textContent = 
+                               'Location detected: ' + position.coords.latitude.toFixed(4) + 
+                               ', ' + position.coords.longitude.toFixed(4);
+                       }
+                       
+                       // Send to server
+                       fetch('{% url "recipient:set_geolocation" %}', {
+                           method: 'POST',
+                           headers: {
+                               'Content-Type': 'application/json',
+                               'X-CSRFToken': csrftoken,
+                               'X-Requested-With': 'XMLHttpRequest'
+                           },
+                           body: JSON.stringify({
+                               latitude: position.coords.latitude,
+                               longitude: position.coords.longitude,
+                               accuracy: position.coords.accuracy
+                           })
+                       })
+                       .then(response => {
+                           if (!response.ok) {
+                               throw new Error('Network response was not ok');
+                           }
+                           return response.json();
+                       })
+                       .then(data => {
+                           console.log('Location saved:', data);
+                           // Optionally update hidden form fields with location data
+                           const latField = document.querySelector('[name="latitude"]');
+                           const lngField = document.querySelector('[name="longitude"]');
+                           if (latField) latField.value = position.coords.latitude;
+                           if (lngField) lngField.value = position.coords.longitude;
+                       })
+                       .catch(error => {
+                           console.error('Error saving location:', error);
+                       });
+                   },
+                   function(error) {
+                       console.log("Geolocation error:", error.message);
+                       const locationText = document.getElementById('location-text');
+                       if (locationText) {
+                           locationText.textContent = 
+                               'Using address for location (enable location services for better matches)';
+                       }
+                   },
+                   { 
+                       enableHighAccuracy: true,
+                       timeout: 10000,
+                       maximumAge: 0
+                   }
+               );
+           } else {
+               const locationText = document.getElementById('location-text');
+               if (locationText) {
+                   locationText.textContent = 
+                       'Browser geolocation not supported - using address for location';
+               }
+           }
+       });
+   </script>
+</body>
 </html>

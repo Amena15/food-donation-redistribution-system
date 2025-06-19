@@ -1,0 +1,158 @@
+{% extends 'recipient/base.html' %}
+
+{% block title %}My Pickups{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">My Pickup Schedules</h2>
+    
+    <!-- Filter Tabs -->
+    <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+            <a class="nav-link {% if filter_type == 'all' %}active{% endif %}" 
+               href="?filter=all">
+                All Pickups <span class="badge bg-secondary">{{ counts.all }}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if filter_type == 'upcoming' %}active{% endif %}" 
+               href="?filter=upcoming">
+                Upcoming <span class="badge bg-primary">{{ counts.upcoming }}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if filter_type == 'pending' %}active{% endif %}" 
+               href="?filter=pending">
+                Pending Confirmation <span class="badge bg-warning text-dark">{{ counts.pending }}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if filter_type == 'completed' %}active{% endif %}" 
+               href="?filter=completed">
+                Completed <span class="badge bg-success">{{ counts.completed }}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if filter_type == 'past' %}active{% endif %}" 
+               href="?filter=past">
+                Past Pickups <span class="badge bg-secondary">{{ counts.past }}</span>
+            </a>
+        </li>
+    </ul>
+    
+    <!-- Pickups List -->
+    <div class="list-group">
+        {% for pickup in pickups %}
+        <div class="list-group-item list-group-item-action mb-3 rounded">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">
+                    {{ pickup.request.donation.title }}
+                    <span class="badge 
+                        {% if pickup.is_completed %}bg-success
+                        {% elif pickup.scheduled_time < timezone.now %}bg-warning text-dark
+                        {% else %}bg-primary{% endif %}">
+                        {% if pickup.is_completed %}Completed
+                        {% elif pickup.scheduled_time < timezone.now %}Missed
+                        {% else %}Upcoming{% endif %}
+                    </span>
+                </h5>
+                <small class="text-muted">
+                    {{ pickup.scheduled_time|date:"M d, Y H:i" }}
+                </small>
+            </div>
+            
+            <div class="row mt-2">
+                <div class="col-md-6">
+                    <p class="mb-1">
+                        <strong>Donor:</strong> 
+                        {{ pickup.request.donation.donor.user.get_full_name|default:pickup.request.donation.donor.user.username }}
+                    </p>
+                    <p class="mb-1">
+                        <strong>Pickup Location:</strong> 
+                        {{ pickup.request.donation.pickup_location }}
+                    </p>
+                    {% if pickup.driver_name %}
+                    <p class="mb-1">
+                        <strong>Driver:</strong> 
+                        {{ pickup.driver_name }} ({{ pickup.driver_contact }})
+                    </p>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1">
+                        <strong>Status:</strong> 
+                        {{ pickup.request.get_status_display }}
+                    </p>
+                    <p class="mb-1">
+                        <strong>Vehicle:</strong> 
+                        {{ pickup.vehicle_details|default:"Not specified" }}
+                    </p>
+                    {% if pickup.notes %}
+                    <p class="mb-1">
+                        <strong>Notes:</strong> 
+                        {{ pickup.notes }}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="mt-2 d-flex justify-content-end">
+                <a href="{% url 'recipient:request_detail' pickup.request.id %}" 
+                   class="btn btn-sm btn-outline-primary me-2">
+                    View Details
+                </a>
+                {% if not pickup.is_completed and pickup.scheduled_time > timezone.now %}
+                <a href="{% url 'recipient:confirm_pickup' pickup.request.id %}" 
+                   class="btn btn-sm btn-success">
+                    Confirm Pickup
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="alert alert-info">
+            No pickups found matching your criteria.
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if pickups.has_other_pages %}
+    <nav aria-label="Pickups pagination" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if pickups.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ pickups.previous_page_number }}{% if filter_type %}&filter={{ filter_type }}{% endif %}">Previous</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">Previous</span>
+            </li>
+            {% endif %}
+            
+            {% for i in pickups.paginator.page_range %}
+            {% if pickups.number == i %}
+            <li class="page-item active">
+                <span class="page-link">{{ i }}</span>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ i }}{% if filter_type %}&filter={{ filter_type }}{% endif %}">{{ i }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            
+            {% if pickups.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ pickups.next_page_number }}{% if filter_type %}&filter={{ filter_type }}{% endif %}">Next</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">Next</span>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

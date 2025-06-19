@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block title %}Update Household Needs | Share Food, Share Hope{% endblock %}
+
+{% block page_title %}Update Household Needs Assessment{% endblock %}
+{% block page_subtitle %}Complete assessment of your household requirements{% endblock %}
+
+{% block extra_css %}
+<style>
+    .needs-form-container {
+        background-color: var(--white);
+        border-radius: 10px;
+        box-shadow: var(--shadow);
+        padding: 30px;
+    }
+    
+    .form-section {
+        margin-bottom: 30px;
+    }
+    
+    .section-title {
+        font-size: 1.2rem;
+        color: var(--primary);
+        margin-bottom: 15px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--dark);
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 1rem;
+    }
+    
+    .form-range {
+        width: 100%;
+        margin-top: 10px;
+    }
+    
+    .range-value {
+        display: inline-block;
+        margin-left: 10px;
+        font-weight: 600;
+        color: var(--primary);
+    }
+    
+    .help-text {
+        font-size: 0.85rem;
+        color: var(--gray);
+        margin-top: 5px;
+    }
+    
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        margin-top: 30px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="needs-form-container">
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="form-section">
+            <h3 class="section-title">Priority Areas</h3>
+            
+            <div class="form-group">
+                <label for="id_food_priority">Food Requirements</label>
+                <input type="range" class="form-range" id="id_food_priority" name="food_priority" 
+                       min="0" max="100" value="{{ form.instance.food_priority|default:'50' }}"
+                       oninput="document.getElementById('foodValue').textContent = this.value">
+                <span class="range-value" id="foodValue">{{ form.instance.food_priority|default:"50" }}</span>%
+                <p class="help-text">How critical are food needs for your household?</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="id_hygiene_priority">Hygiene Items</label>
+                <input type="range" class="form-range" id="id_hygiene_priority" name="hygiene_priority" 
+                       min="0" max="100" value="{{ form.instance.hygiene_priority|default:'30' }}"
+                       oninput="document.getElementById('hygieneValue').textContent = this.value">
+                <span class="range-value" id="hygieneValue">{{ form.instance.hygiene_priority|default:"30" }}</span>%
+                <p class="help-text">How important are hygiene products for your household?</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="id_baby_priority">Baby Supplies</label>
+                <input type="range" class="form-range" id="id_baby_priority" name="baby_priority" 
+                       min="0" max="100" value="{{ form.instance.baby_priority|default:'0' }}"
+                       oninput="document.getElementById('babyValue').textContent = this.value">
+                <span class="range-value" id="babyValue">{{ form.instance.baby_priority|default:"0" }}</span>%
+                <p class="help-text">Set to 0 if not applicable to your household</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="id_household_priority">Household Items</label>
+                <input type="range" class="form-range" id="id_household_priority" name="household_priority" 
+                       min="0" max="100" value="{{ form.instance.household_priority|default:'20' }}"
+                       oninput="document.getElementById('householdValue').textContent = this.value">
+                <span class="range-value" id="householdValue">{{ form.instance.household_priority|default:"20" }}</span>%
+                <p class="help-text">Priority for household supplies (cleaning, etc.)</p>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h3 class="section-title">Special Requirements</h3>
+            
+            <div class="form-group">
+                <label for="id_dietary_restrictions">Dietary Restrictions</label>
+                <textarea class="form-control" id="id_dietary_restrictions" name="dietary_restrictions" 
+                          rows="3">{{ form.instance.dietary_restrictions|default:"" }}</textarea>
+                <p class="help-text">Any dietary restrictions (vegetarian, gluten-free, etc.)</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="id_allergies">Allergies</label>
+                <textarea class="form-control" id="id_allergies" name="allergies" 
+                          rows="2">{{ form.instance.allergies|default:"" }}</textarea>
+                <p class="help-text">List any food allergies or sensitivities</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="id_special_requirements">Other Special Requirements</label>
+                <textarea class="form-control" id="id_special_requirements" name="special_requirements" 
+                          rows="3">{{ form.instance.special_requirements|default:"" }}</textarea>
+                <p class="help-text">Any other special needs your household has</p>
+            </div>
+        </div>
+        
+        <div class="form-actions">
+            <a href="{% url 'recipient:household_needs' %}" class="btn-cancel">Cancel</a>
+            <button type="submit" class="btn-submit">Save Assessment</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

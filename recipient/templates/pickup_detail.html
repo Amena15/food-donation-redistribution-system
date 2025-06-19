@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+    .status-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .status-badge {
+        padding: 0.35em 0.65em;
+        font-size: 0.875em;
+        font-weight: 600;
+        border-radius: 0.25rem;
+        text-transform: capitalize;
+    }
+    .status-completed {
+        background-color: #d1e7dd;
+        color: #0f5132;
+        border: 1px solid #badbcc;
+    }
+    .status-missed {
+        background-color: #fff3cd;
+        color: #664d03;
+        border: 1px solid #ffecb5;
+    }
+    .status-upcoming {
+        background-color: #cfe2ff;
+        color: #084298;
+        border: 1px solid #b6d4fe;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h4>Pickup Details #{{ pickup.id }}</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Donation Information</h5>
+                    <p><strong>Item:</strong> {{ pickup.request.donation.title }}</p>
+                    <p><strong>Quantity:</strong> {{ pickup.request.donation.quantity_amount }} {{ pickup.request.donation.get_quantity_unit_display }}</p>
+                    <p><strong>Donor:</strong> {{ pickup.request.donation.donor.user.get_full_name }}</p>
+                </div>
+                <div class="col-md-6">
+                    <h5>Pickup Information</h5>
+                    <p><strong>Scheduled Time:</strong> {{ pickup.scheduled_time|date:"M d, Y H:i" }}</p>
+                    <div class="status-container">
+                        <strong>Status:</strong>
+                        <span class="status-badge 
+                            {% if pickup.is_completed %}status-completed
+                            {% elif pickup.scheduled_time < now %}status-missed
+                            {% else %}status-upcoming{% endif %}">
+                            {% if pickup.is_completed %}
+                                <i class="fas fa-check-circle me-1"></i>Completed
+                            {% elif pickup.scheduled_time < now %}
+                                <i class="fas fa-exclamation-circle me-1"></i>Missed
+                            {% else %}
+                                <i class="fas fa-clock me-1"></i>Upcoming
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    {% if pickup.is_completed %}
+                        <p class="mt-2"><strong>Completed At:</strong> {{ pickup.completed_at|date:"M d, Y H:i" }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if can_confirm %}
+                <div class="mt-4">
+                    <a href="{% url 'recipient:confirm_pickup' pickup.id %}" class="btn btn-success">
+                        <i class="fas fa-check-circle me-1"></i> Confirm Pickup Completion
+                    </a>
+                </div>
+            {% endif %}
+
+            {% if pickup.is_completed %}
+                <div class="mt-4">
+                    <h5>Feedback</h5>
+                    {% if pickup.request.feedback %}
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <p class="mb-2">{{ pickup.request.feedback }}</p>
+                                        {% if pickup.request.rating %}
+                                        <div class="rating-display">
+                                            {% for i in "12345" %}
+                                                {% if forloop.counter <= pickup.request.rating %}
+                                                    <i class="fas fa-star text-warning"></i>
+                                                {% else %}
+                                                    <i class="far fa-star text-warning"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <small class="text-muted">
+                                        Submitted {{ pickup.request.feedback_submitted_at|date:"M d, Y" }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    {% elif can_give_feedback %}
+                        <a href="{% url 'recipient:submit_feedback' pickup.id %}" class="btn btn-primary">
+                            <i class="fas fa-comment me-1"></i> Submit Feedback
+                        </a>
+                    {% else %}
+                        <p class="text-muted">No feedback submitted yet.</p>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

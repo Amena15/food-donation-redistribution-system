@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}Nearby Donors | Share Food, Share Hope{% endblock %}
+
+{% block page_title %}Nearby Food Donors{% endblock %}
+{% block page_subtitle %}Locations within 10 miles of you{% endblock %}
+
+{% block extra_css %}
+<style>
+    .donors-container {
+        background-color: var(--white);
+        border-radius: 10px;
+        box-shadow: var(--shadow);
+        padding: 20px;
+    }
+    
+    .donor-card {
+        display: flex;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid #eee;
+        transition: all 0.3s ease;
+    }
+    
+    .donor-card:hover {
+        background-color: rgba(26, 92, 163, 0.05);
+    }
+    
+    .donor-card:last-child {
+        border-bottom: none;
+    }
+    
+    .donor-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: var(--primary-light);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-right: 20px;
+        flex-shrink: 0;
+    }
+    
+    .donor-info {
+        flex-grow: 1;
+    }
+    
+    .donor-name {
+        font-size: 1.2rem;
+        color: var(--primary);
+        margin-bottom: 5px;
+    }
+    
+    .donor-distance {
+        font-size: 0.9rem;
+        color: var(--success);
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+    
+    .donor-location {
+        font-size: 0.9rem;
+        color: var(--gray);
+        margin-bottom: 5px;
+    }
+    
+    .donor-instructions {
+        font-size: 0.85rem;
+        color: var(--dark);
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+    }
+    
+    .donor-actions {
+        margin-left: 20px;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+    }
+    
+    .empty-state i {
+        font-size: 3rem;
+        color: var(--primary-light);
+        margin-bottom: 15px;
+    }
+    
+    .empty-state h3 {
+        margin-bottom: 10px;
+        color: var(--dark);
+    }
+    
+    .empty-state p {
+        color: var(--gray);
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="donors-container">
+    {% if nearby_donors %}
+        {% for donor in nearby_donors %}
+        <div class="donor-card">
+            <div class="donor-avatar">
+                {{ donor.first_name|first }}{{ donor.last_name|first }}
+            </div>
+            <div class="donor-info">
+                <h3 class="donor-name">{{ donor.location_name }}</h3>
+                <div class="donor-distance">{{ donor.distance|floatformat:1 }} miles away</div>
+                <div class="donor-location">{{ donor.address }}</div>
+                {% if donor.pickup_instructions %}
+                <div class="donor-instructions">
+                    <strong>Pickup Instructions:</strong> {{ donor.pickup_instructions }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="donor-actions">
+                <a href="{% url 'recipient:browse_food' %}?donor={{ donor.id }}" class="btn-custom">
+                    View Donations
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-map-marker-alt"></i>
+            <h3>No Nearby Donors Found</h3>
+            <p>We couldn't find any active food donors within 10 miles of your location.</p>
+            <a href="{% url 'recipient:profile' %}" class="btn-custom">
+                <i class="fas fa-map-marked-alt btn-icon"></i> Update Location
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

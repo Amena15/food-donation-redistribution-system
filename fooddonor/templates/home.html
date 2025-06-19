@@ -278,9 +278,9 @@
     <header class="navbar">
         <div class="logo">Share Food, Share Hope</div>
         <nav>
-            <a href="#">Home</a>
-            <a href="#">About Us</a>
-            <a href="#">Contact Us</a>
+            <a href="{% url 'fooddonor:home' %}">Home</a>
+            <a href="{% url 'fooddonor:about' %}">About Us</a>
+            <a href="{% url 'fooddonor:contact' %}">Contact Us</a>
             <a href="{% url 'fooddonor:chooselogin' %}">Login</a>
         </nav>
     </header>

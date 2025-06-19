@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Submit Feedback</h2>
+    
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Request #{{ request.request_id }}</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Rating</label>
+                            <div class="rating-input">
+                                {% for i in "12345" %}
+                                    <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}">
+                                    <label for="star{{ i }}">★</label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Feedback Message</label>
+                            <textarea class="form-control" id="message" name="message" rows="4"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Submit Feedback</button>
+                        <a href="{% url 'recipients:track_requests' %}" class="btn btn-secondary">Skip</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.rating-input {
+    display: flex;
+    margin-bottom: 10px;
+    direction: rtl;
+}
+.rating-input input {
+    display: none;
+}
+.rating-input label {
+    font-size: 2rem;
+    color: #ddd;
+    cursor: pointer;
+}
+.rating-input input:checked ~ label {
+    color: #ffc107;
+}
+.rating-input label:hover,
+.rating-input label:hover ~ label {
+    color: #ffc107;
+}
+</style>
+{% endblock %}

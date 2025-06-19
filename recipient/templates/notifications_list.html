@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Notifications</h2>
+            
+            <!-- Filter Tabs -->
+            <ul class="nav nav-tabs mb-4">
+                <li class="nav-item">
+                    <a class="nav-link {% if current_filter == 'all' %}active{% endif %}" 
+                       href="?type=all">
+                        All <span class="badge bg-secondary">{{ counts.all }}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if current_filter == 'unread' %}active{% endif %}" 
+                       href="?type=unread">
+                        Unread <span class="badge bg-primary">{{ counts.unread }}</span>
+                    </a>
+                </li>
+                {% for type, label in notification_types.items %}
+                <li class="nav-item">
+                    <a class="nav-link {% if current_filter == type %}active{% endif %}" 
+                       href="?type={{ type }}">
+                        {{ label }} <span class="badge bg-info">{{ counts.type }}</span>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            
+            <!-- Mark All as Read Button -->
+            <div class="mb-3">
+                <a href="?mark_read=true" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-check-circle"></i> Mark All as Read
+                </a>
+            </div>
+            
+            <!-- Notifications List -->
+            <div class="list-group">
+                {% for notification in notifications %}
+                <div class="list-group-item {% if not notification.is_read %}list-group-item-primary{% endif %}">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1">
+                            {% if not notification.is_read %}
+                            <span class="badge bg-primary">New</span>
+                            {% endif %}
+                            {{ notification.get_notification_type_display }}
+                        </h6>
+                        <small>{{ notification.created_at|timesince }} ago</small>
+                    </div>
+                    <p class="mb-1">{{ notification.message }}</p>
+                    <div class="d-flex justify-content-end">
+                        {% if not notification.is_read %}
+                        <button class="btn btn-sm btn-outline-success mark-read" 
+                                data-url="{% url 'recipient:mark_notification_read' notification.pk %}">
+                            Mark Read
+                        </button>
+                        {% endif %}
+                        <button class="btn btn-sm btn-outline-danger ms-2 delete-notification" 
+                                data-url="{% url 'recipient:delete_notification' notification.pk %}">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="alert alert-info">No notifications found.</div>
+                {% endfor %}
+            </div>
+            
+            <!-- Pagination -->
+            {% if notifications.has_other_pages %}
+            <nav class="mt-4">
+                <ul class="pagination">
+                    {% if notifications.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ notifications.previous_page_number }}&type={{ current_filter }}">Previous</a>
+                    </li>
+                    {% endif %}
+                    
+                    {% for i in notifications.paginator.page_range %}
+                    <li class="page-item {% if notifications.number == i %}active{% endif %}">
+                        <a class="page-link" href="?page={{ i }}&type={{ current_filter }}">{{ i }}</a>
+                    </li>
+                    {% endfor %}
+                    
+                    {% if notifications.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ notifications.next_page_number }}&type={{ current_filter }}">Next</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // Mark notification as read
+    $('.mark-read').click(function() {
+        const url = $(this).data('url');
+        const notificationItem = $(this).closest('.list-group-item');
+        
+        $.post(url, {
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        }, function(data) {
+            if (data.status === 'success') {
+                notificationItem.removeClass('list-group-item-primary');
+                $(this).remove();
+                // Update unread count in navbar if needed
+                const unreadCount = parseInt($('#unread-notifications').text());
+                $('#unread-notifications').text(unreadCount - 1);
+            }
+        });
+    });
+    
+    // Delete notification
+    $('.delete-notification').click(function() {
+        const url = $(this).data('url');
+        const notificationItem = $(this).closest('.list-group-item');
+        
+        if (confirm('Are you sure you want to delete this notification?')) {
+            $.post(url, {
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            }, function(data) {
+                if (data.status === 'success') {
+                    notificationItem.remove();
+                }
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Wishlist Item | Share Food, Share Hope{% endblock %}
+
+{% block page_title %}Delete Wishlist Item{% endblock %}
+{% block page_subtitle %}Remove item from your wishlist{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header bg-danger text-white">
+            <h5>Confirm Deletion</h5>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>Warning:</strong> You are about to permanently delete this item from your wishlist.
+            </div>
+            
+            <div class="mb-4 p-3 border rounded bg-light">
+                <h5>{{ item.name }}</h5>
+                <div class="d-flex gap-3">
+                    <span class="badge bg-primary">{{ item.get_category_display }}</span>
+                    <span class="badge bg-{% if item.priority == 4 %}danger{% elif item.priority == 3 %}warning{% elif item.priority == 2 %}info{% else %}secondary{% endif %}">
+                        {{ item.get_priority_display }} Priority
+                    </span>
+                </div>
+                {% if item.notes %}
+                <p class="mt-2">{{ item.notes }}</p>
+                {% endif %}
+            </div>
+            
+            <form method="post">
+                {% csrf_token %}
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'recipient:wishlist' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-2"></i> Confirm Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

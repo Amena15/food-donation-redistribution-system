@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ donation.title }} | Share Food, Share Hope{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card mt-4">
+        <div class="card-header">
+            <h2>{{ donation.title }}</h2>
+        </div>
+        
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    {% if donation.image %}
+                    <img src="{{ donation.image.url }}" 
+                         class="img-fluid rounded border"
+                         alt="{{ donation.title }}">
+                    {% else %}
+                    <div class="text-center py-4 bg-light">
+                        <i class="fas fa-utensils fa-5x text-muted"></i>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-8">
+                    <h4>Details</h4>
+                    <p>{{ donation.description }}</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Quantity:</strong> {{ donation.quantity_amount }} {{ donation.get_quantity_unit_display }}</p>
+                            <p><strong>Category:</strong> {{ donation.get_category_display }}</p>
+                            <p><strong>Expiry Date:</strong> {{ donation.expiry_date|date:"M d, Y" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Dietary Info:</strong> {{ donation.dietary_info|default:"None" }}</p>
+                            <p><strong>Allergens:</strong> {{ donation.known_allergens|default:"None" }}</p>
+                            <p><strong>Pickup Location:</strong> {{ donation.pickup_location }}</p>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h5>Donor Information</h5>
+                    <p><strong>Name:</strong> {{ donation.donor.user.get_full_name }}</p>
+                    <p><strong>Contact:</strong> {{ donation.donor.user.email }}</p>
+                    <p><strong>Preferred Pickup Time:</strong> {{ donation.donor.preferred_pickup_time }}</p>
+                    
+                    {% if existing_request %}
+                    <div class="alert alert-info mt-3">
+                        <p>You've already requested this donation.</p>
+                        {% if existing_request.id %}
+                            <a href="{% url 'recipient:request_detail' existing_request.id %}" 
+                               class="btn btn-info">
+                                View Your Request
+                            </a>
+                        {% else %}
+                            <span class="text-muted">(Request processing)</span>
+                        {% endif %}
+                    </div>
+                {% elif request_form %}
+                        <hr>
+                        <h5>Request This Donation</h5>
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ request_form.as_p }}
+                            <button type="submit" class="btn btn-primary">Submit Request</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

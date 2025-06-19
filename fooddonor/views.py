@@ -43,6 +43,17 @@ from collections import defaultdict
 def home(request):
     return render(request, 'home.html')
 
+def about(request):
+    """Static about page"""
+    return render(request, 'about.html')
+
+def contact(request):
+    """Contact form view"""
+    if request.method == 'POST':
+        messages.success(request, "Your message has been sent successfully!")
+        return render(request, 'contact.html', {'message_sent': True})
+    return render(request, 'contact.html')
+
 def register_view(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -322,7 +333,7 @@ def donation_detail(request, pk):
 
 def assign_donation(request, donation_id):
     donation = get_object_or_404(FoodDonation, pk=donation_id)
-    recipient_list = Recipient.objects.all()  # Example list
+    recipient_list = RecipientProfile.objects.all()  # Example list
 
     # Select strategy (can be chosen by user input in real app)
     strategy = NearestRecipientStrategy()  # You can switch this to UrgentNeedsStrategy(), etc.

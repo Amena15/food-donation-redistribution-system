@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Share Food, Share Hope{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>FoodShare</h2>
+                <p>Recipient Dashboard</p>
+            </div>
+            
+            <div class="user-info">
+                <div class="user-avatar">{{ user.first_name|first }}{{ user.last_name|first }}</div>
+                <div class="user-details">
+                    <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+                    <p>Food Recipient</p>
+                </div>
+            </div>
+            
+            <div class="menu">
+                <a href="{% url 'recipient:dashboard' %}" class="menu-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                    <div class="menu-icon"><i class="fas fa-tachometer-alt"></i></div>
+                    <div class="menu-text">Dashboard</div>
+                </a>
+                <a href="{% url 'recipient:browse_donations' %}" class="menu-item {% if request.resolver_match.url_name == 'browse_food' %}active{% endif %}">
+                    <div class="menu-icon"><i class="fas fa-search"></i></div>
+                    <div class="menu-text">Find Food</div>
+                </a>
+                <a href="{% url 'recipient:pickups_list' %}" class="menu-item {% if request.resolver_match.url_name == 'pickups_list' %}active{% endif %}">
+                    <div class="menu-icon"><i class="fas fa-calendar-alt"></i></div>
+                    <div class="menu-text">My Pickups</div>
+                </a>
+                <a href="{% url 'recipient:my_requests' %}" class="menu-item {% if 'track_requests' in request.resolver_match.url_name %}active{% endif %}">
+                    <div class="menu-icon"><i class="fas fa-list-ul"></i></div>
+                    <div class="menu-text">My Requests</div>
+                </a>
+                <a href="{% url 'recipient:wishlist' %}" class="menu-item {% if request.resolver_match.url_name == 'wishlist' %}active{% endif %}">
+                    <div class="menu-icon"><i class="fas fa-heart"></i></div>
+                    <div class="menu-text">Food Wishlist</div>
+                </a>
+                
+                <!-- Notifications Section -->
+                <div class="menu-section-header">
+                    <span>Notifications</span>
+                </div>
+                <a href="{% url 'recipient:notification_list' %}" class="menu-item {% if 'notification' in request.resolver_match.url_name %}active{% endif %}">
+                    <div class="menu-icon"><i class="fas fa-bell"></i></div>
+                    <div class="menu-text">My Notifications</div>
+                    {% if notifications_count > 0 %}
+                    <span class="notification-badge">{{ notifications_count }}</span>
+                    {% endif %}
+                </a>
+                
+                <!-- Settings Section -->
+                <div class="menu-section-header">
+                    <span>Settings</span>
+                </div>
+                <a href="{% url 'recipient:notification_settings' %}" class="menu-item {% if 'notification_settings' in request.resolver_match.url_name %}active{% endif %}">
+                    <div class="menu-icon"><i class="fas fa-bell-slash"></i></div>
+                    <div class="menu-text">Notification Settings</div>
+                </a>
+                <a href="{% url 'recipient:account_settings' %}" class="menu-item {% if 'account_settings' in request.resolver_match.url_name %}active{% endif %}">
+                    <div class="menu-icon"><i class="fas fa-user-cog"></i></div>
+                    <div class="menu-text">Account Settings</div>
+                </a>
+                
+                <a href="{% url 'recipient:logout' %}" class="menu-item">
+                    <div class="menu-icon"><i class="fas fa-sign-out-alt"></i></div>
+                    <div class="menu-text">Logout</div>
+                </a>
+            </div>
+            
+            <div class="sidebar-footer">
+                <p>© {% now "Y" %} Share Food, Share Hope</p>
+            </div>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Navigation Bar -->
+            <div class="header">
+                <div class="header-title">
+                    <h1>{% block page_title %}Welcome back, {{ user.first_name }}!{% endblock %}</h1>
+                    <p>{% block page_subtitle %}{% endblock %}</p>
+                </div>
+                
+                <div class="header-actions">
+                    <div class="notifications">
+                        <i class="fas fa-bell"></i>
+                        {% if notifications_count > 0 %}
+                        <span class="badge">{{ notifications_count }}</span>
+                        {% endif %}
+                    </div>
+                    {% block header_action %}
+                    <a href="{% url 'recipient:browse_donations' %}">
+                        <button class="btn-custom">
+                            <span class="btn-icon"><i class="fas fa-plus"></i></span>
+                            New Request
+                        </button>
+                    </a>
+                    {% endblock %}
+                </div>
+            </div>
+            
+            <!-- Page-specific content -->
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <!-- JavaScript files -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

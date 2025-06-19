@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+
+{% block title %}My Wishlist | Share Food, Share Hope{% endblock %}
+
+{% block page_title %}My Food Wishlist{% endblock %}
+{% block page_subtitle %}Items I'm currently looking for{% endblock %}
+
+{% block extra_css %}
+<style>
+    .wishlist-container {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 25px;
+        margin-bottom: 30px;
+    }
+    
+    .wishlist-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .wishlist-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        margin-bottom: 10px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .wishlist-item:hover {
+        background-color: #f1f1f1;
+        transform: translateY(-2px);
+    }
+    
+    .item-info {
+        flex: 1;
+    }
+    
+    .item-info h4 {
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+        color: #2c3e50;
+        font-weight: 600;
+    }
+    
+    .item-meta {
+        display: flex;
+        gap: 15px;
+        margin-top: 8px;
+    }
+    
+    .item-category {
+        font-size: 0.85rem;
+        color: #7f8c8d;
+    }
+    
+    .priority-tag {
+        padding: 3px 10px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        display: inline-block;
+    }
+    
+    .priority-urgent {
+        background-color: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+    }
+    
+    .priority-high {
+        background-color: rgba(255, 193, 7, 0.1);
+        color: #ffc107;
+    }
+    
+    .priority-medium {
+        background-color: rgba(40, 167, 69, 0.1);
+        color: #28a745;
+    }
+    
+    .priority-low {
+        background-color: rgba(23, 162, 184, 0.1);
+        color: #17a2b8;
+    }
+    
+    .item-actions {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .empty-wishlist {
+        text-align: center;
+        padding: 40px 20px;
+        color: #7f8c8d;
+    }
+    
+    .empty-wishlist i {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: #1a5ca3;
+        opacity: 0.5;
+    }
+    
+    .empty-wishlist h4 {
+        margin-bottom: 10px;
+    }
+    
+    .add-item-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="wishlist-container">
+    <div class="wishlist-header">
+        <h3>My Wishlist Items</h3>
+        <a href="{% url 'recipient:add_wishlist_item' %}" class="btn btn-primary add-item-btn">
+            <i class="fas fa-plus"></i> Add New Item
+        </a>
+    </div>
+    
+    {% if wishlist_items %}
+        <div class="wishlist-items">
+            {% for item in wishlist_items %}
+            <div class="wishlist-item">
+                <div class="item-info">
+                    <h4>{{ item.name }}</h4>
+                    {% if item.notes %}
+                    <p class="mb-2">{{ item.notes }}</p>
+                    {% endif %}
+                    <div class="item-meta">
+                        <span class="item-category">
+                            <i class="fas fa-tag me-1"></i>{{ item.get_category_display }}
+                        </span>
+                        <span class="priority-tag priority-{{ item.get_priority_display|lower }}">
+                            <i class="fas fa-flag me-1"></i>{{ item.get_priority_display }} Priority
+                        </span>
+                        {% if item.desired_frequency %}
+                        <span class="item-category">
+                            <i class="fas fa-sync-alt me-1"></i>{{ item.desired_frequency }}
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="item-actions">
+                    <a href="{% url 'recipient:edit_wishlist_item' item.id %}" 
+                       class="btn btn-sm btn-outline-primary"
+                       title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="{% url 'recipient:delete_wishlist_item' item.id %}" 
+                       class="btn btn-sm btn-outline-danger"
+                       title="Delete"
+                       onclick="return confirm('Are you sure you want to delete this item?');">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-wishlist">
+            <i class="fas fa-heart"></i>
+            <h4>Your wishlist is empty</h4>
+            <p>Add items you're looking for to help donors know what you need</p>
+            <a href="{% url 'recipient:add_wishlist_item' %}" class="btn btn-primary mt-3">
+                <i class="fas fa-plus me-2"></i> Add Your First Item
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

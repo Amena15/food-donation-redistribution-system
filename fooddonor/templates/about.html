@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About Us | Share Food, Share Hope</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            color: #333;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #052f14;
+            padding: 15px 30px;
+            color: white;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: bold;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .navbar nav {
+            display: flex;
+        }
+
+        .hero {
+            position: relative;
+            background-image: url('https://images.unsplash.com/photo-1599059813005-11265ba4b4ce?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .hero p {
+            font-size: 18px;
+        }
+
+        .about-section {
+            padding: 60px 30px;
+            background-color: #f5f5f5;
+        }
+
+        .about-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .about-container h2 {
+            color: #052f14;
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .about-container p {
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 40px;
+        }
+
+        .team-section {
+            background-color: #0a6e31;
+            color: white;
+            padding: 60px 30px;
+            text-align: center;
+        }
+
+        .team-section h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .team-section p {
+            font-size: 16px;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        footer {
+            background-color: #f5f5f5;
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .about-container h2 {
+                font-size: 24px;
+            }
+
+            .about-container p,
+            .team-section p {
+                font-size: 14px;
+            }
+
+            .team-section h2 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">Share Food, Share Hope</div>
+        <nav>
+            <a href="{% url 'fooddonor:home' %}">Home</a>
+            <a href="{% url 'fooddonor:about' %}">About Us</a>
+            <a href="{% url 'fooddonor:contact' %}">Contact Us</a>
+            <a href="{% url 'fooddonor:chooselogin' %}">Login</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>ABOUT US</h1>
+            <p>Empowering Communities, Reducing Waste, Fighting Hunger.</p>
+        </div>
+    </section>
+
+    <section class="about-section">
+        <div class="about-container">
+            <h2>OUR MISSION</h2>
+            <p>At <strong>Share Food, Share Hope</strong>, our mission is to bridge the gap between food waste and hunger. We connect generous food donors with people in need through a secure, simple, and accessible platform across Malaysia.</p>
+
+            <h2>OUR STORY</h2>
+            <p>Founded in Malaysia, this platform was built with a vision of fostering unity through food sharing. With millions of tons of food wasted globally and thousands still going hungry, we believe it's time for change—starting at the community level.</p>
+
+            <h2>OUR IMPACT</h2>
+            <p>Every meal shared is a step closer to a hunger-free nation. From homes to restaurants, every contribution counts. Join us to create a lasting social and environmental impact today.</p>
+        </div>
+    </section>
+
+    <section class="team-section">
+        <h2>OUR TEAM</h2>
+        <p>We are a passionate team of students, developers, volunteers, and advocates working together to make food more accessible and waste less impactful.</p>
+    </section>
+
+    <footer>
+        <p>Share Food, Share Hope Donation – Malaysia</p>
+    </footer>
+</body>
+</html>
