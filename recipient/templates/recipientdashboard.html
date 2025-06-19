@@ -4,142 +4,6 @@
 
 {% block page_subtitle %}Find food assistance and resources near you.{% endblock %}
 
-{% block extra_css %}
-<style>
-    /* Map/Donor List Toggle Styles */
-    .view-toggle {
-        display: flex;
-        border-radius: 8px;
-        overflow: hidden;
-        margin-bottom: 15px;
-        background: white;
-    }
-    
-    .view-toggle-btn {
-        flex: 1;
-        padding: 8px 12px;
-        border: none;
-        background: transparent;
-        cursor: pointer;
-        text-align: center;
-        font-weight: 500;
-        transition: all 0.3s ease;
-    }
-    
-    .view-toggle-btn.active {
-        background: var(--primary-color);
-        color: #1c1919a5;
-    }
-    
-    /* Donor List Styles */
-    .donor-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 20px;
-        padding: 20px;
-    }
-
-    .donor-card {
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        padding: 15px;
-        background: white;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-
-    .donor-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #f0f0f0;
-    }
-
-    .distance-badge {
-        background: #4CAF50;
-        color: white;
-        padding: 3px 8px;
-        border-radius: 12px;
-        font-size: 0.8em;
-    }
-
-    .donor-details p {
-        margin: 8px 0;
-        color: #555;
-    }
-
-    .pickup-info {
-        margin-top: 15px;
-        padding-top: 10px;
-        border-top: 1px dashed #e0e0e0;
-    }
-
-    .pickup-info h5 {
-        margin-bottom: 5px;
-        color: #333;
-    }
-
-    .donor-actions {
-        margin-top: 15px;
-        text-align: right;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 40px 20px;
-    }
-
-    .empty-state i {
-        font-size: 3em;
-        color: #ccc;
-        margin-bottom: 15px;
-    }
-
-    .empty-state h4 {
-        margin: 10px 0;
-        color: #333;
-    }
-
-    .empty-state p {
-        color: #666;
-        margin-bottom: 20px;
-    }
-    
-    /* Map Modal Styles */
-    .map-modal {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0,0,0,0.7);
-    }
-
-    .map-modal-content {
-        background-color: #fff;
-        margin: 2% auto;
-        padding: 20px;
-        border-radius: 8px;
-        width: 95%;
-        height: 90%;
-        position: relative;
-    }
-
-    .modal-map-container {
-        height: calc(100% - 60px);
-        width: 100%;
-    }
-    
-    /* Hidden class for toggling */
-    .hidden {
-        display: none;
-    }
-</style>
-{% endblock %}
-
 {% block content %}
     <!-- Stats Cards -->
     <div class="cards-row">
@@ -176,79 +40,106 @@
         </div>
     </div>
     
-    <!-- Nearby Donors Section -->
+    <!-- Nearby Food Donations Section -->
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Food Donors Near You</h3>
+            <h3 class="card-title">Food Available Near You</h3>
             <div class="card-actions">
-                <div class="view-toggle">
-                    <button id="map-view-btn" class="view-toggle-btn active">
-                        <i class="fas fa-map"></i> Map View
-                    </button>
-                    <button id="list-view-btn" class="view-toggle-btn">
-                        <i class="fas fa-list"></i> List View
-                    </button>
-                </div>
-                <button id="refresh-map" class="btn-custom-sm">
+                <a href="{% url 'recipient:browse_donations' %}" class="btn-custom-sm">
+                    <i class="fas fa-search"></i> Browse All
+                </a>
+                <button id="refresh-donations" class="btn-custom-sm">
                     <i class="fas fa-sync-alt"></i> Refresh
-                </button>
-                <button id="locate-me" class="btn-custom-sm">
-                    <i class="fas fa-location-arrow"></i> My Location
-                </button>
-                <button id="show-modal-map" class="btn-custom-sm">
-                    <i class="fas fa-expand"></i> Full Screen
                 </button>
             </div>
         </div>
         
-        <!-- Map View -->
-        <div id="map-view" class="map-container">
-            <div class="map-container" id="donors-map"></div>
-        </div>
-        
-        <!-- List View -->
-        <div id="list-view" class="hidden">
-            <div class="donor-list-container">
-                {% if nearby_donors %}
-                    <div class="donor-grid">
-                        {% for donor in nearby_donors %}
-                        <div class="donor-card">
-                            <div class="donor-header">
-                                <h4>{{ donor.location_name }}</h4>
-                                <span class="distance-badge">{{ donor.distance|floatformat:1 }} miles away</span>
+        <div class="food-list-container">
+            {% if nearby_donors %}
+                <div class="food-grid">
+                    {% for donation in nearby_donors %}
+                    <div class="food-card">
+                        <div class="food-card-header">
+                            <div class="food-title-wrapper">
+                                <h4>{{ donation.title }}</h4>
+                                <span class="food-distance">
+                                    <i class="fas fa-location-arrow"></i> {{ donation.distance|floatformat:1 }} miles
+                                </span>
                             </div>
-                            
-                            <div class="donor-details">
-                                <p><i class="fas fa-user"></i> {{ donor.get_full_name }}</p>
-                                <p><i class="fas fa-phone"></i> {{ donor.phone_number|default:"Phone not provided" }}</p>
+                            <div class="food-meta">
+                                <span class="food-category {{ donation.category|slugify }}">
+                                    {{ donation.get_category_display }}
+                                </span>
+                                <span class="food-expiry {% if donation.expiry_date < tomorrow %}expired{% endif %}">
+                                    <i class="fas fa-clock"></i> 
+                                    {{ donation.expiry_date|date:"M d" }}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="food-card-body">
+                            <div class="food-details">
+                                <div class="food-quantity">
+                                    <i class="fas fa-weight-hanging"></i>
+                                    {{ donation.quantity_amount }} {{ donation.get_quantity_unit_display }}
+                                </div>
                                 
-                                {% if donor.pickup_instructions %}
-                                <div class="pickup-info">
-                                    <h5>Pickup Instructions:</h5>
-                                    <p>{{ donor.pickup_instructions }}</p>
+                                {% if donation.dietary_info %}
+                                <div class="food-dietary">
+                                    <i class="fas fa-heart"></i>
+                                    {{ donation.dietary_info }}
                                 </div>
                                 {% endif %}
                             </div>
                             
-                            <div class="donor-actions">
-                                <a href="{% url 'recipient:request_donation' donor.id %}" class="btn-custom-sm">
-                                    <i class="fas fa-utensils"></i> Request Food
-                                </a>
+                            <div class="food-description">
+                                {{ donation.description|truncatechars:120 }}
+                            </div>
+                            
+                            <div class="food-donor">
+                                <div class="donor-avatar">
+                                    {% if donation.donor.user.first_name %}
+                                        {{ donation.donor.user.first_name|first }}{{ donation.donor.user.last_name|first }}
+                                    {% else %}
+                                        {{ donation.donor.user.username|first }}
+                                    {% endif %}
+                                </div>
+                                <div class="donor-info">
+                                    <div class="donor-name">
+                                        {{ donation.donor.user.get_full_name|default:"Anonymous Donor" }}
+                                    </div>
+                                    <div class="donor-location">
+                                        <i class="fas fa-map-marker-alt"></i> {{ donation.pickup_location }}
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        {% endfor %}
+                        
+                        <div class="food-card-footer">
+                            <a href="{% url 'recipient:donation_detail' donation.id %}" class="btn-detail">
+                                <i class="fas fa-info-circle"></i> Details
+                            </a>
+                            {% if donation.status == 'available' %}
+                            <a href="{% url 'recipient:request_donation' donation.id %}" class="btn-request">
+                                <i class="fas fa-utensils"></i> Request
+                            </a>
+                            {% endif %}
+                        </div>
                     </div>
-                {% else %}
-                    <div class="empty-state">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <h4>No nearby donors found</h4>
-                        <p>We couldn't find any active food donors within 10 miles of your location.</p>
-                        <a href="{% url 'recipient:profile' %}" class="btn-custom">
-                            <i class="fas fa-map-marked-alt"></i> Update My Location
-                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <i class="fas fa-utensils"></i>
                     </div>
-                {% endif %}
-            </div>
+                    <h4>No available food nearby</h4>
+                    <p>We couldn't find any available food donations in your area. Try expanding your search range.</p>
+                    <a href="{% url 'recipient:browse_donations' %}" class="btn-custom">
+                        <i class="fas fa-search"></i> Browse All Donations
+                    </a>
+                </div>
+            {% endif %}
         </div>
     </div>
     
@@ -274,7 +165,7 @@
                 <tbody>
                     {% for pickup in upcoming_pickups %}
                     <tr>
-                        <td>{{ pickup.request.donation.donor.get_full_name }}</td>
+                        <td>{{ pickup.request.donation.donor.user.get_full_name }}</td>
                         <td>{{ pickup.request.donation.title }}</td>
                         <td>{{ pickup.scheduled_time|date:"M d, Y" }}</td>
                         <td>{{ pickup.scheduled_time|time }}</td>
@@ -283,23 +174,26 @@
                                 {{ pickup.request.get_status_display }}
                             </span>
                         </td>
-                        <td>
-                            <a href="{% url 'recipient:pickup_detail' pickup.id %}">
-                                <i class="fas fa-eye action-btn" title="View Details"></i>
+                        <td class="actions-cell">
+                            <a href="{% url 'recipient:pickup_detail' pickup.id %}" class="action-btn" title="View Details">
+                                <i class="fas fa-eye"></i>
                             </a>
                             {% if pickup.request.status == 'approved' %}
-                            <a href="{% url 'recipient:manage_pickup' pickup.id %}">
-                                <i class="fas fa-calendar-alt action-btn" title="Reschedule"></i>
+                            <a href="{% url 'recipient:manage_pickup' pickup.id %}" class="action-btn" title="Reschedule">
+                                <i class="fas fa-calendar-alt"></i>
                             </a>
                             {% endif %}
-                            <a href="{% url 'recipient:cancel_request' pickup.request.id %}">
-                                <i class="fas fa-times action-btn" title="Cancel"></i>
+                            <a href="{% url 'recipient:cancel_request' pickup.request.id %}" class="action-btn danger" title="Cancel">
+                                <i class="fas fa-times"></i>
                             </a>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="6" style="text-align: center;">No upcoming pickups scheduled</td>
+                        <td colspan="6" class="empty-table-message">
+                            <i class="fas fa-calendar-times"></i>
+                            No upcoming pickups scheduled
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -312,8 +206,8 @@
         <!-- My Food Requests -->
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">My Food Requests</h3>
-                <a href="{% url 'recipient:browse_donations' %}" class="card-action">New Request</a>
+                <h3 class="card-title">My Recent Food Requests</h3>
+                <a href="{% url 'recipient:my_requests' %}" class="card-action">View All</a>
             </div>
             
             <div class="table-container">
@@ -338,20 +232,23 @@
                                     {{ request.get_status_display }}
                                 </span>
                             </td>
-                            <td>
-                                <a href="{% url 'recipient:request_detail' request.id %}">
-                                    <i class="fas fa-eye action-btn" title="View Details"></i>
+                            <td class="actions-cell">
+                                <a href="{% url 'recipient:request_detail' request.id %}" class="action-btn" title="View Details">
+                                    <i class="fas fa-eye"></i>
                                 </a>
                                 {% if request.status == 'pending' %}
-                                <a href="{% url 'recipient:cancel_request' request.id %}">
-                                    <i class="fas fa-times action-btn" title="Cancel"></i>
+                                <a href="{% url 'recipient:cancel_request' request.id %}" class="action-btn danger" title="Cancel">
+                                    <i class="fas fa-times"></i>
                                 </a>
                                 {% endif %}
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="5" style="text-align: center;">No food requests yet</td>
+                            <td colspan="5" class="empty-table-message">
+                                <i class="fas fa-clipboard-list"></i>
+                                No food requests yet
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -366,89 +263,631 @@
                 <a href="{% url 'recipient:notification_list' %}" class="card-action">View All</a>
             </div>
             
-            {% for notification in recent_notifications %}
-            <div class="notification-item {% if not notification.is_read %}unread{% endif %}">
-                <div class="notification-content">
-                    <p>{{ notification.message }}</p>
-                    <small>{{ notification.created_at|timesince }} ago</small>
+            <div class="notifications-container">
+                {% for notification in recent_notifications %}
+                <div class="notification-item {% if not notification.is_read %}unread{% endif %}">
+                    <div class="notification-icon">
+                        {% if notification.notification_type == 'request_update' %}
+                        <i class="fas fa-clipboard-check"></i>
+                        {% elif notification.notification_type == 'donation_match' %}
+                        <i class="fas fa-heart"></i>
+                        {% else %}
+                        <i class="fas fa-info-circle"></i>
+                        {% endif %}
+                    </div>
+                    <div class="notification-content">
+                        <p>{{ notification.message }}</p>
+                        <small>{{ notification.created_at|timesince }} ago</small>
+                    </div>
+                    {% if not notification.is_read %}
+                    <form method="post" action="{% url 'recipient:mark_notification_read' notification.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-custom-sm mark-read-btn">Mark Read</button>
+                    </form>
+                    {% endif %}
                 </div>
-                {% if not notification.is_read %}
-                <form method="post" action="{% url 'recipient:mark_notification_read' notification.id %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn-custom-sm">Mark Read</button>
-                </form>
-                {% endif %}
-            </div>
-            {% empty %}
-            <div class="empty-state">
-                <i class="fas fa-bell"></i>
-                <h4>No notifications</h4>
-                <p>You don't have any notifications yet.</p>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-
-    <!-- Modal Map -->
-    <div id="map-modal" class="map-modal">
-        <div class="map-modal-content">
-            <span class="close-map">&times;</span>
-            <div class="map-header">
-                <h3>Food Donors Map</h3>
-                <div class="map-controls">
-                    <button id="modal-locate-me" class="btn-custom-sm">
-                        <i class="fas fa-location-arrow"></i> My Location
-                    </button>
-                    <button id="modal-refresh-map" class="btn-custom-sm">
-                        <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
+                {% empty %}
+                <div class="empty-state">
+                    <i class="fas fa-bell-slash"></i>
+                    <h4>No notifications</h4>
+                    <p>You don't have any notifications yet.</p>
                 </div>
+                {% endfor %}
             </div>
-            <div class="modal-map-container" id="modal-map"></div>
         </div>
     </div>
 {% endblock %}
 
+{% block extra_css %}
+<style>
+    /* Stats Cards */
+    .cards-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .stat-card {
+        display: flex;
+        align-items: center;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .stat-icon {
+        font-size: 24px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+    }
+    
+    .primary-icon { background-color: #e3f2fd; color: #1976d2; }
+    .secondary-icon { background-color: #f3e5f5; color: #8e24aa; }
+    .info-icon { background-color: #e1f5fe; color: #039be5; }
+    .success-icon { background-color: #e8f5e9; color: #43a047; }
+    
+    .stat-info h3 {
+        font-size: 24px;
+        margin: 0;
+        color: #333;
+    }
+    
+    .stat-info p {
+        margin: 5px 0 0;
+        color: #666;
+        font-size: 14px;
+    }
+    
+    /* Food Available Section */
+.food-list-container {
+    padding: 15px;
+}
+
+.food-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.food-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.food-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.food-card-header {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.food-title-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.food-card-header h4 {
+    margin: 0;
+    color: #333;
+    font-size: 16px;
+    font-weight: 600;
+    flex-grow: 1;
+}
+
+.food-distance {
+    font-size: 13px;
+    color: #666;
+    margin-left: 10px;
+}
+
+.food-distance i {
+    color: #4caf50;
+}
+
+.food-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.food-category {
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+/* Category-specific colors */
+.food-category.fruits { background-color: #ffecb3; color: #ff8f00; }
+.food-category.vegetables { background-color: #c8e6c9; color: #2e7d32; }
+.food-category.grains { background-color: #d7ccc8; color: #5d4037; }
+.food-category.dairy { background-color: #e3f2fd; color: #1565c0; }
+.food-category.meat { background-color: #ffcdd2; color: #c62828; }
+.food-category.seafood { background-color: #b3e5fc; color: #0277bd; }
+.food-category.bakery { background-color: #f0f4c3; color: #afb42b; }
+.food-category.prepared { background-color: #d1c4e9; color: #4527a0; }
+.food-category.beverages { background-color: #b2ebf2; color: #00838f; }
+.food-category.canned { background-color: #cfd8dc; color: #37474f; }
+.food-category.others { background-color: #f5f5f5; color: #616161; }
+
+.food-expiry {
+    font-size: 12px;
+    color: #666;
+}
+
+.food-expiry.expired {
+    color: #d32f2f;
+}
+
+.food-card-body {
+    padding: 15px;
+    flex-grow: 1;
+}
+
+.food-details {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 13px;
+}
+
+.food-quantity, .food-dietary {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.food-quantity {
+    color: #333;
+    font-weight: 500;
+}
+
+.food-dietary {
+    color: #5e35b1;
+}
+
+.food-description {
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.food-donor {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px dashed #e0e0e0;
+}
+
+.donor-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #4caf50;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.donor-info {
+    flex-grow: 1;
+}
+
+.donor-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+.donor-location {
+    font-size: 12px;
+    color: #666;
+}
+
+.food-card-footer {
+    padding: 12px 15px;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    gap: 10px;
+}
+
+.btn-detail, .btn-request {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.btn-detail {
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #e0e0e0;
+}
+
+.btn-detail:hover {
+    background-color: #e0e0e0;
+}
+
+.btn-request {
+    background-color: #4caf50;
+    color: white;
+    border: 1px solid #43a047;
+}
+
+.btn-request:hover {
+    background-color: #43a047;
+}
+
+/* Empty state */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.empty-state-icon {
+    font-size: 48px;
+    color: #bdbdbd;
+    margin-bottom: 15px;
+}
+
+.empty-state h4 {
+    margin: 10px 0;
+    color: #555;
+}
+
+.empty-state p {
+    color: #777;
+    margin-bottom: 20px;
+}
+    
+    .pickup-info {
+        margin-top: 15px;
+        padding-top: 10px;
+        border-top: 1px dashed #ddd;
+    }
+    
+    .pickup-info h5 {
+        margin: 0 0 5px;
+        font-size: 14px;
+        color: #666;
+    }
+    
+    .pickup-info p {
+        font-size: 13px;
+        color: #777;
+        margin: 0;
+    }
+    
+    .donor-actions {
+        padding: 10px 15px;
+        border-top: 1px solid #e0e0e0;
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    /* Badges */
+    .badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+        margin-left: 8px;
+    }
+    
+    .category-badge {
+        background-color: #e3f2fd;
+        color: #1976d2;
+    }
+    
+    .expired-badge {
+        background-color: #ffebee;
+        color: #d32f2f;
+    }
+    
+    .quantity-badge {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        margin-right: 8px;
+    }
+    
+    .dietary-badge {
+        background-color: #fff3e0;
+        color: #e65100;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+    }
+    
+    /* Tables */
+    .table-container {
+        overflow-x: auto;
+    }
+    
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .custom-table th {
+        background-color: #f5f5f5;
+        padding: 12px 15px;
+        text-align: left;
+        font-weight: 500;
+        color: #555;
+        font-size: 14px;
+    }
+    
+    .custom-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #e0e0e0;
+        color: #555;
+        font-size: 14px;
+    }
+    
+    .custom-table tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .status {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    
+    .status-pending { background-color: #fff3e0; color: #e65100; }
+    .status-approved { background-color: #e8f5e9; color: #2e7d32; }
+    .status-completed { background-color: #e3f2fd; color: #1565c0; }
+    .status-rejected { background-color: #ffebee; color: #c62828; }
+    .status-cancelled { background-color: #f5f5f5; color: #616161; }
+    
+    .actions-cell {
+        white-space: nowrap;
+    }
+    
+    .action-btn {
+        display: inline-block;
+        padding: 5px;
+        margin: 0 3px;
+        color: #555;
+        border-radius: 4px;
+        transition: all 0.3s;
+    }
+    
+    .action-btn:hover {
+        color: #1976d2;
+        background-color: #e3f2fd;
+    }
+    
+    .action-btn.danger:hover {
+        color: #d32f2f;
+        background-color: #ffebee;
+    }
+    
+    /* Empty States */
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+    }
+    
+    .empty-state i {
+        font-size: 48px;
+        color: #bdbdbd;
+        margin-bottom: 15px;
+    }
+    
+    .empty-state h4 {
+        margin: 10px 0;
+        color: #555;
+    }
+    
+    .empty-state p {
+        color: #777;
+        margin-bottom: 20px;
+    }
+    
+    .empty-table-message {
+        text-align: center;
+        padding: 20px;
+        color: #777;
+    }
+    
+    .empty-table-message i {
+        margin-right: 8px;
+        color: #bdbdbd;
+    }
+    
+    /* Notifications */
+    .notifications-container {
+        padding: 10px;
+    }
+    
+    .notification-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 15px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .notification-item.unread {
+        background-color: #f5f9ff;
+    }
+    
+    .notification-icon {
+        font-size: 18px;
+        color: #1976d2;
+        margin-right: 15px;
+    }
+    
+    .notification-content {
+        flex-grow: 1;
+    }
+    
+    .notification-content p {
+        margin: 0;
+        color: #333;
+    }
+    
+    .notification-content small {
+        color: #777;
+        font-size: 12px;
+    }
+    
+    .mark-read-btn {
+        padding: 5px 10px;
+        font-size: 12px;
+    }
+    
+    /* Grid Layout */
+    .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 20px;
+    }
+    
+    @media (max-width: 992px) {
+        .grid-2 {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    /* Buttons */
+    .btn-custom-sm {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 12px;
+        background-color: #f5f5f5;
+        color: #333;
+        border-radius: 4px;
+        font-size: 13px;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+    
+    .btn-custom-sm:hover {
+        background-color: #e0e0e0;
+    }
+    
+    .btn-custom-sm.primary {
+        background-color: #1976d2;
+        color: white;
+    }
+    
+    .btn-custom-sm.primary:hover {
+        background-color: #1565c0;
+    }
+    
+    .btn-custom-sm i {
+        margin-right: 5px;
+    }
+    
+    .btn-custom {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #1976d2;
+        color: white;
+        border-radius: 4px;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+    
+    .btn-custom:hover {
+        background-color: #1565c0;
+        color: white;
+    }
+    
+    .btn-custom i {
+        margin-right: 8px;
+    }
+    
+    /* Card Styles */
+    .card {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+    
+    .card-header {
+        padding: 15px 20px;
+        border-bottom: 1px solid #e0e0e0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .card-title {
+        margin: 0;
+        font-size: 18px;
+        color: #333;
+    }
+    
+    .card-actions {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .card-action {
+        color: #1976d2;
+        text-decoration: none;
+        font-size: 14px;
+    }
+    
+    .card-action:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
 {% block extra_js %}
 <script>
-    // Toggle between map and list views
-    document.addEventListener('DOMContentLoaded', function() {
-        const mapViewBtn = document.getElementById('map-view-btn');
-        const listViewBtn = document.getElementById('list-view-btn');
-        const mapView = document.getElementById('map-view');
-        const listView = document.getElementById('list-view');
-        
-        mapViewBtn.addEventListener('click', function() {
-            this.classList.add('active');
-            listViewBtn.classList.remove('active');
-            mapView.classList.remove('hidden');
-            listView.classList.add('hidden');
-        });
-        
-        listViewBtn.addEventListener('click', function() {
-            this.classList.add('active');
-            mapViewBtn.classList.remove('active');
-            listView.classList.remove('hidden');
-            mapView.classList.add('hidden');
-        });
-        
-        // Modal map functionality
-        const showModalMapBtn = document.getElementById('show-modal-map');
-        const mapModal = document.getElementById('map-modal');
-        const closeMap = document.querySelector('.close-map');
-        
-        showModalMapBtn.addEventListener('click', function() {
-            mapModal.style.display = 'block';
-            // You might need to reinitialize the map here if needed
-        });
-        
-        closeMap.addEventListener('click', function() {
-            mapModal.style.display = 'none';
-        });
-        
-        window.addEventListener('click', function(event) {
-            if (event.target == mapModal) {
-                mapModal.style.display = 'none';
+    // Refresh nearby donors button
+    document.getElementById('refresh-donors').addEventListener('click', function() {
+        location.reload();
+    });
+    
+    // Mark all notifications as read
+    document.querySelectorAll('.mark-read-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            const notificationItem = this.closest('.notification-item');
+            if (notificationItem) {
+                notificationItem.classList.remove('unread');
             }
         });
     });

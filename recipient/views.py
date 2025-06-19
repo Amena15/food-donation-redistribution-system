@@ -109,40 +109,49 @@ def dashboard(request):
     
     recipient = request.user.recipient_profile
     
-    total_requests = DonationRequest.objects.filter(recipient=recipient).count()
-    pending_requests = DonationRequest.objects.filter(
-        recipient=recipient,
-        status='pending'
-    ).count()
-    approved_requests = DonationRequest.objects.filter(
-        recipient=recipient,
-        status='approved'
-    ).count()
-    completed_requests = DonationRequest.objects.filter(
-        recipient=recipient,
-        status='completed'
-    ).count()
+    # Stats
+    requests = DonationRequest.objects.filter(recipient=recipient)
+    total_requests = requests.count()
+    pending_requests = requests.filter(status='pending').count()
+    approved_requests = requests.filter(status='approved').count()
+    completed_requests = requests.filter(status='completed').count()
     
+    # Upcoming pickups - matching the logic from pickups_list view
+    now = timezone.now()
     upcoming_pickups = PickupSchedule.objects.filter(
         request__recipient=recipient,
-        request__status='approved',
-        scheduled_time__gte=timezone.now(),
+        scheduled_time__gte=now,
         is_completed=False
-    ).order_by('scheduled_time')[:5]
+    ).exclude(request__status='cancelled').select_related(
+        'request',
+        'request__donation',
+        'request__donation__donor__user'
+    ).order_by('scheduled_time')[:5]  # Limit to 5 for dashboard
     
+    # Nearby donations (using FoodDonation model)
+    nearby_donations = FoodDonation.objects.filter(
+        status='available',
+        expiry_date__gte=now.date()
+    ).select_related('donor__user')[:5]
+    
+    # Recent requests
+    food_requests = requests.order_by('-requested_at')[:5]
+    
+    # Notifications
     recent_notifications = Notification.objects.filter(
         recipient=recipient
     ).order_by('-created_at')[:5]
     
     context = {
-        'recipient': recipient,
         'total_requests': total_requests,
         'pending_requests': pending_requests,
         'approved_requests': approved_requests,
         'completed_requests': completed_requests,
+        'nearby_donors': nearby_donations,
         'upcoming_pickups': upcoming_pickups,
+        'food_requests': food_requests,
         'recent_notifications': recent_notifications,
-
+        'now': now,  # Needed for status comparisons
     }
     
     return render(request, 'recipientdashboard.html', context)
