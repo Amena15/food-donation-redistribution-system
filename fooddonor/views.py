@@ -509,13 +509,23 @@ def pickup_schedule(request):
         'upcoming_pickups': upcoming_pickups
     })
 
+@login_required
 def notifications(request):
-    # Dummy notifications for display purposes
-    notifications = [
-        {"date": "2025-06-12", "message": "Your donation has been picked up.", "status": "Read"},
-        {"date": "2025-06-10", "message": "New pickup scheduled for June 15.", "status": "Unread"},
-    ]
-    return render(request, 'notifications.html', {'notifications': notifications})
+    user = request.user
+    notifications = Notification.objects.filter(user=user).order_by('-timestamp')
+
+    stats = {
+        'unread_count': notifications.filter(read=False).count(),
+        'total_week': notifications.filter(timestamp__gte=timezone.now() - timedelta(days=7)).count(),
+    }
+
+    user_settings = get_user_settings(user)  # already defined in your views
+
+    return render(request, 'notifications.html', {
+        'notifications': notifications,
+        'stats': stats,
+        'user_settings': user_settings,
+    })
 
 def submit_feedback(request):
     if request.method == 'POST':
