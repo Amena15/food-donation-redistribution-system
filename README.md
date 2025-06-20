@@ -49,7 +49,7 @@ Food Donation & Redistribution System is a web-based platform developed using th
 - Generate reports on system activities and operations
 
 ## 🚀 Run Locally
-Prerequisites
+Prerequisites:
 - Python 3.8 or newer installed
 - Git installed
 - Internet connection to install dependencies
@@ -60,7 +60,7 @@ git clone https://github.com/FarahHanim25/softwaredesign.git
 cd softwaredesign
 ```
 
-2. Set Up Virtual Environment (Recommended)
+2. Set Up Virtual Environment  
 For Windows:
 ```bash
 python -m venv venv
