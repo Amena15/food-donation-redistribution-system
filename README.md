@@ -48,4 +48,47 @@ Food Donation & Redistribution System is a web-based platform developed using th
 - Monitor pickup schedules and fulfillment
 - Generate reports on system activities and operations
 
+## 🚀 Run Locally
+Prerequisites
+- Python 3.8 or newer installed
+- Git installed
+- Internet connection to install dependencies
+
+1. Clone the Repository
+```bash
+git clone https://github.com/FarahHanim25/softwaredesign.git
+cd softwaredesign
+```
+
+2. Set Up Virtual Environment (Recommended)
+For Windows:
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
+For macOS/Linux:
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+3. Install Dependencies
+```bash
+pip install -r requirements.txt
+pip install Django
+```
+> **Note:** If you get an error with requirements.txt, make sure the file exists or skip to install Django manually.
+
+4. Apply Migrations
+```bash
+python manage.py migrate
+```
+
+5. Run the Development Server
+```bash
+python manage.py runserver
+```
+
+6. Access the App at [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+
 [![](https://visitcount.itsvg.in/api?id=imy1l&icon=0&color=0)](https://visitcount.itsvg.in)
