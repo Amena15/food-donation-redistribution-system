@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from .models import FoodDonation, DonationRequest, Profile
-from .forms import FoodDonationForm, DonationRequestForm, SignUpForm
+from .forms import FoodDonationForm, DonationRequestForm, SignUpForm, FeedbackForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django import forms
@@ -519,10 +519,19 @@ def notifications(request):
 
 def submit_feedback(request):
     if request.method == 'POST':
-        # Here you can handle the feedback form submission if needed
-        # For now, just redirect back to the feedback page or show a success message
-        return render(request, 'feedback.html', {'message': 'Thank you for your feedback!'})
-    return render(request, 'feedback.html')
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            feedback = form.save(commit=False)
+            feedback.user = request.user  # attach the logged-in user
+            feedback.save()
+            messages.success(request, 'Thank you! Your feedback has been submitted.')
+            return redirect('feedback_thankyou')  # or redirect back to same page if no thank-you page
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = FeedbackForm()
+
+    return render(request, 'feedback.html', {'form': form})
 
 @login_required
 def donation_history(request):

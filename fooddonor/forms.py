@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile, FoodDonation, DonationRequest
+from .models import Profile, FoodDonation, DonationRequest, Feedback
 
 # Sign-Up Form
 class SignUpForm(UserCreationForm):
@@ -77,4 +77,21 @@ class DonationRequestForm(forms.ModelForm):
         fields = ['message']
         widgets = {
             'message': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
+
+# Feedback Form
+class FeedbackForm(forms.ModelForm):
+    class Meta:
+        model = Feedback
+        fields = ['name', 'email', 'feedback_type', 'rating', 'subject', 'message', 'additional', 'follow_up']
+
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your full name'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter your email'}),
+            'feedback_type': forms.Select(attrs={'class': 'form-select'}),
+            'rating': forms.NumberInput(attrs={'class': 'form-control', 'min': 1, 'max': 5}),
+            'subject': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Brief subject'}),
+            'message': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Your feedback'}),
+            'additional': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Any extra comments'}),
+            'follow_up': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }

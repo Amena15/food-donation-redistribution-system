@@ -177,6 +177,30 @@ class Notification(models.Model):
         return f"Notification for {self.user.username} - {'Read' if self.read else 'Unread'}"
 
 
+class Feedback(models.Model):
+    FEEDBACK_TYPES = [
+        ('suggestion', 'Suggestion'),
+        ('bug', 'Bug Report'),
+        ('compliment', 'Compliment'),
+        ('complaint', 'Complaint'),
+        ('feature', 'Feature Request'),
+        ('other', 'Other'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    feedback_type = models.CharField(max_length=20, choices=FEEDBACK_TYPES)
+    rating = models.IntegerField()
+    subject = models.CharField(max_length=150)
+    message = models.TextField()
+    additional = models.TextField(blank=True, null=True)
+    follow_up = models.BooleanField(default=False)
+    submitted_at = models.DateTimeField(auto_now_add=True)
+
+    def _str_(self):
+        return f'{self.subject} by {self.name}'
+
 class UserSettings(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     email_notifications = models.BooleanField(default=True)
