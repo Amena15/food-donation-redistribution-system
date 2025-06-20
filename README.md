@@ -60,17 +60,17 @@ git clone https://github.com/FarahHanim25/softwaredesign.git
 cd softwaredesign
 ```
 
-2. Set Up Virtual Environment  
-For Windows:
-```bash
-python -m venv venv
-venv\Scripts\activate
-```  
-For macOS/Linux:
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
+2. Set Up Virtual Environment
+   For Windows:
+   ```bash
+   python -m venv venv
+   venv\Scripts\activate
+   ```
+   For macOS/Linux:
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
 
 3. Install Dependencies
 ```bash
