@@ -38,7 +38,7 @@ from .singleton.singleton import NotificationManager
 from .models import UserSettings
 from django.core.paginator import Paginator
 from collections import defaultdict
-
+from .forms import FeedbackForm
 
 def home(request):
     return render(request, 'home.html')
@@ -527,16 +527,22 @@ def notifications(request):
         'user_settings': user_settings,
     })
 
+@login_required
 def submit_feedback(request):
+    print("📥 View is triggered")
     if request.method == 'POST':
+        print("📥 POST request received")  # debug
         form = FeedbackForm(request.POST)
         if form.is_valid():
+            print("✅ Form is valid")  # debug
             feedback = form.save(commit=False)
-            feedback.user = request.user  # attach the logged-in user
+            feedback.user = request.user
             feedback.save()
+            print("✅ Feedback saved:", feedback)  # debug
             messages.success(request, 'Thank you! Your feedback has been submitted.')
-            return redirect('feedback_thankyou')  # or redirect back to same page if no thank-you page
+            return redirect('fooddonor:submit_feedback')  # or another thank-you view
         else:
+            print("❌ Form errors:", form.errors)
             messages.error(request, 'Please correct the errors below.')
     else:
         form = FeedbackForm()

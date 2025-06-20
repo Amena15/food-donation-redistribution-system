@@ -10,7 +10,7 @@ from typing import List, Tuple
 from datetime import datetime
 from math import radians, cos, sin, asin, sqrt
 from django.utils import timezone
-from django.contrib.gis.geos import Point
+# from django.contrib.gis.geos import Point
 from recipient.models import RecipientProfile, RecipientPreference
 from fooddonor.models import FoodDonation
 

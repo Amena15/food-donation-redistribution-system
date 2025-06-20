@@ -464,11 +464,11 @@
     <div class="topbar">
         <div class="logo">Share Food, Share Hope</div>
         <div class="nav-links">
-            <a href="#">Dashboard</a>
-            <a href="#">Home</a>
+            <a href="{% url 'fooddonor:donor_dashboard' %}">Dashboard</a>
+            <a href="{% url 'fooddonor:home' %}">Home</a>
             <a href="#">About Us</a>
             <a href="#">Contact Us</a>
-            <a href="#">Logout</a>
+            <a href="{% url 'fooddonor:logout' %}">Logout</a>
         </div>
     </div>
 
@@ -544,186 +544,90 @@
             </div>
         </div>
 
-        <!-- Main Content -->
         <div class="main-content">
-            <div class="feedback-card">
-                <div class="card-header">
-                    <h1>💭 Share Your Feedback</h1>
-                    <p>Help us improve our platform and serve you better</p>
+        <div class="feedback-card">
+            <div class="card-header">
+            <h1>💭 Share Your Feedback</h1>
+            <p>Help us improve our platform and serve you better</p>
+            </div>
+
+            <div class="card-body">
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
                 </div>
-                
-                <div class="card-body">
-                    <div class="success-message" id="successMessage">
-                        <h3>✅ Thank you for your feedback!</h3>
-                        <p>Your submission has been received and will help us improve our services.</p>
-                    </div>
+                {% endfor %}
+            {% endif %}
 
-                    <form id="feedbackForm">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="form-label">Full Name *</label>
-                                <input type="text" class="form-control" name="name" placeholder="Enter your full name" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Email Address *</label>
-                                <input type="email" class="form-control" name="email" placeholder="Enter your email" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Feedback Type *</label>
-                            <div class="feedback-types">
-                                <div class="feedback-type" data-type="suggestion">💡 Suggestion</div>
-                                <div class="feedback-type" data-type="bug">🐛 Bug Report</div>
-                                <div class="feedback-type" data-type="compliment">👏 Compliment</div>
-                                <div class="feedback-type" data-type="complaint">😟 Complaint</div>
-                                <div class="feedback-type" data-type="feature">🚀 Feature Request</div>
-                                <div class="feedback-type" data-type="other">📝 Other</div>
-                            </div>
-                            <input type="hidden" name="feedbackType" id="feedbackType" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Overall Rating *</label>
-                            <div class="rating-group">
-                                <div class="rating-stars">
-                                    <span class="star" data-rating="1">⭐</span>
-                                    <span class="star" data-rating="2">⭐</span>
-                                    <span class="star" data-rating="3">⭐</span>
-                                    <span class="star" data-rating="4">⭐</span>
-                                    <span class="star" data-rating="5">⭐</span>
-                                </div>
-                                <span class="rating-text" id="ratingText">Please rate your experience</span>
-                            </div>
-                            <input type="hidden" name="rating" id="rating" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Subject *</label>
-                            <input type="text" class="form-control" name="subject" placeholder="Brief summary of your feedback" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Detailed Feedback *</label>
-                            <textarea class="form-control" name="message" placeholder="Please provide detailed feedback about your experience..." required></textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Additional Information</label>
-                            <textarea class="form-control" name="additional" placeholder="Any additional comments or suggestions (optional)"></textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="followUp" name="followUp">
-                                <label for="followUp">I would like to be contacted regarding this feedback</label>
-                            </div>
-                        </div>
-
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-secondary" onclick="resetForm()">
-                                🔄 Reset Form
-                            </button>
-                            <button type="submit" class="btn btn-primary">
-                                📤 Submit Feedback
-                            </button>
-                        </div>
-                    </form>
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                <ul>
+                    {% for field in form %}
+                    {% for error in field.errors %}
+                        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                    {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
                 </div>
+            {% endif %}
+
+            <form method="post" action="{% url 'fooddonor:submit_feedback' %}">
+                {% csrf_token %}
+
+                <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.name.id_for_label }}">Full Name *</label>
+                    {{ form.name }}
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.email.id_for_label }}">Email Address *</label>
+                    {{ form.email }}
+                </div>
+                </div>
+
+                <div class="form-group">
+                <label class="form-label" for="{{ form.feedback_type.id_for_label }}">Feedback Type *</label>
+                {{ form.feedback_type }}
+                </div>
+
+                <div class="form-group">
+                <label class="form-label" for="{{ form.rating.id_for_label }}">Overall Rating (1–5) *</label>
+                {{ form.rating }}
+                </div>
+
+                <div class="form-group">
+                <label class="form-label" for="{{ form.subject.id_for_label }}">Subject *</label>
+                {{ form.subject }}
+                </div>
+
+                <div class="form-group">
+                <label class="form-label" for="{{ form.message.id_for_label }}">Detailed Feedback *</label>
+                {{ form.message }}
+                </div>
+
+                <div class="form-group">
+                <label class="form-label" for="{{ form.additional.id_for_label }}">Additional Information</label>
+                {{ form.additional }}
+                </div>
+
+                <div class="form-group">
+                <div class="checkbox-group">
+                    {{ form.follow_up }} 
+                    <label for="{{ form.follow_up.id_for_label }}">I would like to be contacted regarding this feedback</label>
+                </div>
+                </div>
+
+                <div class="btn-group">
+                <button type="reset" class="btn btn-secondary">🔄 Reset Form</button>
+                <button type="submit" class="btn btn-primary">📤 Submit Feedback</button>
+                </div>
+            </form>
             </div>
         </div>
-    </div>
-
-    <script>
-        // Feedback type selection
-        document.querySelectorAll('.feedback-type').forEach(type => {
-            type.addEventListener('click', function() {
-                document.querySelectorAll('.feedback-type').forEach(t => t.classList.remove('selected'));
-                this.classList.add('selected');
-                document.getElementById('feedbackType').value = this.dataset.type;
-            });
-        });
-
-        // Star rating
-        const stars = document.querySelectorAll('.star');
-        const ratingText = document.getElementById('ratingText');
-        const ratingInput = document.getElementById('rating');
-        const ratingTexts = ['Very Poor', 'Poor', 'Average', 'Good', 'Excellent'];
-
-        stars.forEach((star, index) => {
-            star.addEventListener('click', function() {
-                const rating = index + 1;
-                ratingInput.value = rating;
-                ratingText.textContent = ratingTexts[index];
-                
-                stars.forEach((s, i) => {
-                    s.classList.toggle('active', i < rating);
-                });
-            });
-
-            star.addEventListener('mouseenter', function() {
-                const rating = index + 1;
-                stars.forEach((s, i) => {
-                    s.style.color = i < rating ? '#f8b042' : '#ddd';
-                });
-            });
-        });
-
-        document.querySelector('.rating-stars').addEventListener('mouseleave', function() {
-            const currentRating = parseInt(ratingInput.value) || 0;
-            stars.forEach((s, i) => {
-                s.style.color = i < currentRating ? '#f8b042' : '#ddd';
-            });
-        });
-
-        // Form submission
-        document.getElementById('feedbackForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Validate required fields
-            const name = document.querySelector('input[name="name"]').value.trim();
-            const email = document.querySelector('input[name="email"]').value.trim();
-            const feedbackType = document.getElementById('feedbackType').value;
-            const rating = document.getElementById('rating').value;
-            const subject = document.querySelector('input[name="subject"]').value.trim();
-            const message = document.querySelector('textarea[name="message"]').value.trim();
-
-            if (!name || !email || !feedbackType || !rating || !subject || !message) {
-                alert('Please fill in all required fields.');
-                return;
-            }
-
-            // Show success message
-            document.getElementById('successMessage').style.display = 'block';
-            document.getElementById('feedbackForm').style.display = 'none';
-            
-            // Scroll to top
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            
-            // Here you would typically send the data to your server
-            console.log('Feedback submitted:', {
-                name, email, feedbackType, rating, subject, message,
-                additional: document.querySelector('textarea[name="additional"]').value,
-                followUp: document.getElementById('followUp').checked
-            });
-        });
-
-        // Reset form function
-        function resetForm() {
-            if (confirm('Are you sure you want to reset the form? All entered data will be lost.')) {
-                document.getElementById('feedbackForm').reset();
-                document.getElementById('feedbackType').value = '';
-                document.getElementById('rating').value = '';
-                document.getElementById('ratingText').textContent = 'Please rate your experience';
-                document.querySelectorAll('.feedback-type').forEach(t => t.classList.remove('selected'));
-                document.querySelectorAll('.star').forEach(s => {
-                    s.classList.remove('active');
-                    s.style.color = '#ddd';
-                });
-                document.getElementById('successMessage').style.display = 'none';
-                document.getElementById('feedbackForm').style.display = 'block';
-            }
-        }
-    </script>
+        </div>
 </body>
 </html>

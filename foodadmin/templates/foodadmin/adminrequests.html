@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,185 +10,223 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
-        --primary: #0a6e31;
-        --primary-light: #128a3e;
-        --secondary: #f8b042;
-        --light: #f5f5f5;
-        --dark: #333333;
-        --danger: #dc3545;
-        --success: #28a745;
-        --info: #17a2b8;
-        --gray: #6c757d;
-        --white: #ffffff;
-        --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --primary: #0a6e31;
+      --primary-light: #128a3e;
+      --secondary: #f8b042;
+      --light: #f5f5f5;
+      --dark: #333333;
+      --danger: #dc3545;
+      --success: #28a745;
+      --info: #17a2b8;
+      --gray: #6c757d;
+      --white: #ffffff;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
+
     * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
+
     body {
-        background-color: #f0f2f5;
-        color: var(--dark);
+      background-color: #f0f2f5;
+      color: var(--dark);
     }
+
     a {
-        text-decoration: none;
-        color: inherit;
+      text-decoration: none;
+      color: inherit;
     }
+
     .dashboard {
-        display: flex;
-        min-height: 100vh;
+      display: flex;
+      min-height: 100vh;
     }
+
     .sidebar {
-        width: 250px;
-        background-color: var(--primary);
-        color: var(--white);
-        padding: 20px 0;
-        display: flex;
-        flex-direction: column;
-        transition: all 0.3s ease;
+      width: 250px;
+      background-color: var(--primary);
+      color: var(--white);
+      padding: 20px 0;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
     }
+
     .sidebar-header {
-        padding: 0 20px 20px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        text-align: center;
-        margin-bottom: 20px;
+      padding: 0 20px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+      margin-bottom: 20px;
     }
+
     .sidebar-header h2 {
-        font-size: 24px;
-        margin-bottom: 10px;
+      font-size: 24px;
+      margin-bottom: 10px;
     }
+
     .sidebar-header p {
-        font-size: 14px;
-        opacity: 0.8;
+      font-size: 14px;
+      opacity: 0.8;
     }
+
     .user-info {
-        display: flex;
-        align-items: center;
-        padding: 0 20px 20px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      padding: 0 20px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 20px;
     }
+
     .user-avatar {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background-color: var(--white);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 10px;
-        color: var(--primary);
-        font-weight: bold;
-        font-size: 20px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      color: var(--primary);
+      font-weight: bold;
+      font-size: 20px;
     }
+
     .user-details h3 {
-        font-size: 16px;
-        margin-bottom: 4px;
+      font-size: 16px;
+      margin-bottom: 4px;
     }
+
     .menu {
-        flex-grow: 1;
+      flex-grow: 1;
     }
+
     .menu-item {
-        padding: 15px 20px;
-        display: flex;
-        align-items: center;
-        transition: all 0.2s ease;
-        cursor: pointer;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      transition: all 0.2s ease;
+      cursor: pointer;
     }
+
     .menu-item.active {
-        background-color: var(--primary-light);
-        border-left: 4px solid var(--secondary);
-        color: var(--white);
+      background-color: var(--primary-light);
+      border-left: 4px solid var(--secondary);
+      color: var(--white);
     }
+
     .menu-item:hover {
-        background-color: rgba(255, 255, 255, 0.1);
+      background-color: rgba(255, 255, 255, 0.1);
     }
+
     .menu-icon {
-        margin-right: 15px;
-        width: 20px;
-        text-align: center;
+      margin-right: 15px;
+      width: 20px;
+      text-align: center;
     }
+
     .sidebar-footer {
-        padding: 20px;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        font-size: 12px;
-        text-align: center;
+      padding: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 12px;
+      text-align: center;
     }
+
     .main {
-        flex: 1;
-        padding: 30px;
+      flex: 1;
+      padding: 30px;
     }
-	.header {
+
+    .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 2rem;
     }
+
     .filter-input {
-        padding: 8px 16px;
-        width: 300px;
-        max-width: 100%;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 14px;
-        outline: none;
+      padding: 8px 16px;
+      width: 300px;
+      max-width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      outline: none;
     }
+
     .table-container {
-        width: 100%;
-        background: white;
-        border-radius: 0.75rem;
-        padding: 1rem;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      width: 100%;
+      background: white;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     }
+
     table {
-        width: 100%;
-        border-collapse: collapse;
+      width: 100%;
+      border-collapse: collapse;
     }
+
     thead th {
-        background-color: #f1f1f1;
-        text-align: left;
-        padding: 12px 15px;
-        font-size: 14px;
-        color: #6c757d;
-        border-bottom: 1px solid #ddd;
+      background-color: #f1f1f1;
+      text-align: left;
+      padding: 12px 15px;
+      font-size: 14px;
+      color: #6c757d;
+      border-bottom: 1px solid #ddd;
     }
+
     tbody td {
-        padding: 15px;
-        border-bottom: 1px solid #eee;
-        font-size: 14px;
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
     }
+
     tbody tr:hover {
-        background-color: rgba(10, 110, 49, 0.03);
+      background-color: rgba(10, 110, 49, 0.03);
     }
+
     .status {
-        padding: 5px 12px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 500;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
     }
+
     .pending {
-        background-color: #fce68a; /* Yellow for Scheduled */
-        color: #b45309; /* Darker yellow for text */
+      background-color: #fce68a;
+      /* Yellow for Scheduled */
+      color: #b45309;
+      /* Darker yellow for text */
     }
+
     .approved {
-        background-color: #d1fae5; /* Green for Picked Up */
-        color: #047857; /* Dark green for text */
+      background-color: #d1fae5;
+      /* Green for Picked Up */
+      color: #047857;
+      /* Dark green for text */
     }
+
     .rejected {
-        background-color: #fee2e2; /* Red for Missed */
-        color: #b91c1c; /* Dark red for text */
+      background-color: #fee2e2;
+      /* Red for Missed */
+      color: #b91c1c;
+      /* Dark red for text */
     }
+
     .action {
       position: relative;
     }
+
     .action button {
       border: none;
       background: none;
       font-size: 1rem;
       cursor: pointer;
     }
+
     .dropdown {
       display: none;
       position: absolute;
@@ -196,10 +235,11 @@
       background: white;
       border: 1px solid #e5e7eb;
       border-radius: 0.5rem;
-      box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
       min-width: 8rem;
       z-index: 100;
     }
+
     .dropdown a {
       display: block;
       padding: 0.75rem 1rem;
@@ -207,72 +247,105 @@
       color: #111827;
       text-decoration: none;
     }
+
     .dropdown a:hover {
       background: #f3f4f6;
     }
   </style>
 </head>
+
 <body>
   <div class="dashboard">
     <!-- Sidebar -->
     <div class="sidebar">
       <div class="sidebar-header">
-        <h2>FoodShare<span style="color:#22c55e;">.</span></h2>
+                <h3 style="font-size: 18px">Food Share, Share Hope</h3>
         <p>Admin Dashboard</p>
       </div>
       <div class="user-info">
-        <div class="user-avatar">JP</div>
+        <div class="user-avatar">
+          {{ request.user.username|slice:":1"|upper }}
+        </div>
         <div class="user-details">
-          <h3>James Park</h3>
+          <h3>{{ request.user.username }}</h3>
         </div>
       </div>
-            <div class="menu">
-                <a href="{% url 'foodadmin:admindashboard' %}" class="menu-item">
-                    <div class="menu-icon">📊</div>
-                    <div class="menu-text">Dashboard</div>
-                </a>
+      <div class="menu">
+        <a href="{% url 'foodadmin:admindashboard' %}" class="menu-item">
+          <div class="menu-icon">📊</div>
+          <div class="menu-text">Dashboard</div>
+        </a>
 
-                <a href="{% url 'foodadmin:adminusersmanagement' %}" class="menu-item">
-                    <div class="menu-icon">👤</div>
-                    <div class="menu-text">Users</div>
-                </a>
+        <a href="{% url 'foodadmin:adminusersmanagement' %}" class="menu-item">
+          <div class="menu-icon">👤</div>
+          <div class="menu-text">Users</div>
+        </a>
 
-                <a href="{% url 'foodadmin:adminfoodlistings' %}" class="menu-item">
-                    <div class="menu-icon">📋</div>
-                    <div class="menu-text">Food Listings</div>
-                </a>
+        <a href="{% url 'foodadmin:adminfoodlistings' %}" class="menu-item">
+          <div class="menu-icon">📋</div>
+          <div class="menu-text">Food Listings</div>
+        </a>
 
-                <a href="{% url 'foodadmin:admindonations' %}" class="menu-item">
-                    <div class="menu-icon">📦</div>
-                    <div class="menu-text">Donations</div>
-                </a>
+        <a href="{% url 'foodadmin:admindonations' %}" class="menu-item">
+          <div class="menu-icon">📦</div>
+          <div class="menu-text">Donations</div>
+        </a>
 
-                <a href="{% url 'foodadmin:adminrequests' %}" class="menu-item active">
-                    <div class="menu-icon">📩</div>
-                    <div class="menu-text">Requests</div>
-                </a>
+        <a href="{% url 'foodadmin:adminrequests' %}" class="menu-item active">
+          <div class="menu-icon">📩</div>
+          <div class="menu-text">Requests</div>
+        </a>
 
-                <a href="{% url 'foodadmin:analytics' %}" class="menu-item">
-                    <div class="menu-icon">📈</div>
-                    <div class="menu-text">Reports</div>
-                </a>
-
-                <a href="{% url 'foodadmin:admin_logout' %}" class="menu-item">
-                    <div class="menu-icon">🚪</div>
-                    <div class="menu-text">Logout</div>
-                </a>
-            </div>
-      <div class="sidebar-footer"><p>© 2025 Share Food, Share Hope</p></div>
+        <a href="{% url 'foodadmin:adminreports' %}" class="menu-item">
+          <div class="menu-icon">📈</div>
+          <div class="menu-text">Reports</div>
+        </a>
+        <a href="{% url 'foodadmin:adminfeedback' %}" class="menu-item ">
+          <div class="menu-icon">💬</div>
+          <div class="menu-text">Feedback</div>
+        </a>
+        <a href="{% url 'foodadmin:admin_logout' %}" class="menu-item">
+          <div class="menu-icon">🚪</div>
+          <div class="menu-text">Logout</div>
+        </a>
+      </div>
+      <div class="sidebar-footer">
+        <p>© 2025 Share Food, Share Hope</p>
+      </div>
     </div>
 
     <!-- Main Content -->
     <div class="main">
-	  <div class="header">
-          <h2>Food Requests Management</h2>
+      {% if messages %}
+      <div style="margin-bottom: 20px;">
+        {% for message in messages %}
+        {% if message.tags == 'success' %}
+        <div
+          style="padding:10px; border-radius:5px; background-color:#d1fae5; color:#065f46; border:1px solid #10b981;">
+          {{ message }}
+        </div>
+        {% elif message.tags == 'error' %}
+        <div
+          style="padding:10px; border-radius:5px; background-color:#fee2e2; color:#991b1b; border:1px solid #ef4444;">
+          {{ message }}
+        </div>
+        {% else %}
+        <div style="padding:10px; border-radius:5px; background-color:#e0e0e0;">
+          {{ message }}
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+
+
+      <div class="header">
+        <h2>Food Requests Management</h2>
       </div>
       <!-- Search bar -->
       <div style="margin-bottom: 1rem;">
-        <input type="text" id="searchInput" class="filter-input" placeholder="Enter recipient name" onkeyup="searchRecipient()">
+        <input type="text" id="searchInput" class="filter-input" placeholder="Enter recipient name"
+          onkeyup="searchRecipient()">
       </div>
 
       <!-- Table -->
@@ -282,7 +355,7 @@
             <tr>
               <th>Request ID</th>
               <th>Food Title</th>
-			  <th>Donor Name</th>
+              <th>Donor Name</th>
               <th>Recipient Name</th>
               <th>Requested Quantity</th>
               <th>Pickup Location</th>
@@ -292,109 +365,42 @@
             </tr>
           </thead>
           <tbody>
+            {% for req in requests %}
             <tr>
-              <td>REQ001</td>
-              <td>Fresh Apples</td>
-			  <td>Kristin Watson</td>
-              <td>Emily Johnson</td>
-              <td>20</td>
-              <td>Jalan Meranti, Shah Alam</td>
-              <td>2025-06-01</td>
-              <td><span class="status pending">Pending</span></td>
+              <td>{{ req.id }}</td>
+              <td>{{ req.donation.title }}</td>
+              <td>{{ req.donation.donor.user.username }}</td>
+              <td>{{ req.recipient.user.username }}</td>
+              <td>{{ req.donation.quantity_amount }} {{ req.donation.quantity_unit }}</td>
+              <td>{{ req.donation.pickup_location }}</td>
+              <td>{{ req.created_at|date:"Y-m-d" }}</td>
+              <td>
+                {% if req.status == 'pending' %}
+                <span class="status pending">Pending</span>
+                {% elif req.status == 'approved' %}
+                <span class="status approved">Approved</span>
+                {% elif req.status == 'rejected' %}
+                <span class="status rejected">Rejected</span>
+                {% endif %}
+              </td>
               <td class="action">
                 <button onclick="toggleDropdown(this)"><i class="fas fa-ellipsis-v"></i></button>
                 <div class="dropdown">
-                    <a href="#">Approve</a>
-                    <a href="#">Reject</a>
+                  <a href="{% url 'foodadmin:approve_request' req.id %}"
+                    onclick="return confirm('Are you sure to approve this request?');">Approve</a>
+                  <a href="{% url 'foodadmin:reject_request' req.id %}"
+                    onclick="return confirm('Are you sure you want to reject this request?');">Reject</a>
+
                 </div>
               </td>
             </tr>
+            {% empty %}
             <tr>
-              <td>REQ002</td>
-              <td>Chicken Rice Packs</td>
-			  <td>Cody Fisher</td>
-              <td>Jerome Bell</td>
-              <td>45</td>
-              <td>Lot 12, Petaling Jaya</td>
-              <td>2025-06-02</td>
-              <td><span class="status pending">Pending</span></td>
-              <td class="action">
-                <button onclick="toggleDropdown(this)"><i class="fas fa-ellipsis-v"></i></button>
-                <div class="dropdown">
-                    <a href="#">Approve</a>
-                    <a href="#">Reject</a>
-                </div>
-              </td>
+              <td colspan="9">No requests found.</td>
             </tr>
-            <tr>
-              <td>REQ003</td>
-              <td>Milk Cartons</td>
-			  <td>Annette Black</td>
-              <td>Sophia Brown</td>
-              <td>50</td>
-              <td>Block B, Subang Jaya</td>
-              <td>2025-06-03</td>
-              <td><span class="status rejected">Rejected</span></td>
-              <td class="action">
-                <button onclick="toggleDropdown(this)"><i class="fas fa-ellipsis-v"></i></button>
-                <div class="dropdown">
-                    <a href="#">Approve</a>
-                    <a href="#">Reject</a>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>REQ004</td>
-              <td>Vegetable Soup</td>
-			  <td>Devon Lane</td>
-              <td>Michael Lee</td>
-              <td>5</td>
-              <td>Taman Desa, Kuala Lumpur</td>
-              <td>2025-06-04</td>
-              <td><span class="status approved">Approved</span></td>
-              <td class="action">
-                <button onclick="toggleDropdown(this)"><i class="fas fa-ellipsis-v"></i></button>
-                <div class="dropdown">
-                    <a href="#">Approve</a>
-                    <a href="#">Reject</a>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>REQ005</td>
-              <td>Frozen Chicken</td>
-			  <td>Michael Lee</td>
-              <td>Kristin Watson</td>
-              <td>10</td>
-              <td>Jalan Kebun, Klang</td>
-              <td>2025-06-05</td>
-              <td><span class="status approved">Approved</span></td>
-              <td class="action">
-                <button onclick="toggleDropdown(this)"><i class="fas fa-ellipsis-v"></i></button>
-                <div class="dropdown">
-                    <a href="#">Approve</a>
-                    <a href="#">Reject</a>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>REQ006</td>
-              <td>Whole Wheat Bread</td>
-			  <td>Sarah Connor</td>
-              <td>Jerome Bell</td>
-              <td>8</td>
-              <td>Jalan Templer, Petaling Jaya</td>
-              <td>2025-06-06</td>
-              <td><span class="status rejected">Rejected</span></td>
-              <td class="action">
-                <button onclick="toggleDropdown(this)"><i class="fas fa-ellipsis-v"></i></button>
-                <div class="dropdown">
-                    <a href="#">Approve</a>
-                    <a href="#">Reject</a>
-                </div>
-              </td>
-            </tr>
+            {% endfor %}
           </tbody>
+
         </table>
       </div>
     </div>
@@ -432,4 +438,5 @@
     }
   </script>
 </body>
+
 </html>
