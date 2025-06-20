@@ -55,12 +55,12 @@ Prerequisites:
 - Internet connection to install dependencies
 
 1. Clone the Repository
-```bash
-git clone https://github.com/FarahHanim25/softwaredesign.git
-cd softwaredesign
-```
+   ```bash
+   git clone https://github.com/FarahHanim25/softwaredesign.git
+   cd softwaredesign
+   ```
 
-2. Set Up Virtual Environment
+2. Set Up Virtual Environment  
    For Windows:
    ```bash
    python -m venv venv
@@ -73,21 +73,21 @@ cd softwaredesign
    ```
 
 3. Install Dependencies
-```bash
-pip install -r requirements.txt
-pip install Django
-```
-> **Note:** If you get an error with requirements.txt, make sure the file exists or skip to install Django manually.
+   ```bash
+   pip install -r requirements.txt
+   pip install Django
+   ```
+   > **Note:** If you get an error with requirements.txt, make sure the file exists or skip to install Django manually.
 
 4. Apply Migrations
-```bash
-python manage.py migrate
-```
+   ```bash
+   python manage.py migrate
+   ```
 
 5. Run the Development Server
-```bash
-python manage.py runserver
-```
+   ```bash
+   python manage.py runserver
+   ```
 
 6. Access the App at [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 
